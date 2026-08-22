@@ -2,37 +2,29 @@ using UnityEngine;
 
 public class GenerateGrid : MonoBehaviour
 {
-    [Header("Terrain")]
-    [SerializeField] private Terrain targetTerrain;
+    [Header("Grid Settings")] 
+    [SerializeField] private int gridSizeX = 30;
+    [SerializeField] private int gridSizeZ = 30;
+    [SerializeField] private int gridOffset = 2;
 
-    [Header("Perlin Noise")] 
-    [SerializeField, Min(0.01f)] private float noiseScale = 20f;
-    [SerializeField, Min(0f)] private float maxHeight = 20f;
+    [Header("Spawning")] 
+    [SerializeField] private GameObject blockPrefab;
 
     void Start()
     {
-        GenerateTerrain();
+        GridGeneration();
     }
-    
-    [ContextMenu("GenerateTerrain")]
-    public void GenerateTerrain()
-    {
-        TerrainData terrainData = targetTerrain.terrainData;
-        int resolution = terrainData.heightmapResolution;
-        
-        float[,] heights = new float[resolution, resolution];
-        float normalizedMaxHeight = maxHeight / terrainData.size.y;
 
-        for (int z = 0; z < resolution; z++)
+    public void GridGeneration()
+    {
+        for (int x = 0; x < gridSizeX; x++)
         {
-            for (int x = 0; x < resolution; x++)
+            for (int z = 0; z < gridSizeZ; z++)
             {
-                float xNoise = x / noiseScale;
-                float zNoise = z / noiseScale;
-                float noiseValue = Mathf.PerlinNoise(xNoise, zNoise);
-                heights[z, x] = Mathf.Clamp01(noiseValue * normalizedMaxHeight);
+                Vector3 pos = new Vector3(x * gridOffset, 0, z * gridOffset);
+                GameObject block = Instantiate(blockPrefab, pos, Quaternion.identity) as GameObject;
+                block.transform.SetParent(transform);
             }
         }
-        terrainData.SetHeights(0, 0, heights);
     }
 }
