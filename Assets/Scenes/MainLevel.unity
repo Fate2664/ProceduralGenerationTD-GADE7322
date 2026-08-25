@@ -205,8 +205,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.28376344, y: 0, z: 0, w: 0.9588944}
-  m_LocalPosition: {x: 28.99, y: 15.82, z: -10}
+  m_LocalRotation: {x: 0.5996962, y: 0, z: 0, w: 0.8002278}
+  m_LocalPosition: {x: 36.9, y: 66.5, z: 12.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -461,8 +461,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc431b588da2e844392e2fee326e36a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GenerateGrid
-  gridSize: 30
+  gridSize: 31
   gridOffset: 2.5
+  pathCount: 6
+  turnChance: 0.35
   tilePrefab: {fileID: 943560741773552024, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
 --- !u!4 &1149953628
 Transform:

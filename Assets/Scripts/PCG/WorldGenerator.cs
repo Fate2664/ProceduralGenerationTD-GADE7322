@@ -4,39 +4,53 @@ using UnityEngine;
 public class WorldGenerator : MonoBehaviour
 {
     [Header("Grid Settings")] 
-    [SerializeField] private int gridSize = 10;
-    [SerializeField] private float gridOffset = 2;
+    [SerializeField] private int gridSize = 11; //Must be odd number for there to be one center tile
+    [SerializeField] private float gridOffset = 2f;
+
+    [Header("Path Settings")] 
+    [SerializeField] private int pathCount = 4;
+    [SerializeField] private float turnChance = 0.35f;
 
     [Header("Spawning")] 
     [SerializeField] private GameObject tilePrefab;
     
-    public static List<GameObject> generatedTiles = new List<GameObject>();
+    public List<List<GameObject>> GeneratedPaths { get; private set; }
 
     void Start()
     {
-        Path pathGenerator = new Path(gridSize);
-        GenerateGrid(pathGenerator);
-        pathGenerator.GeneratePath();
+        GameObject[,] grid = GenerateGrid();
         
-        foreach(var pObject in pathGenerator.GetPath())
+        Path pathGenerator = new Path(grid, turnChance);
+        GeneratedPaths = pathGenerator.GeneratePaths(pathCount);
+
+        HashSet<GameObject> allPathTimes = new();
+        
+        foreach(var route in GeneratedPaths)
         {            
-            pObject.SetActive(false);
+            foreach(var tile in route)
+                allPathTimes.Add(tile);
+        }
+
+        foreach (GameObject tile in allPathTimes)
+        {
+            tile.SetActive(false);
         }
     }
 
-    public void GenerateGrid(Path pathGenerator)
+    public GameObject[,] GenerateGrid()
     {
+        GameObject[,] grid = new GameObject[gridSize, gridSize];
+        
         for (int x = 0; x < gridSize; x++)
         {
             for (int z = 0; z < gridSize; z++)
             {
-                Vector3 pos = new Vector3(x * gridOffset, 0, z * gridOffset);
-                GameObject tile = Instantiate(tilePrefab, pos, Quaternion.identity) as GameObject;
+                Vector3 pos = new Vector3(x * gridOffset, 0f, z * gridOffset);
+                GameObject tile = Instantiate(tilePrefab, pos, Quaternion.identity, transform);
                 
-                generatedTiles.Add(tile);
-                pathGenerator.AssignTopAndBottomTiles(z, tile);
-                tile.transform.SetParent(transform);
+                grid[x, z] = tile;
             }
         }
+        return grid;
     }
 }

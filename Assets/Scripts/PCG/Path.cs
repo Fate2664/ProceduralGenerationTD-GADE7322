@@ -3,114 +3,134 @@ using UnityEngine;
 
 public class Path
 {
-    private List<GameObject> path = new();
-    private List<GameObject> topTiles = new();
-    private List<GameObject> bottomTiles = new();
-
-    private int gridSize;
-    private int currentTileIndex;
-
-    private bool hasReachedX;
-    private bool hasReachedZ;
+    private GameObject[,] tiles;
+    private int sizeX;
+    private int sizeZ;
+    private float turnChance;
     
-    private GameObject startingTile;
-    private GameObject endingTile;
-    
-    public List<GameObject> GetPath() => path;
-
-    public Path(int gridSize)
+    public Path(GameObject[,] tiles, float turnChance = 0.35f)
     {
-        this.gridSize = gridSize;
-    }
-
-    public void AssignTopAndBottomTiles(int z, GameObject tile)
-    {
-        if (z == 0)
-            topTiles.Add(tile);
-        if (z == gridSize - 1)
-            bottomTiles.Add(tile);
-    }
-
-    private bool AssignCheckStartingEndingTiles()
-    {
-        int xIndex = Random.Range(0, topTiles.Count - 1);
-        int zIndex = Random.Range(0, bottomTiles.Count - 1);
+        this.tiles = tiles;
+        this.turnChance = turnChance;
         
-        startingTile = topTiles[xIndex];
-        endingTile = bottomTiles[zIndex];
-        
-        return startingTile != null && endingTile != null;
+        sizeX = tiles.GetLength(0);
+        sizeZ = tiles.GetLength(1);
     }
 
-    public void GeneratePath()
+    public List<List<GameObject>> GeneratePaths(int requestedPathCount)
     {
-        if (AssignCheckStartingEndingTiles())
+        //Get grid perimeter
+        List<Vector2Int> perimeter = GetPerimeterCoords();
+        
+        //Make sure path count is between 1 and max of perimeter
+        int pathCount = Mathf.Clamp(requestedPathCount, 1, perimeter.Count);
+        
+        //Get starting tiles
+        List<Vector2Int> startingTiles = GetStartingTiles(perimeter, pathCount);
+        
+        //Calculate center tile
+        Vector2Int centerTile = new Vector2Int(sizeX / 2, sizeZ / 2);
+        
+        List<List<GameObject>> paths = new ();
+
+        foreach (Vector2Int start in startingTiles)
         {
-            GameObject currentTile = startingTile;
-
-            var safteyBreakX = 0;
-            while (!hasReachedX)
-            {
-                safteyBreakX++;
-                if (safteyBreakX >= 100)
-                    break;
-
-                if (currentTile.transform.position.x > endingTile.transform.position.x)
-                    MoveDown(ref currentTile);
-                else if (currentTile.transform.position.x < endingTile.transform.position.x)
-                    MoveUp(ref currentTile);
-                else 
-                    hasReachedX = true;
-            }
-
-            var safteyBreakZ = 0;
-            while (!hasReachedZ)
-            {
-                safteyBreakZ++;
-                if (safteyBreakZ >= 100)
-                    break;
-
-                if (currentTile.transform.position.z > endingTile.transform.position.z)
-                    MoveRight(ref currentTile);
-                else if (currentTile.transform.position.z < endingTile.transform.position.z)
-                    MoveLeft(ref currentTile);
-                else 
-                    hasReachedZ = true;
-            }
-            
-            path.Add(endingTile);
+            paths.Add(GenerateSinglePath(start, centerTile));
         }
+        
+        return paths;
     }
 
-    private void MoveDown(ref GameObject currentTile)
+    private List<GameObject> GenerateSinglePath(Vector2Int start, Vector2Int end)
     {
-        path.Add(currentTile);
-        currentTileIndex = WorldGenerator.generatedTiles.IndexOf(currentTile);
-        int n = currentTileIndex - gridSize;
-        currentTile = WorldGenerator.generatedTiles[n];
+        List<GameObject> path = new();
+        Vector2Int currentTile = start;
+        Vector2Int previousDirection = Vector2Int.zero;
+        
+        //Add the starting tile to the path list
+        path.Add(tiles[currentTile.x, currentTile.y]);
+
+        while (currentTile != end)
+        {
+            List<Vector2Int> validDirections = new ();
+            Vector2Int direction;
+            
+            //Check for valid directions
+            if (currentTile.x < end.x)
+                validDirections.Add(Vector2Int.right);
+            else if (currentTile.x > end.x)
+                validDirections.Add(Vector2Int.left);
+            
+            if (currentTile.y < end.y)
+                validDirections.Add(Vector2Int.up);
+            else if (currentTile.y > end.y)
+                validDirections.Add(Vector2Int.down);
+
+            //Check if it can continue to go forward
+            bool canContinueStraight = validDirections.Contains(previousDirection);
+
+            //If it can continue straight and if the random value is greater than the turning chance
+            if (canContinueStraight && Random.value > turnChance)
+            {
+                direction = previousDirection;
+            }
+            else
+            {
+                direction = validDirections[Random.Range(0, validDirections.Count)];
+            }
+
+            currentTile += direction;
+            previousDirection = direction;
+            
+            //Add next tile to the list
+            path.Add(tiles[currentTile.x, currentTile.y]);
+        }
+        
+        return path;
     }
     
-    private void MoveUp(ref GameObject currentTile)
+    private List<Vector2Int> GetStartingTiles(List<Vector2Int> perimeter, int count)
     {
-        path.Add(currentTile);
-        currentTileIndex = WorldGenerator.generatedTiles.IndexOf(currentTile);
-        int n = currentTileIndex + gridSize;
-        currentTile = WorldGenerator.generatedTiles[n];
+        List<Vector2Int> starts = new();
+        int offset = Random.Range(0, perimeter.Count);
+
+        for (int i = 0; i < count; i++)
+        {
+            //This line tries to choose a starting tile on the perimeter that is evenly spaced apart from the others
+            //E.g: for 4 starts
+            //Path 0 = (3 + 0) % 40 = 3
+            //Path 1 = (3 + 10) % 40 = 13
+            //Path 2 = (3 + 20) % 40 = 23
+            //Path 3 = (3 + 30) % 40 = 33
+            int index = (offset + Mathf.FloorToInt(i * perimeter.Count / (float)count)) % perimeter.Count; 
+            starts.Add(perimeter[index]);
+        }
+
+        return starts;
     }
 
-    private void MoveLeft(ref GameObject currentTile)
+    private List<Vector2Int> GetPerimeterCoords()
     {
-        path.Add(currentTile);
-        currentTileIndex = WorldGenerator.generatedTiles.IndexOf(currentTile);
-        currentTileIndex++;
-        currentTile = WorldGenerator.generatedTiles[currentTileIndex];
+        List<Vector2Int> perimeter = new();
+        
+        //Top
+        for (int x = 0; x < sizeX; x++)
+            perimeter.Add(new Vector2Int(x, 0));
+        
+        //Right
+        for (int z = 1; z < sizeZ; z++)
+            perimeter.Add(new Vector2Int(sizeX - 1, z));
+        
+        //Bottom
+        for (int x = sizeX - 2; x >= 0; x--)
+            perimeter.Add(new Vector2Int(x, sizeZ - 1));
+        
+        //Left
+        for (int z = sizeZ - 2; z > 0; z--)
+            perimeter.Add(new Vector2Int(0, z));
+        
+        return perimeter;
     }
-    
-    private void MoveRight(ref GameObject currentTile)
-    {
-        path.Add(currentTile);
-        currentTileIndex = WorldGenerator.generatedTiles.IndexOf(currentTile);
-        currentTileIndex--;
-        currentTile = WorldGenerator.generatedTiles[currentTileIndex];
-    }
+
+   
 }
