@@ -463,9 +463,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GenerateGrid
   gridSize: 31
   gridOffset: 2.5
-  pathCount: 6
+  pathCount: 4
   turnChance: 0.35
   tilePrefab: {fileID: 943560741773552024, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+  towerPrefab: {fileID: 8986752084434777836, guid: 88648003a8190f548a0fd1f299542dd3, type: 3}
+  grassMaterial: {fileID: 2100000, guid: 610497e10ca8e784f8af495bc544ca0b, type: 2}
+  dirtMaterial: {fileID: 2100000, guid: b9032c5ae40d27243949519473177a2c, type: 2}
 --- !u!4 &1149953628
 Transform:
   m_ObjectHideFlags: 0

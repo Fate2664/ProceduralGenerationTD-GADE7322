@@ -1,56 +1,72 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldGenerator : MonoBehaviour
+namespace PCG
 {
-    [Header("Grid Settings")] 
-    [SerializeField] private int gridSize = 11; //Must be odd number for there to be one center tile
-    [SerializeField] private float gridOffset = 2f;
-
-    [Header("Path Settings")] 
-    [SerializeField] private int pathCount = 4;
-    [SerializeField] private float turnChance = 0.35f;
-
-    [Header("Spawning")] 
-    [SerializeField] private GameObject tilePrefab;
-    
-    public List<List<GameObject>> GeneratedPaths { get; private set; }
-
-    void Start()
+    public class WorldGenerator : MonoBehaviour
     {
-        GameObject[,] grid = GenerateGrid();
-        
-        Path pathGenerator = new Path(grid, turnChance);
-        GeneratedPaths = pathGenerator.GeneratePaths(pathCount);
+        [Header("Grid Settings")] 
+        [SerializeField] private int gridSize = 11; //Must be odd number for there to be one center tile
+        [SerializeField] private float gridOffset = 2f;
 
-        HashSet<GameObject> allPathTimes = new();
-        
-        foreach(var route in GeneratedPaths)
-        {            
-            foreach(var tile in route)
-                allPathTimes.Add(tile);
-        }
+        [Header("Path Settings")] 
+        [SerializeField] private int pathCount = 4;
+        [SerializeField] private float turnChance = 0.35f;
 
-        foreach (GameObject tile in allPathTimes)
+        [Header("Spawning")] 
+        [SerializeField] private GameObject tilePrefab;
+        [SerializeField] private GameObject towerPrefab;
+        [SerializeField] private Material grassMaterial;
+        [SerializeField] private Material dirtMaterial;
+            
+        public List<List<GameObject>> GeneratedPaths { get; private set; }
+
+        void Start()
         {
-            tile.SetActive(false);
-        }
-    }
-
-    public GameObject[,] GenerateGrid()
-    {
-        GameObject[,] grid = new GameObject[gridSize, gridSize];
+            GameObject[,] grid = GenerateGrid();
         
-        for (int x = 0; x < gridSize; x++)
-        {
-            for (int z = 0; z < gridSize; z++)
-            {
-                Vector3 pos = new Vector3(x * gridOffset, 0f, z * gridOffset);
-                GameObject tile = Instantiate(tilePrefab, pos, Quaternion.identity, transform);
-                
-                grid[x, z] = tile;
+            Path pathGenerator = new Path(grid, turnChance);
+            GeneratedPaths = pathGenerator.GeneratePaths(pathCount);
+
+            HashSet<GameObject> allPathTimes = new();
+        
+            foreach(var route in GeneratedPaths)
+            {            
+                foreach(var tile in route)
+                    allPathTimes.Add(tile);
             }
+
+            foreach (GameObject tile in allPathTimes)
+            {
+                tile.gameObject.GetComponent<Renderer>().material = dirtMaterial;
+            }
+            
+            PlaceTowerAtCenter(grid);
         }
-        return grid;
+
+        private void PlaceTowerAtCenter(GameObject[,] grid)
+        {
+            int centerX = grid.GetLength(0) / 2;
+            int centerZ = grid.GetLength(1) / 2;
+            Vector3 centerPos = grid[centerX, centerZ].transform.position;
+            GameObject tower = Instantiate(towerPrefab, centerPos, Quaternion.identity, transform);  
+        }
+
+        private GameObject[,] GenerateGrid()
+        {
+            GameObject[,] grid = new GameObject[gridSize, gridSize];
+        
+            for (int x = 0; x < gridSize; x++)
+            {
+                for (int z = 0; z < gridSize; z++)
+                {
+                    Vector3 pos = new Vector3(x * gridOffset, 0f, z * gridOffset);
+                    GameObject tile = Instantiate(tilePrefab, pos, Quaternion.identity, transform);
+                
+                    grid[x, z] = tile;
+                }
+            }
+            return grid;
+        }
     }
 }
