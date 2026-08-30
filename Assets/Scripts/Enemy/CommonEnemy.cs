@@ -24,8 +24,8 @@ namespace Enemy
         protected override void PerformAttack()
         {
             //Attack tower if it is close enough
-            //if (target.TryGetComponent<IDamageable>(out var damageable))
-              //  damageable.TakeDamage(attackDamage);
+            if (target.TryGetComponent<IDamageable>(out var damageable))
+                damageable.TakeDamage(attackDamage);
         }
 
         public bool HasReachedTower()

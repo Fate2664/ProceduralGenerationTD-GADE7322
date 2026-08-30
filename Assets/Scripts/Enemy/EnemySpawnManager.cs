@@ -19,24 +19,24 @@ namespace Enemy
         private void Start()
         {
             InitializeSpawnPoints(worldGenerator.SpawnPoints);
-            
+
             spawner = new EntitySpawner<EnemyBase>(new EntityFactory<EnemyBase>(enemyData), spawnPointStrategy);
 
             spawnTimer = new CountDownTimer(spawnRate);
             spawnTimer.OnTimerStop += HandleSpawnTimerStopped;
             spawnTimer.Start();
         }
-        
+
         void Update() => spawnTimer.Tick(Time.deltaTime);
 
         private void HandleSpawnTimerStopped()
         {
             if (counter >= enemiesPerWave)
                 return;
-            
+
             Spawn();
             counter++;
-            
+
             if (counter < enemiesPerWave)
                 spawnTimer.Start();
         }
@@ -44,7 +44,10 @@ namespace Enemy
         public override void Spawn()
         {
             EnemyBase enemy = spawner.Spawn(out Transform spawnPoint);
-            enemy.Initialize(worldGenerator.Tower);
+            if (enemy.PlaceOnNavMesh(spawnPoint.position))
+            {
+                enemy.Initialize(worldGenerator.Tower);
+            }
         }
     }
 }

@@ -49,8 +49,19 @@ namespace Enemy
         {
             this.target = target;
         }
-        
-        
+
+        public bool PlaceOnNavMesh(Vector3 position, float maxDistance = 3f)
+        {
+            int areaMask = agent.areaMask;
+            if (!NavMesh.SamplePosition(position, out NavMeshHit hit, maxDistance, areaMask))
+                return false;
+            
+            agent.enabled = false;
+            transform.position = hit.position;
+            agent.enabled = true;
+
+            return agent.isOnNavMesh;
+        }        
 
         public virtual void Attack()
         {

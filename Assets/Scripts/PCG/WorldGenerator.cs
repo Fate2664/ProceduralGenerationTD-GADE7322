@@ -44,9 +44,10 @@ namespace PCG
 
             foreach (GameObject tile in allPathTimes)
             {
-                tile.gameObject.GetComponent<Renderer>().material = dirtMaterial;
+                tile.gameObject.GetComponentInChildren<Renderer>().material = dirtMaterial;
                 //Switch to path layer
-                tile.layer = LayerMask.NameToLayer("Path");
+                foreach (Transform child in tile.GetComponentsInChildren<Transform>())
+                    child.gameObject.layer = LayerMask.NameToLayer("Path");
                 //Change name
                 tile.gameObject.name = "PathTile(Clone)";
             }
