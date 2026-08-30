@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using StateMachine;
 using Systems;
 using UnityEngine;
@@ -36,16 +37,20 @@ namespace Enemy
 
         private void Update()
         {
+            if (stateMachine.CurrentState == null) return;
+            
             stateMachine.Update();
             attackTimer.Tick(Time.deltaTime);
         }
 
         private void FixedUpdate()
         {
+            if (stateMachine.CurrentState == null) return;
+            
             stateMachine.FixedUpdate();
         }
 
-        public virtual void Initialize(Transform target)
+        public virtual void Initialize(Transform target, List<GameObject> path)
         {
             this.target = target;
         }

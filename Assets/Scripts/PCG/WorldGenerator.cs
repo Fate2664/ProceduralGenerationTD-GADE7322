@@ -83,5 +83,14 @@ namespace PCG
             }
             return grid;
         }
+
+        public List<GameObject> GetPathForSpawnPoint(Transform spawnPoint)
+        {
+            foreach (List<GameObject> path in GeneratedPaths)
+                if (path.Count > 0 && path[0].transform == spawnPoint)
+                    return path;
+
+            return null;
+        }
     }
 }

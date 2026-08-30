@@ -205,8 +205,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.5996962, y: 0, z: 0, w: 0.8002278}
-  m_LocalPosition: {x: 36.9, y: 66.5, z: 12.7}
+  m_LocalRotation: {x: 0.44375703, y: 0, z: 0, w: 0.8961472}
+  m_LocalPosition: {x: 28.7, y: 33.05, z: -6.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -428,7 +428,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.14666666
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 49c9af3cabbef7448bc686b49a464905, type: 2}
   m_BuildHeightMesh: 0
@@ -527,7 +527,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GenerateGrid
   gridSize: 31
-  gridOffset: 2.5
+  gridOffset: 2
   pathCount: 4
   turnChance: 0.35
   tilePrefab: {fileID: 6203717931449110253, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
@@ -566,8 +566,8 @@ MonoBehaviour:
   enemyData:
   - {fileID: 11400000, guid: 6de9cb70e09d8b543a9ea66b84489f97, type: 2}
   worldGenerator: {fileID: 1149953627}
-  spawnRate: 1
-  enemiesPerWave: 4
+  spawnRate: 0.5
+  enemiesPerWave: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

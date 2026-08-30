@@ -9,10 +9,13 @@ namespace Spawning
         [SerializeField] private GameObject spawnVFX;
         [SerializeField] private float animationDuration = 1f;
 
+        private Vector3 originalScale;
+
         private void Start()
         {
+            originalScale = transform.localScale;
             transform.localScale = Vector3.zero;
-            transform.DOScale(Vector3.one, animationDuration);
+            transform.DOScale(originalScale, animationDuration);
 
             if (spawnVFX != null)
             {

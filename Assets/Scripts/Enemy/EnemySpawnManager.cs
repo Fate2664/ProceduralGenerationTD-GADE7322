@@ -44,9 +44,11 @@ namespace Enemy
         public override void Spawn()
         {
             EnemyBase enemy = spawner.Spawn(out Transform spawnPoint);
+            var path = worldGenerator.GetPathForSpawnPoint(spawnPoint);
+            
             if (enemy.PlaceOnNavMesh(spawnPoint.position))
             {
-                enemy.Initialize(worldGenerator.Tower);
+                enemy.Initialize(worldGenerator.Tower, path);
             }
         }
     }

@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using StateMachine;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace Enemy
 {
@@ -8,15 +8,19 @@ namespace Enemy
     {
         [SerializeField] private int attackDamage;
         
-        private void Start()
+        private EnemyWalkState enemyWalkState;
+        
+        public override void Initialize(Transform target, List<GameObject> path)
         {
-            if (target == null)
+            base.Initialize(target, path);
+            if (target == null || path == null || path.Count < 2)
                 return;
             
-            walkState = new EnemyWalkState(this, animator, agent, target);
+            enemyWalkState = new EnemyWalkState(this, animator, agent, path);
+            walkState = enemyWalkState;
             attackState = new EnemyAttackState(this, animator, agent, target);
             
-            At(walkState, attackState, new FuncPredicate(() => HasReachedTower()));  
+            At(walkState, attackState, new FuncPredicate(() => enemyWalkState.HasFinishedPath));  
             
             stateMachine.SetState(walkState);
         }
@@ -28,9 +32,5 @@ namespace Enemy
                 damageable.TakeDamage(attackDamage);
         }
 
-        public bool HasReachedTower()
-        {
-            return !agent.pathPending && agent.hasPath && agent.pathStatus == NavMeshPathStatus.PathComplete && agent.remainingDistance <= agent.stoppingDistance;
-        }
     }
 }
