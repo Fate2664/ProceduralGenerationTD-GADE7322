@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 namespace PCG
@@ -18,10 +20,14 @@ namespace PCG
         [SerializeField] private GameObject towerPrefab;
         [SerializeField] private Material grassMaterial;
         [SerializeField] private Material dirtMaterial;
+        [SerializeField] private NavMeshSurface navMeshSurface;
             
         public List<List<GameObject>> GeneratedPaths { get; private set; }
-
-        void Start()
+        public Transform Tower { get; private set; }
+        public Transform[] SpawnPoints { get; private set; }
+        public bool IsGenerated { get; private set; }
+        
+        void Awake()
         {
             GameObject[,] grid = GenerateGrid();
         
@@ -39,17 +45,25 @@ namespace PCG
             foreach (GameObject tile in allPathTimes)
             {
                 tile.gameObject.GetComponent<Renderer>().material = dirtMaterial;
+                //Switch to path layer
+                tile.layer = LayerMask.NameToLayer("Path");
+                //Change name
+                tile.gameObject.name = "PathTile(Clone)";
             }
             
-            PlaceTowerAtCenter(grid);
+            SpawnPoints = GeneratedPaths.Select(path => path[0].transform).ToArray();
+            Tower = PlaceTowerAtCenter(grid);
+            
+            navMeshSurface.BuildNavMesh();
+            IsGenerated = true;
         }
 
-        private void PlaceTowerAtCenter(GameObject[,] grid)
+        private Transform PlaceTowerAtCenter(GameObject[,] grid)
         {
             int centerX = grid.GetLength(0) / 2;
             int centerZ = grid.GetLength(1) / 2;
             Vector3 centerPos = grid[centerX, centerZ].transform.position;
-            GameObject tower = Instantiate(towerPrefab, centerPos, Quaternion.identity, transform);  
+            return Instantiate(towerPrefab, centerPos, Quaternion.identity, transform).transform;  
         }
 
         private GameObject[,] GenerateGrid()

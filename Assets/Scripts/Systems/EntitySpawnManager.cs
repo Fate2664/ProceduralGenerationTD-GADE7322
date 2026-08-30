@@ -12,12 +12,14 @@ namespace Systems
         }
 
         [SerializeField] protected SpawnPointStrategyType spawnPointStrategyType = SpawnPointStrategyType.Linear;
-        [SerializeField] protected Transform[] spawnPoints;
-
+        
+        protected Transform[] spawnPoints;
         protected ISpawnPointStrategy spawnPointStrategy;
 
-        private void Awake()
+        protected void InitializeSpawnPoints(Transform[] points)
         {
+            spawnPoints = points;
+            
             spawnPointStrategy = spawnPointStrategyType switch
             {
                 SpawnPointStrategyType.Linear => new LinearSpawnPointStrategy(spawnPoints),
