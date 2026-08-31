@@ -71,7 +71,7 @@ NavMeshAgent:
   m_Height: 3.42
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!95 &3622918006026877116
 Animator:
   serializedVersion: 7

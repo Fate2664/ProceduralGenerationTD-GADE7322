@@ -26,7 +26,10 @@ public class GameInput : ScriptableObject, PlayerInputActions.IGameplayActions, 
         InputActions.Enable();
     }
 
-   
+    private void OnDisable()
+    {
+        InputActions?.Disable();
+    }
 
     #endregion
     
@@ -34,17 +37,12 @@ public class GameInput : ScriptableObject, PlayerInputActions.IGameplayActions, 
 
     public void OnMouseLook(InputAction.CallbackContext context)
     {
-        CameraLookInput = context.ReadValue<Vector2>();
+        //Cinemachine reads this action
     }
 
     public void OnPause(InputAction.CallbackContext context)
     {
         return;
-    }
-
-    public void OnRightClick(InputAction.CallbackContext context)
-    {
-        IsCameraLookHeld = context.ReadValueAsButton();
     }
 
     #endregion
