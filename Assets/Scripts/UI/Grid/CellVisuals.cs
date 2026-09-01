@@ -45,18 +45,13 @@ public class CellVisuals : ItemVisuals
 
     public void RefreshVisuals()
     {
-        if (DataSource.Type != TileType.Buildable)
-        {
-            Background.Color = InvalidColor;
-        }
-        else if (DataSource.Occupant != null)
-        {
-            Background.Color = OccupiedColor;
-        }
-        else
-        {
-            Background.Color = DefaultColor;
-        }
+        bool shouldBeVisible = DataSource.Type != TileType.Path;
+        Background.BodyEnabled = shouldBeVisible;
+
+        if (!shouldBeVisible)
+            return;
+
+        Background.Color = DataSource.Occupant != null ? OccupiedColor : DefaultColor;
     }
 
     #region Gesture Visuals

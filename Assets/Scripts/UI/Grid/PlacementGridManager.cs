@@ -21,6 +21,8 @@ public class PlacementGridManager : MonoBehaviour
     public event Action<GridTile> CellHovered;
     public event Action<GridTile> CellUnhovered;
     public event Action<GridTile> CellClicked;
+    
+    private readonly List<UIBlockHit> raycastHits = new();
 
     private void Start()
     {
@@ -104,7 +106,8 @@ public class PlacementGridManager : MonoBehaviour
         Root.TrySetWorldPosition(center);
 
         CellGrid.SetDataSource(cells);
-
+        HideGrid();
+        
         if (wasInactive)
             Root.gameObject.SetActive(false);
     }
@@ -139,6 +142,26 @@ public class PlacementGridManager : MonoBehaviour
     public void HideGrid()
     {
         Root.gameObject.SetActive(false);
+    }
+
+    public bool TryGetCell(Ray ray, out GridTile tile)
+    {
+        tile = null;
+        raycastHits.Clear();
+        
+        Interaction.RaycastAll(ray, raycastHits);
+
+        foreach (UIBlockHit hit in raycastHits)
+        {
+            ItemView itemView = hit.UIBlock.GetComponentInParent<ItemView>();
+
+            if (itemView == null || !itemView.TryGetVisuals(out CellVisuals visuals) || visuals.BoundTile == null)
+                continue;
+            
+            tile = visuals.BoundTile;
+            return true;
+        }
+        return false;
     }
 
     private void OnDestroy()
