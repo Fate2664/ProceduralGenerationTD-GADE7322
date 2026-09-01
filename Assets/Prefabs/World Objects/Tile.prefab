@@ -121,6 +121,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8343625051923249087}
+  - component: {fileID: 3484051492550175832}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Untagged
@@ -144,3 +145,15 @@ Transform:
   - {fileID: 4559985523099540542}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3484051492550175832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6203717931449110253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5b6fa3b848c44a3a196333ddd5d68df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PCG.GridTile
