@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1566148241480628095}
+  - component: {fileID: 1766992058873870452}
+  - component: {fileID: 8488918860485897176}
   m_Layer: 0
   m_Name: DefenseAnt
   m_TagString: Untagged
@@ -32,6 +34,37 @@ Transform:
   - {fileID: 4817798330871952041}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1766992058873870452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5826771104805275950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47f8f867724e42fb9bb5e27cd59b4426, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Defenses.DefenseCharacters.SpearDefenseCharacter
+  timeBetweenAttacks: 1
+  attackDamage: 10
+--- !u!114 &8488918860485897176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5826771104805275950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3100a484a8b4ee085c0e7776f1252f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Defenses.DefenseCharacters.EnemyDetector
+  detectionAngle: 360
+  detectionRadius: 13
+  innerDetectionRadius: 7
+  detectionCooldown: 1
+  detectionRange: 12
 --- !u!1001 &4996457308518798658
 PrefabInstance:
   m_ObjectHideFlags: 0

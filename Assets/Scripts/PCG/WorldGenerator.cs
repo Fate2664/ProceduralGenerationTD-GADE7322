@@ -115,5 +115,28 @@ namespace PCG
 
             return null;
         }
+
+        public Transform GetClosestPathTile(Vector3 worldPosition)
+        {
+            Transform closestTile = null;
+            float closestDistanceSquared = float.PositiveInfinity;
+
+            foreach (GridTile tile in Grid)
+            {
+                if (tile.Type != TileType.Path)
+                    continue;
+
+                Vector3 offset = tile.transform.position - worldPosition;
+                offset.y = 0f;
+
+                if (offset.sqrMagnitude >= closestDistanceSquared)
+                    continue;
+                
+                closestDistanceSquared = offset.sqrMagnitude;
+                closestTile = tile.transform;
+            }
+
+            return closestTile;
+        }
     }
 }
