@@ -8,7 +8,7 @@ namespace Defenses.DefenseCharacters
 {
     public class DefenseCharacterBase : Entity
     {
-        [SerializeField] private float timeBetweenAttacks = 1f;
+        [SerializeField] private float timeBetweenAttacks = 1.47f;  //This must be the time of the attack animation  
         [SerializeField] private float turnSpeed = 360.0f;
                 
         protected StateMachine.StateMachine stateMachine;
@@ -84,12 +84,13 @@ namespace Defenses.DefenseCharacters
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, turnSpeed * deltaTime);
         }
 
-        public virtual void Attack()
+        public virtual bool Attack()
         {
-            if (attackTimer.IsRunning) return;
+            if (attackTimer.IsRunning) return false;
 
-            PerformAttack();
             attackTimer.Start();
+            PerformAttack();
+            return true;
         }
 
         protected virtual void PerformAttack() {}

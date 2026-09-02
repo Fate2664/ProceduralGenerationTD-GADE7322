@@ -8,14 +8,10 @@ namespace Defenses.DefenseCharacters
         {
         }
 
-        public override void OnEnter()
-        {
-            animator.CrossFade(attackHash, crossFadeDuration);
-        }
-
         public override void Update()
         {
-            characterBase.Attack();
+            if (characterBase.Attack())
+                animator.Play(attackHash, 0, 0f);
         }
     }
 }
