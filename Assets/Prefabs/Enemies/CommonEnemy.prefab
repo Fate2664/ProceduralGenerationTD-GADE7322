@@ -47,9 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cc43475f18c490a9bcebcdb2218dc56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.CommonEnemy
-  timeBetweenAttacks: 1
-  moveSpeed: 1
-  attackDamage: 10
+  enemyData: {fileID: 11400000, guid: 6de9cb70e09d8b543a9ea66b84489f97, type: 2}
 --- !u!195 &3884954316733417130
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Nova;
 using StateMachine;
 using UnityEngine;
 
@@ -6,8 +7,6 @@ namespace Enemy
 {
     public class CommonEnemy : EnemyBase
     {
-        [SerializeField] private int attackDamage;
-        
         private EnemyWalkState enemyWalkState;
         
         public override void Initialize(Transform target, List<GameObject> path)
@@ -27,9 +26,12 @@ namespace Enemy
 
         protected override void PerformAttack()
         {
+            if (target == null) 
+                return;
+            
             //Attack tower if it is close enough
             if (target.TryGetComponent<IDamageable>(out var damageable))
-                damageable.TakeDamage(attackDamage);
+                damageable.TakeDamage(EnemyData.AttackDamage);
         }
 
     }

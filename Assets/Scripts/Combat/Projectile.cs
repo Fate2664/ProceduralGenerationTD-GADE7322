@@ -19,6 +19,7 @@ public class Projectile : MonoBehaviour
     private float elapsedTime;
     private bool initialized;
     private float currentArcHeight;
+    private int damage;
 
     private void Update()
     {
@@ -52,11 +53,14 @@ public class Projectile : MonoBehaviour
         if (t >= 1f)
         {
             //Apply damage and effects
+            if (target.TryGetComponent<IDamageable>(out IDamageable damageable))
+                damageable.TakeDamage(damage);
+            
             Destroy(gameObject);
         }
     }
 
-    public void InitializeProjectile(Transform target, float moveSpeed)
+    public void InitializeProjectile(Transform target, float moveSpeed, int damage)
     {
         if (target == null)
         {
@@ -65,6 +69,7 @@ public class Projectile : MonoBehaviour
         }
         
         this.target = target;
+        this.damage = damage;
         startPosition = transform.position;
         elapsedTime = 0f;
         

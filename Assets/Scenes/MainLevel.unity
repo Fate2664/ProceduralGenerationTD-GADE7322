@@ -1175,7 +1175,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6de9cb70e09d8b543a9ea66b84489f97, type: 2}
   worldGenerator: {fileID: 1149953627}
   spawnRate: 0.5
-  enemiesPerWave: 10
+  enemiesPerWave: 4
+  timeBetweenWaves: 5
+  extraEnemiesPerWave: 2
 --- !u!114 &1149953630
 MonoBehaviour:
   m_ObjectHideFlags: 0

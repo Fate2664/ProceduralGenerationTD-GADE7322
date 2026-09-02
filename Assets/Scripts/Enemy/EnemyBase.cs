@@ -7,11 +7,11 @@ using UnityEngine.AI;
 
 namespace Enemy
 {
-    public class EnemyBase : Entity
+    public class EnemyBase : Entity, IDamageable
     {
-        [SerializeField] private float timeBetweenAttacks = 1f;
-        [SerializeField] private float moveSpeed = 1f;
-        
+        [SerializeField] private EnemyData enemyData;
+
+        protected EnemyData EnemyData => enemyData;
         protected StateMachine.StateMachine stateMachine;
         protected NavMeshAgent agent;
         protected Animator animator;
@@ -22,14 +22,20 @@ namespace Enemy
         
         protected CountDownTimer attackTimer;
 
+        public event Action<EnemyBase> Died;
+
+        private float currentHealth;
+
         protected virtual void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
 
+            currentHealth = enemyData.MaxHealth;
+
             stateMachine = new StateMachine.StateMachine();
-            attackTimer = new CountDownTimer(timeBetweenAttacks);
-            agent.speed = moveSpeed;
+            attackTimer = new CountDownTimer(enemyData.TimeBetweenAttacks);
+            agent.speed = enemyData.MoveSpeed;
         }
 
         protected void At(IState from, IState to, IPredicate condition) => stateMachine.AddTransition(from, to, condition);
@@ -77,5 +83,24 @@ namespace Enemy
         }
         
         protected virtual void PerformAttack() {}
+
+        public void TakeDamage(int damage)
+        {
+            if (currentHealth <= 0)
+                return;
+            
+            currentHealth = Mathf.Max(0, currentHealth - damage);
+
+            if (currentHealth <= 0)
+                Die();
+        }
+
+        protected virtual void Die()
+        {
+            Died?.Invoke(this);
+            
+            //Death effects
+            Destroy(gameObject);
+        }
     }
 }

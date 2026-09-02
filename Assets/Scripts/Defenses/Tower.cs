@@ -8,7 +8,10 @@ public class Tower : MonoBehaviour, IDamageable
     public void TakeDamage(int attackDamage)
     {
         if (health <= 0)
-            Debug.Log("Tower is dead");
+        {
+            Destroy(gameObject);
+            Debug.Log("Tower has been destroyed");
+        }
         else
         {
             health = health - attackDamage;

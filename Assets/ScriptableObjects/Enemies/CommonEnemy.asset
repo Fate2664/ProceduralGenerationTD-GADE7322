@@ -13,3 +13,7 @@ MonoBehaviour:
   m_Name: CommonEnemy
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   prefab: {fileID: 2876303799376306499, guid: 0e37494312acd3c42b8176f6394e6b28, type: 3}
+  maxHealth: 25
+  attackDamage: 1
+  timeBetweenAttacks: 1
+  moveSpeed: 1

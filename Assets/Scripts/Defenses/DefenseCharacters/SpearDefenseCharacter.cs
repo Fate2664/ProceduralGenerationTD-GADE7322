@@ -39,7 +39,7 @@ namespace Defenses.DefenseCharacters
             heldSpear.SetActive(false);
             Projectile spear = Instantiate(spearPrefab, spearSpawnPoint.position, spearSpawnPoint.rotation)
                 .GetComponent<Projectile>();
-            spear.InitializeProjectile(target, spearSpeed);
+            spear.InitializeProjectile(target, spearSpeed, attackDamage);
         }
 
         public void RestoreHeldSpear()
