@@ -45,10 +45,15 @@ public class GameInput : ScriptableObject, PlayerInputActions.IGameplayActions, 
         return;
     }
 
+    public void OnZoom(InputAction.CallbackContext context) 
+    {
+        //Cinemachine reads this action
+    }
+
     #endregion
-    
+
     #region UI Actions
-    
+
     public void OnNavigation(InputAction.CallbackContext context)
     {
         return;

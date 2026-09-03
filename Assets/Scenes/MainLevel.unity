@@ -1362,13 +1362,13 @@ MonoBehaviour:
       Owner: {fileID: 1218954357}
       Enabled: 1
       Input:
-        InputAction: {fileID: 0}
-        Gain: 1
+        InputAction: {fileID: -5435391961302040132, guid: 665bcae91500d4548a32a142330e6956, type: 3}
+        Gain: 5
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
-        AccelTime: 0
-        DecelTime: 0
+        AccelTime: 0.5
+        DecelTime: 0.5
   PlayerIndex: -1
   AutoEnableInputs: 1
 --- !u!114 &1218954356
@@ -1456,7 +1456,7 @@ MonoBehaviour:
   RadialAxis:
     Value: 1
     Center: 1
-    Range: {x: 1, y: 1}
+    Range: {x: 0.5, y: 1}
     Wrap: 0
     Recentering:
       Enabled: 0
@@ -1680,7 +1680,7 @@ Transform:
   m_GameObject: {fileID: 1599429095}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -63.626602, z: 0}
+  m_LocalPosition: {x: 0, y: -63.626587, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2325,7 +2325,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6654993961802301744, guid: 532e109021e26b24a9200c3d39861dc4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 180.66237
+      value: 329.51904
       objectReference: {fileID: 0}
     - target: {fileID: 6654993961802301744, guid: 532e109021e26b24a9200c3d39861dc4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2538,7 +2538,7 @@ MonoBehaviour:
         Raw: 1920
         Type: 0
       Y:
-        Raw: 1080
+        Raw: 1698.0471
         Type: 0
       Z:
         Raw: 0
@@ -2718,7 +2718,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.31388292, y: -0.000000014148083, z: 0.0000000046772204, w: 0.9494617}
   m_LocalPosition: {x: 30, y: 21.903961, z: 0.49206674}
-  m_LocalScale: {x: 0.0010691672, y: 0.0010691672, z: 0.0010691672}
+  m_LocalScale: {x: 0.00068001676, y: 0.00068001676, z: 0.00068001676}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1679209110}
