@@ -14,12 +14,12 @@ public class Projectile : MonoBehaviour
     [SerializeField] private AnimationCurve arcHeightByDistance = AnimationCurve.EaseInOut(0, 0, 1f, 1f);
     
     private Transform target;
+    private int damage;
     private Vector3 startPosition;
     private float flightDuration;
     private float elapsedTime;
     private bool initialized;
     private float currentArcHeight;
-    private int damage;
 
     private void Update()
     {
@@ -52,10 +52,9 @@ public class Projectile : MonoBehaviour
 
         if (t >= 1f)
         {
-            //Apply damage and effects
             if (target.TryGetComponent<IDamageable>(out IDamageable damageable))
                 damageable.TakeDamage(damage);
-            
+            //Apply damage and effects
             Destroy(gameObject);
         }
     }

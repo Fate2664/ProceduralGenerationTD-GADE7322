@@ -160,3 +160,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
   health: 100
+  attackDamage: 5
+  timeBetweenAttacks: 1
