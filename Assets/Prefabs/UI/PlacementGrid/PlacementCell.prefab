@@ -318,8 +318,8 @@ MonoBehaviour:
         DefaultColor: {r: 0.7924528, g: 0.7887148, b: 0.7887148, a: 0.627451}
         HoveredColor: {r: 1, g: 1, b: 1, a: 0.627451}
         PressedColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.627451}
-        OccupiedColor: {r: 0.9490196, g: 0.34901962, b: 0.34901962, a: 0.627451}
-        InvalidColor: {r: 0.95, g: 0.35, b: 0.35, a: 0.627451}
+        ObstacleColor: {r: 0.95, g: 0.35, b: 0.35, a: 1}
+        OccupientColor: {r: 1, g: 0.91125286, b: 0.1462264, a: 1}
 --- !u!114 &8439857284496886255
 MonoBehaviour:
   m_ObjectHideFlags: 0

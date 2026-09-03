@@ -6,17 +6,21 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour, IDamageable
 {
-    [Header("Stats")] [SerializeField] private int health = 100;
+    [Header("Stats")] 
+    [SerializeField] private int health = 100;
     [SerializeField] private int attackDamage = 2;
     [SerializeField] private float timeBetweenAttacks = 1f;
 
     private WorldGenerator worldGenerator;
     private CountDownTimer attackTimer;
     private List<GridTile> surroundingTiles;
-
+    private Animator animator;
+    private static readonly int AttackTrigger = Animator.StringToHash("Attack");
+    
     private void Awake()
     {
         worldGenerator = GetComponentInParent<WorldGenerator>();
+        animator = GetComponentInChildren<Animator>();
         attackTimer = new CountDownTimer(timeBetweenAttacks);
     }
 
@@ -31,8 +35,12 @@ public class Tower : MonoBehaviour, IDamageable
 
         if (attackTimer.IsRunning)
             return;
+
+        if (AttackEnemiesOnSurroundingTiles())
+        {
+            animator.SetTrigger(AttackTrigger);
+        }
         
-        DamageEnemiesOnSurroundingTiles();
         attackTimer.Start();
     }   
 
@@ -55,9 +63,10 @@ public class Tower : MonoBehaviour, IDamageable
 
     }
 
-    private void DamageEnemiesOnSurroundingTiles()
+    private bool AttackEnemiesOnSurroundingTiles()
     {
         float halfTileSize = worldGenerator.GridOffset * .5f;
+        bool attackedEnemy = false;
 
         foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
         {
@@ -67,25 +76,28 @@ public class Tower : MonoBehaviour, IDamageable
                 bool isOnTile = Mathf.Abs(offset.x) <= halfTileSize && Mathf.Abs(offset.z) <= halfTileSize;
                 if (!isOnTile)
                     continue;
-                
+
                 if (enemy.TryGetComponent<IDamageable>(out IDamageable damageable))
+                {
                     damageable.TakeDamage(attackDamage);
+                    attackedEnemy = true;
+                }
 
                 break;
             }
         }
+
+        return attackedEnemy;
     }
 
     public void TakeDamage(int attackDamage)
     {
+        health -= attackDamage;
+
         if (health <= 0)
         {
             Destroy(gameObject);
             Debug.Log("Tower has been destroyed");
-        }
-        else
-        {
-            health = health - attackDamage;
         }
     }
 }

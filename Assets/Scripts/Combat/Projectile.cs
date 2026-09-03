@@ -12,6 +12,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float minArcHeight = 2f;
     [SerializeField] private float maxArcHeight = 12f;
     [SerializeField] private AnimationCurve arcHeightByDistance = AnimationCurve.EaseInOut(0, 0, 1f, 1f);
+    [SerializeField] private float targetHeightOffset = 1.5f;
     
     private Transform target;
     private int damage;
@@ -37,7 +38,8 @@ public class Projectile : MonoBehaviour
         
         //Movement between the two points
         Vector3 previousPosition = transform.position;
-        Vector3 position = Vector3.Lerp(startPosition, target.position, t);
+        Vector3 targetPosition = target.position + Vector3.up * targetHeightOffset;
+        Vector3 position = Vector3.Lerp(startPosition, targetPosition, t);
         
         //Curve
         position.y += heightCurve.Evaluate(t) * currentArcHeight;
@@ -78,11 +80,23 @@ public class Projectile : MonoBehaviour
         float normalizedDistance = Mathf.InverseLerp(minArcHeight, safeMaxDistance, offset.magnitude);
         
         currentArcHeight = arcHeight * Mathf.Clamp01(arcHeightByDistance.Evaluate(normalizedDistance));
-        float flightDistance = Vector3.Distance(startPosition, target.position);
+        Vector3 targetPosition = target.position + Vector3.up * targetHeightOffset;
+        float flightDistance = Vector3.Distance(startPosition, targetPosition);
 
         flightDuration = flightDistance / moveSpeed;
         
         initialized = true;
     }
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!initialized || other.isTrigger)
+            return;
+
+        if (other.GetComponentInParent<Enemy.EnemyBase>() != null)
+            return;
+        
+        //Destroy projectile when it hits an obstacle
+        Destroy(gameObject);
+    }
 }

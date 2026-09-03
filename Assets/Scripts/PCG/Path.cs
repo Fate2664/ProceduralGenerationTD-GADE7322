@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using PCG;
 using UnityEngine;
 
 public class Path
@@ -7,6 +9,14 @@ public class Path
     private int sizeX;
     private int sizeZ;
     private float turnChance;
+    
+    private static readonly Vector2Int[] directions =
+    {
+        Vector2Int.up,
+        Vector2Int.down,
+        Vector2Int.right,
+        Vector2Int.left
+    };
     
     public Path(GameObject[,] tiles, float turnChance = 0.35f)
     {
@@ -19,8 +29,15 @@ public class Path
 
     public List<List<GameObject>> GeneratePaths(int requestedPathCount)
     {
+        //Calculate center tile
+        Vector2Int centerTile = new Vector2Int(sizeX / 2, sizeZ / 2);
+        
+        HashSet<Vector2Int> reachableTiles = GetReachableTiles(centerTile);
+        
         //Get grid perimeter
-        List<Vector2Int> perimeter = GetPerimeterCoords();
+        List<Vector2Int> perimeter = GetPerimeterCoords().Where(coord => reachableTiles.Contains(coord)).ToList();
+        
+        List<List<GameObject>> paths = new ();
         
         //Make sure path count is between 1 and max of perimeter
         int pathCount = Mathf.Clamp(requestedPathCount, 1, perimeter.Count);
@@ -28,14 +45,11 @@ public class Path
         //Get starting tiles
         List<Vector2Int> startingTiles = GetStartingTiles(perimeter, pathCount);
         
-        //Calculate center tile
-        Vector2Int centerTile = new Vector2Int(sizeX / 2, sizeZ / 2);
-        
-        List<List<GameObject>> paths = new ();
-
         foreach (Vector2Int start in startingTiles)
         {
-            paths.Add(GenerateSinglePath(start, centerTile));
+            List<GameObject> path = GenerateSinglePath(start, centerTile);
+            if (path != null)
+                paths.Add(path);
         }
         
         return paths;
@@ -43,48 +57,54 @@ public class Path
 
     private List<GameObject> GenerateSinglePath(Vector2Int start, Vector2Int end)
     {
-        List<GameObject> path = new();
-        Vector2Int currentTile = start;
-        Vector2Int previousDirection = Vector2Int.zero;
+        if (!IsWalkable(start) || !IsWalkable(end))
+            return null;
         
-        //Add the starting tile to the path list
-        path.Add(tiles[currentTile.x, currentTile.y]);
+        Queue<Vector2Int> frontier = new();
+        Dictionary<Vector2Int, Vector2Int> cameFrom = new();
+        
+        frontier.Enqueue(start);
+        cameFrom[start] = start;
 
-        while (currentTile != end)
+        while (frontier.Count > 0)
         {
-            List<Vector2Int> validDirections = new ();
-            Vector2Int direction;
-            
-            //Check for valid directions
-            if (currentTile.x < end.x)
-                validDirections.Add(Vector2Int.right);
-            else if (currentTile.x > end.x)
-                validDirections.Add(Vector2Int.left);
-            
-            if (currentTile.y < end.y)
-                validDirections.Add(Vector2Int.up);
-            else if (currentTile.y > end.y)
-                validDirections.Add(Vector2Int.down);
+            Vector2Int current = frontier.Dequeue();
 
-            //Check if it can continue to go forward
-            bool canContinueStraight = validDirections.Contains(previousDirection);
+            if (current == end)
+                break;
 
-            //If it can continue straight and if the random value is greater than the turning chance
-            if (canContinueStraight && Random.value > turnChance)
+            Vector2Int previousDirection = Vector2Int.zero;
+
+            if (current != start)
+                previousDirection = current - cameFrom[current];
+
+            List<Vector2Int> neighbours = GetWalkableNeighbours(current, previousDirection);
+
+            foreach (Vector2Int neighbour in neighbours)
             {
-                direction = previousDirection;
-            }
-            else
-            {
-                direction = validDirections[Random.Range(0, validDirections.Count)];
-            }
+                if (cameFrom.ContainsKey(neighbour))
+                    continue;
 
-            currentTile += direction;
-            previousDirection = direction;
-            
-            //Add next tile to the list
-            path.Add(tiles[currentTile.x, currentTile.y]);
+                cameFrom[neighbour] = current;
+                frontier.Enqueue(neighbour);
+            }
         }
+
+        //No route was found
+        if (!cameFrom.ContainsKey(end))
+            return null;
+        
+        List<GameObject> path = new ();
+        Vector2Int pathCoordinate = end;
+
+        while (pathCoordinate != start)
+        {
+            path.Add(tiles[pathCoordinate.x, pathCoordinate.y]);
+            pathCoordinate = cameFrom[pathCoordinate];
+        }
+        
+        path.Add(tiles[start.x, start.y]);
+        path.Reverse();
         
         return path;
     }
@@ -131,6 +151,88 @@ public class Path
         
         return perimeter;
     }
+    
+    private bool IsInsideGrid(Vector2Int coordinate)
+    {
+        return coordinate.x >= 0 &&
+               coordinate.x < sizeX &&
+               coordinate.y >= 0 &&
+               coordinate.y < sizeZ;
+    }
 
-   
+    private bool IsWalkable(Vector2Int coordinate)
+    {
+        if (!IsInsideGrid(coordinate))
+            return false;
+
+        GridTile gridTile = tiles[coordinate.x, coordinate.y].GetComponent<GridTile>();
+
+        return gridTile.Type != TileType.Obstacle;
+    }
+
+    private List<Vector2Int> GetWalkableNeighbours(Vector2Int coordinate, Vector2Int previousDirection)
+    {
+        List<Vector2Int> neighbours = new();
+
+        foreach (var direction in directions)
+        {
+            Vector2Int neighbour = coordinate + direction;
+            
+            if (IsWalkable(neighbour))
+                neighbours.Add(neighbour);
+        }
+
+        for (int i = neighbours.Count - 1; i > 0; i--)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, i + 1);
+            
+            Vector2Int temp = neighbours[i];
+            neighbours[i] = neighbours[randomIndex];
+            neighbours[randomIndex] = temp;
+        }
+
+        if (UnityEngine.Random.value > turnChance)
+        {
+            Vector2Int straightCoordinate = coordinate + previousDirection;
+            int straightIndex = neighbours.IndexOf(straightCoordinate);
+
+            if (straightIndex > 0)
+            {
+                Vector2Int temp = neighbours[0];
+                neighbours[0] = neighbours[straightIndex];
+                neighbours[straightIndex] = temp;
+            }
+        } 
+        return neighbours;
+    }
+
+    private HashSet<Vector2Int> GetReachableTiles(Vector2Int start)
+    {
+        HashSet<Vector2Int> reachable = new();
+        Queue<Vector2Int> frontier = new();
+        
+        if (!IsWalkable(start))
+            return reachable;
+        
+        reachable.Add(start);
+        frontier.Enqueue(start);
+
+        while (frontier.Count > 0)
+        {
+            Vector2Int current = frontier.Dequeue();
+
+            foreach (Vector2Int direction in directions)
+            {
+                Vector2Int neighbour = current + direction;
+                
+                if (!IsWalkable(neighbour) || !reachable.Add(neighbour))
+                    continue;
+                
+                frontier.Enqueue(neighbour);
+            }
+        }
+        
+        return reachable;
+    }
+
 }

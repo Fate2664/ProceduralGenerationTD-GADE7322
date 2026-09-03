@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &3503109935166824893
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3129396079271875608, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b9032c5ae40d27243949519473177a2c, type: 2}
+    - target: {fileID: 6203717931449110253, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+      propertyPath: m_Name
+      value: PathTile
+      objectReference: {fileID: 0}
+    - target: {fileID: 8343625051923249087, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8343625051923249087, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8343625051923249087, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8343625051923249087, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8343625051923249087, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8343625051923249087, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8343625051923249087, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8343625051923249087, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8343625051923249087, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8343625051923249087, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: 3529324562458054137, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 5042893457539909423, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 6915903786255088527, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 5430234910043142831, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 5441321922270978060, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 8192776127932894493, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 5893097683828861641, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 7033105752520437980, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 8306496327199230173, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 9015946783399449099, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 7170242653119486072, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 8389839619888482785, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 3592053732336704487, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 5268383477899104326, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 5894698636766879445, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    - {fileID: 1114593564803128451, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}

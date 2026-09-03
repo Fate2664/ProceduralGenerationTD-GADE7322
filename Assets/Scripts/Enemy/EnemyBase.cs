@@ -29,7 +29,7 @@ namespace Enemy
         protected virtual void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
-            animator = GetComponent<Animator>();
+            animator = GetComponentInChildren<Animator>();
 
             currentHealth = enemyData.MaxHealth;
 

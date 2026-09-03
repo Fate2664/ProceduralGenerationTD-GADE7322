@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 131301604658948517}
   - component: {fileID: -605495342443509236}
+  - component: {fileID: 1045645841042921051}
+  - component: {fileID: 6700473416680716689}
   m_Layer: 0
   m_Name: Spear
   m_TagString: Untagged
@@ -49,38 +51,38 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.0023765564
+      time: 0.010173798
       value: 0.0010223389
-      inSlope: 1.3671044
-      outSlope: 1.3671044
+      inSlope: 0.76015145
+      outSlope: 0.76015145
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.19974312
+      outWeight: 0.13672587
     - serializedVersion: 3
-      time: 0.37349695
-      value: 0.21306546
-      inSlope: 0.04729783
-      outSlope: 0.04729783
+      time: 0.6481549
+      value: 0.24729756
+      inSlope: 0.01273331
+      outSlope: 0.01273331
       tangentMode: 0
       weightedMode: 0
-      inWeight: 1
-      outWeight: 0.9314856
+      inWeight: 0.64862794
+      outWeight: 1
     - serializedVersion: 3
-      time: 1.0202389
-      value: 0.15217516
-      inSlope: -0.30508187
-      outSlope: -0.30508187
+      time: 1.0124416
+      value: 0.20146105
+      inSlope: -0.27989933
+      outSlope: -0.27989933
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.15275186
+      inWeight: 0.32521787
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   arcHeight: 6
   rotationOffset: {x: 0, y: 0, z: 0}
-  minArcHeight: 2
+  minArcHeight: 3
   maxArcHeight: 12
   arcHeightByDistance:
     serializedVersion: 2
@@ -106,6 +108,55 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  targetHeightOffset: 1.5
+--- !u!65 &1045645841042921051
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8592720547555940479}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0067140246, y: 0.005131335, z: 0.07514914}
+  m_Center: {x: 0.00016225791, y: 0.0002305033, z: -0.009254648}
+--- !u!54 &6700473416680716689
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8592720547555940479}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &4626284116268045137
 PrefabInstance:
   m_ObjectHideFlags: 0

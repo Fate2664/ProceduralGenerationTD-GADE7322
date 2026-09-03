@@ -9,8 +9,8 @@ public class CellVisuals : ItemVisuals
     public Color DefaultColor = Color.white;
     public Color HoveredColor = Color.white;
     public Color PressedColor = Color.grey;
-    public Color OccupiedColor = Color.grey;
-    public Color InvalidColor = new(0.95f, 0.35f, 0.35f, 1f);
+    public Color ObstacleColor =new(0.95f, 0.35f, 0.35f, 1f);
+    public Color OccupientColor = new(0.95f, 0.35f, 0.35f, 1f);
 
     private GridTile DataSource;
     public GridTile BoundTile => DataSource;
@@ -51,7 +51,7 @@ public class CellVisuals : ItemVisuals
         if (!shouldBeVisible)
             return;
 
-        Background.Color = DataSource.Occupant != null ? OccupiedColor : DefaultColor;
+        Background.Color = DataSource.Type == TileType.Obstacle ? ObstacleColor : DataSource.Occupant != null ? OccupientColor : DefaultColor;
     }
 
     #region Gesture Visuals

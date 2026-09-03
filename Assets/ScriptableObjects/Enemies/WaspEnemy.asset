@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 43b1b1b225ba4084b4ed09a014e32ec5, type: 3}
-  m_Name: CommonEnemy
+  m_Name: WaspEnemy
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   prefab: {fileID: 2876303799376306499, guid: 0e37494312acd3c42b8176f6394e6b28, type: 3}
   maxHealth: 25
