@@ -141,6 +141,11 @@ namespace PCG
                     newGridTile.Initialize(coordinates);
                     newGridTile.SetType(TileType.Path);
                     newTile.name = "PathTile(Clone)";
+
+                    foreach (Transform child in newTile.GetComponentsInChildren<Transform>())
+                    {
+                        child.gameObject.layer = LayerMask.NameToLayer("Path");
+                    }
                     
                     replacements.Add(tile, newTile);
 

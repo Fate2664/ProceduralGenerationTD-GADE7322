@@ -8,9 +8,9 @@ namespace Defenses
     [System.Serializable]
     public class DefenseButtonVisuals : ItemVisuals
     {
-        [Header("References")] [SerializeField]
-        private UIBlock2D background;
-
+        [Header("References")] 
+        [SerializeField] private UIBlock2D background;
+        [SerializeField] private UIBlock2D cooldown;
         [SerializeField] private UIBlock2D icon;
 
         [Header("Hover Appearance")] [SerializeField]
@@ -64,6 +64,8 @@ namespace Defenses
             background.BodyEnabled = defaultBodyEnabled;
             background.Color = defaultBackgroundColor;
             background.transform.localScale = defaultScale;
+            
+            SetCooldownYPercentage(0f);
         }
 
         #region Gesture Methods
@@ -114,6 +116,14 @@ namespace Defenses
         {
             background.DOKill();
             background.transform.DOScale(targetScale, animationDuration).SetEase(ease).SetUpdate(true);
+        }
+
+        public void SetCooldownYPercentage(float percentage)
+        {
+            float clampedPercentage = Mathf.Clamp01(percentage);
+
+            cooldown.Size.Y = Length.Percentage(clampedPercentage);
+            cooldown.BodyEnabled = clampedPercentage > 0f;
         }
 
         public void Unbind(DefenseOptionData data)

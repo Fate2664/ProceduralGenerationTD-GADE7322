@@ -4,6 +4,7 @@ using Defenses.DefenseCharacters;
 using DG.Tweening;
 using Nova;
 using PCG;
+using Systems;
 using UnityEngine;
 
 namespace Defenses
@@ -20,10 +21,18 @@ namespace Defenses
         private GameObject dragPreview;
         private GridTile previewTile;
 
+        private readonly Dictionary<DefenseOptionData, CountDownTimer> placementCooldowns = new();
+        private readonly Dictionary<DefenseOptionData, DefenseButtonVisuals> boundButtons = new();
+
+
         private void Awake()
         {
-            RegisterHandlers();
+            foreach (var option in defensesOptions)
+            {
+                placementCooldowns[option] = new CountDownTimer(option.PlacementCooldownSeconds);
+            }
 
+            RegisterHandlers();
             defensesOptionList.SetDataSource(defensesOptions);
         }
 
@@ -48,6 +57,24 @@ namespace Defenses
             defensesOptionList.AddDataUnbinder<DefenseOptionData, DefenseButtonVisuals>(UnbindDefenseOption);
         }
 
+        private void Update()
+        {
+            foreach (var option in defensesOptions)
+            {
+                if (!placementCooldowns.TryGetValue(option, out CountDownTimer timer))
+                {
+                    continue;
+                }
+
+                timer.Tick(Time.deltaTime);
+
+                if (boundButtons.TryGetValue(option, out DefenseButtonVisuals button))
+                {
+                    button.SetCooldownYPercentage(GetCooldownPercentage(option));
+                }
+            }
+        }
+
         private void HandleDefenseReleased(Gesture.OnRelease evt, DefenseButtonVisuals target, int index)
         {
             DefenseButtonVisuals.HandleRelease(evt, target);
@@ -68,6 +95,15 @@ namespace Defenses
 
         private void HandleDefensePressed(Gesture.OnPress evt, DefenseButtonVisuals target, int index)
         {
+            //Prevent selecting a defense on cooldown
+            if (IsOnCooldown(target.BoundData))
+            {
+                DestroyDragPreview();
+                selectedDefense = null;
+                placementGrid.HideGrid();
+                return;
+            }
+            
             DefenseButtonVisuals.HandlePress(evt, target);
             selectedDefense = target.BoundData;
 
@@ -123,10 +159,15 @@ namespace Defenses
         private void BindDefenseOption(Data.OnBind<DefenseOptionData> evt, DefenseButtonVisuals target, int index)
         {
             target.Bind(evt.UserData);
+            boundButtons[evt.UserData] = target;
+            target.SetCooldownYPercentage(GetCooldownPercentage(evt.UserData));
         }
 
         private void UnbindDefenseOption(Data.OnUnbind<DefenseOptionData> evt, DefenseButtonVisuals target, int index)
         {
+            if (boundButtons.TryGetValue(evt.UserData, out DefenseButtonVisuals button) && button == target)
+                boundButtons.Remove(evt.UserData);
+
             target.Unbind(evt.UserData);
         }
 
@@ -137,7 +178,7 @@ namespace Defenses
 
         private bool TryPlaceDefense(GridTile tile)
         {
-            if (selectedDefense == null || tile == null || !tile.CanBuild)
+            if (selectedDefense == null || tile == null || !tile.CanBuild || IsOnCooldown(selectedDefense))
                 return false;
 
             GameObject prefab = selectedDefense.prefab;
@@ -146,10 +187,41 @@ namespace Defenses
             GameObject defense = Instantiate(prefab, position, prefab.transform.rotation, tile.transform);
             defense.GetComponent<DefenseCharacterBase>()?.Initialize(pathTarget);
             tile.SetOccupant(defense);
+            
+            StartCooldown(selectedDefense);
 
             selectedDefense = null;
             placementGrid.HideGrid();
             return true;
+        }
+
+        private float GetCooldownPercentage(DefenseOptionData option)
+        {
+            if (!placementCooldowns.TryGetValue(option, out CountDownTimer timer) || !timer.IsRunning)
+                return 0f;
+
+            return Mathf.Clamp01(timer.Progress);
+        }
+
+        private bool IsOnCooldown(DefenseOptionData option) => option != null &&
+                                                               placementCooldowns.TryGetValue(option,
+                                                                   out CountDownTimer timer) && timer.IsRunning;
+
+        private void StartCooldown(DefenseOptionData option)
+        {
+            if (!placementCooldowns.TryGetValue(option, out CountDownTimer timer))
+            {
+                timer = new CountDownTimer(option.PlacementCooldownSeconds);
+                placementCooldowns.Add(option, timer);
+            }
+
+            timer.Reset(option.PlacementCooldownSeconds);
+            timer.Start();
+
+            if (boundButtons.TryGetValue(option, out DefenseButtonVisuals button))
+            {
+                button.SetCooldownYPercentage(1f);
+            }
         }
 
         private void DestroyDragPreview()
