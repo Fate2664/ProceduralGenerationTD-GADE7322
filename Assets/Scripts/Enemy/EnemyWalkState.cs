@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -12,8 +13,10 @@ namespace Enemy
         private const float tileStoppingDistance = 0.1f;
         private const float finalStoppingDistance = 5.0f;
         private int pathIndex;
+        private bool hasStarted;
         
         public bool HasFinishedPath { get;  private set; }
+        public event Action<int> PathTileChanged;
         
         public EnemyWalkState(EnemyBase enemyBase, Animator animator, NavMeshAgent agent, List<GameObject> path) : base(enemyBase, animator)
         {
@@ -24,9 +27,15 @@ namespace Enemy
         public override void OnEnter()
         {
             animator.CrossFade(walkHash, crossFadeDuration);
-            HasFinishedPath = false;
+            agent.isStopped = false;
 
-            pathIndex = 1;
+            if (!hasStarted)
+            {
+                pathIndex = 1;
+                hasStarted = true;
+            }
+            
+            HasFinishedPath = false;
             SetCurrentDestination();
         }
 
@@ -60,6 +69,7 @@ namespace Enemy
             agent.stoppingDistance = isFinalTile ? finalStoppingDistance : tileStoppingDistance;
             
             agent.SetDestination(hit.position);
+            PathTileChanged?.Invoke(pathIndex);
         }
 
         public override void OnExit()

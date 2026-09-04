@@ -12,6 +12,7 @@ namespace Defenses.DefenseCharacters
         [SerializeField] private GameObject heldSpear;
 
         private Transform target;
+       
 
         public override void Initialize(Transform pathTarget = null)
         {
@@ -24,6 +25,7 @@ namespace Defenses.DefenseCharacters
             At(attackState, idleState, new FuncPredicate(() => !enemyDetector.CanSeeEnemy()));
 
             stateMachine.SetState(idleState);
+            
         }
 
         protected override void PerformAttack()

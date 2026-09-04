@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Defenses.DefenseCharacters;
 using StateMachine;
 using Systems;
 using UnityEngine;
@@ -17,13 +18,17 @@ namespace Enemy
         protected StateMachine.StateMachine stateMachine;
         protected NavMeshAgent agent;
         protected Animator animator;
-        protected Transform target;
+        protected Transform currentTarget;
+        protected Transform towerTarget;
+        protected DefenseCharacterBase defenseTarget;
 
         protected IState walkState;
         protected IState attackState;
         
         protected CountDownTimer attackTimer;
-
+        protected bool HasDefenseTarget => defenseTarget != null;
+        
+        public Transform CurrentTarget => currentTarget;
         public event Action<EnemyBase> Died;
 
         private float currentHealth;
@@ -60,7 +65,8 @@ namespace Enemy
 
         public virtual void Initialize(Transform target, List<GameObject> path)
         {
-            this.target = target;
+            towerTarget = target;
+            currentTarget = target;
         }
 
         public bool PlaceOnNavMesh(Vector3 position, float maxDistance = 3f)
@@ -97,6 +103,30 @@ namespace Enemy
 
             if (currentHealth <= 0)
                 Die();
+        }
+
+        protected bool TryTargetDefense(DefenseCharacterBase defenseCharacter)
+        {
+            if (defenseTarget != null)
+                return false;
+            
+            if (UnityEngine.Random.value > EnemyData.ChanceToAttackDefenses)
+                return false;
+            
+            defenseTarget = defenseCharacter;
+            currentTarget = defenseCharacter.transform;
+            defenseTarget.Died += HandleDefenseDied;
+            return true;
+        }
+
+        public void HandleDefenseDied(DefenseCharacterBase defenseCharacter)
+        {
+            if (defenseCharacter != defenseTarget)
+                return;
+
+            defenseTarget.Died -= HandleDefenseDied;
+            defenseTarget = null;
+            currentTarget = towerTarget;
         }
 
         protected virtual void PlayDamageEffect()

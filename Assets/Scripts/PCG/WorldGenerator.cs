@@ -159,10 +159,7 @@ namespace PCG
                     newTile.name = "PathTile(Clone)";
                     
                     //Apply path layer to all objects in path tile
-                    foreach (Transform child in newTile.GetComponentsInChildren<Transform>())
-                    {
-                        child.gameObject.layer = LayerMask.NameToLayer("Path");
-                    }
+                    newTile.layer = LayerMask.NameToLayer("Path");
                     
                     replacements.Add(tile, newTile);
                     

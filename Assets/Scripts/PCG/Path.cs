@@ -85,6 +85,7 @@ public class Path
             if (current != start)
                 previousDirection = current - cameFrom[current];
 
+            //Get the walkable neighbours of the current tile being checked
             List<Vector2Int> neighbours = GetWalkableNeighbours(current, previousDirection);
 
             foreach (Vector2Int neighbour in neighbours)
