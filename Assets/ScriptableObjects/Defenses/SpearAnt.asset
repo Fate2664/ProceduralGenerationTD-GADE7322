@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: SpearAnt
   m_EditorClassIdentifier: Assembly-CSharp::Defenses.DefenseOptionData
   prefab: {fileID: 5826771104805275950, guid: 72bd14a2466c5474f84dd60f676efd2e, type: 3}
-  <Icon>k__BackingField: {fileID: 21300000, guid: a52d0879baacd427fb4b6227dab8952c, type: 3}
+  <Icon>k__BackingField: {fileID: 21300000, guid: 5e8b3aeb3bc9bf24a858cffba409137b, type: 3}
+  <PlacementCooldownSeconds>k__BackingField: 10
