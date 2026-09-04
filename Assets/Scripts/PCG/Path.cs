@@ -208,7 +208,7 @@ public class Path
             neighbours[randomIndex] = temp;
         }
         
-        //Prioitise continueing in the previous direction
+        //Prioitise continuing in the previous direction
         if (UnityEngine.Random.value > turnChance)
         {
             Vector2Int straightCoordinate = coordinate + previousDirection;
