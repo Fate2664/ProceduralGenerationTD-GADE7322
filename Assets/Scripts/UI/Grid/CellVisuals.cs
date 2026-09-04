@@ -18,12 +18,12 @@ public class CellVisuals : ItemVisuals
     public void Initialize(GridTile dataSource)
     {
         if (DataSource != null)
-            DataSource.OnTileTypeChanged -= HandleTileChanged;
+            DataSource.OnTileStateChanged -= HandleTileChanged;
         
         DataSource = dataSource;
 
         if (DataSource != null)
-            DataSource.OnTileTypeChanged += HandleTileChanged;
+            DataSource.OnTileStateChanged += HandleTileChanged;
 
         RefreshVisuals();
     }
@@ -33,7 +33,7 @@ public class CellVisuals : ItemVisuals
         if (DataSource != dataSource)
             return;
 
-        DataSource.OnTileTypeChanged -= HandleTileChanged;
+        DataSource.OnTileStateChanged -= HandleTileChanged;
         DataSource = null;
     }
 

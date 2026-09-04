@@ -10,6 +10,8 @@ namespace Enemy
     public class EnemyBase : Entity, IDamageable
     {
         [SerializeField] private EnemyData enemyData;
+        [SerializeField] private GameObject damageEffectPrefab;
+        [SerializeField] private Transform damageEffectPoint;
 
         protected EnemyData EnemyData => enemyData;
         protected StateMachine.StateMachine stateMachine;
@@ -88,11 +90,20 @@ namespace Enemy
         {
             if (currentHealth <= 0)
                 return;
+
+            PlayDamageEffect();
             
             currentHealth = Mathf.Max(0, currentHealth - damage);
 
             if (currentHealth <= 0)
                 Die();
+        }
+
+        protected virtual void PlayDamageEffect()
+        {
+            Vector3 position = damageEffectPoint.position;
+            Quaternion rotation = damageEffectPoint.rotation;
+            Instantiate(damageEffectPrefab, position, rotation);
         }
 
         protected virtual void Die()

@@ -13,6 +13,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float maxArcHeight = 12f;
     [SerializeField] private AnimationCurve arcHeightByDistance = AnimationCurve.EaseInOut(0, 0, 1f, 1f);
     [SerializeField] private float targetHeightOffset = 1.5f;
+    [SerializeField] private GameObject particleEffectPrefab;
     
     private Transform target;
     private int damage;
@@ -54,9 +55,14 @@ public class Projectile : MonoBehaviour
 
         if (t >= 1f)
         {
+            Vector3 impactPosition = transform.position;
+            Quaternion impactRotation = transform.rotation;
+
             if (target.TryGetComponent<IDamageable>(out IDamageable damageable))
+            {
+                Instantiate(particleEffectPrefab, impactPosition, impactRotation);
                 damageable.TakeDamage(damage);
-            //Apply damage and effects
+            }
             Destroy(gameObject);
         }
     }

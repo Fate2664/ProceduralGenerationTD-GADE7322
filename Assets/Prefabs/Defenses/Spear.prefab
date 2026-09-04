@@ -109,6 +109,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   targetHeightOffset: 1.5
+  particleEffectPrefab: {fileID: 2957842864923083962, guid: ace9fc22d4885204fad19db7b31cf379, type: 3}
 --- !u!65 &1045645841042921051
 BoxCollider:
   m_ObjectHideFlags: 0

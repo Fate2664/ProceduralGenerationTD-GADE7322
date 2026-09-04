@@ -9,16 +9,18 @@ namespace PCG
         Path,
         Obstacle
     }
-
+    
+    //The GridTile datatype represents a single tile in the generated grid
     public class GridTile : MonoBehaviour
     {
-        public Vector2Int Coordinates { get; private set; }
-        public TileType Type { get; private set; }
-        public GameObject Occupant { get; private set; }
+        public Vector2Int Coordinates { get; private set; } //Tile's coordinates
+        public TileType Type { get; private set; }  //Tile's type
+        public GameObject Occupant { get; private set; }    //Whether or not the tile is occupied
 
-        public bool CanBuild => Type == TileType.Buildable && Occupant == null;
-        public event Action<GridTile> OnTileTypeChanged;
-
+        public bool CanBuild => Type == TileType.Buildable && Occupant == null; //Determines if the you can build on this tile
+        public event Action<GridTile> OnTileStateChanged;
+    
+        //This method sets the tile's grid position and gives it a defualt state
         public void Initialize(Vector2Int coordinates)
         {
             Coordinates = coordinates;
@@ -32,13 +34,13 @@ namespace PCG
                 return;
 
             Type = type;
-            OnTileTypeChanged?.Invoke(this);
+            OnTileStateChanged?.Invoke(this);
         }
 
         public void SetOccupant(GameObject occupant)
         {
             Occupant = occupant;
-            OnTileTypeChanged?.Invoke(this);
+            OnTileStateChanged?.Invoke(this);
         }
     }
 }

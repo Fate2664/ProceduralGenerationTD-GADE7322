@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace PCG
 {
+    //This script generates the level grid, obstacles, enemy paths, spawn points, and central tower
     public class WorldGenerator : MonoBehaviour
     {
         [Header("Grid Settings")] 
@@ -24,6 +25,7 @@ namespace PCG
         [SerializeField] private List<GameObject> obstaclePrefabs;
         [SerializeField] private float obstacleSpawnChance = 0.2f;
 
+        //Stores all the obstacle tiles
         private readonly List<GridTile> obstacleTiles = new();
         
         public float GridOffset => gridOffset;
@@ -36,23 +38,31 @@ namespace PCG
         public bool IsGenerated { get; private set; }
         public List<GridTile> ObstacleTiles => obstacleTiles;
         
-        public event Action Generated;
+        public event Action Generated;  //Action event to notify when everything in the world is generated
         
         void Awake()
         {
-            GameObject[,] gameObjectGrid = GenerateGrid();
+            GameObject[,] gameObjectGrid = GenerateGrid();  //Generate the base grid of tiles
+            
+            //Find walkable paths from the grid perimeter to its center
             Path pathGenerator = new Path(gameObjectGrid, turnChance);
             GeneratedPaths = pathGenerator.GeneratePaths(pathCount);
 
+            //Replace the ordinary tiles in each route with path tiles
             ReplacePathTiles(gameObjectGrid);
+            
+            //First tile in a path becomes a spawn point
             SpawnPoints = GeneratedPaths.Select(path => path[0].transform).ToArray();
+            //Place tower in the center of the grid
             Tower = PlaceTowerAtCenter(gameObjectGrid);
+            //Bake the nav mesh once everything is made
             navMeshSurface.BuildNavMesh();
             
             IsGenerated = true;
             Generated?.Invoke();
         }
-
+        
+        //This method places the tower on the grid's center tile 
         private Transform PlaceTowerAtCenter(GameObject[,] grid)
         {
             int centerX = grid.GetLength(0) / 2;
@@ -67,14 +77,18 @@ namespace PCG
             return tower;
         }
 
+        //This method creates the grid and randomly replaces ordinary tiles with obstacle tiles
         private GameObject[,] GenerateGrid()
         {
+            //Gameobjects are used during path generation, while GridTiles store tile data
             GameObject[,] gameObjectGrid = new GameObject[gridSize, gridSize];
             Grid = new GridTile[gridSize, gridSize];
             
             obstacleTiles.Clear();
             
+            //Offset the spawning of the grid so the center is aligned with the game object's transform
             float halfGridSize = (gridSize - 1) * gridOffset * 0.5f;
+            
             int center = gridSize / 2;
         
             for (int x = 0; x < gridSize; x++)
@@ -97,13 +111,14 @@ namespace PCG
                         selectedPrefab = obstaclePrefabs[prefabIndex];
                     }
                     
-                    //Random rotation:
+                    //Random rotation
                     float randomYRotation = UnityEngine.Random.Range(0, 4) * 90f;
                     Quaternion rotation = Quaternion.Euler(0f, randomYRotation, 0f);
                     
                     GameObject tile = Instantiate(selectedPrefab, worldPosition, rotation, transform);
                     GridTile gridTile = tile.GetComponent<GridTile>();
                     
+                    //Give the tile its grid coordinates once spawned
                     gridTile.Initialize(new Vector2Int(x, z));
 
                     if (spawnObstacle)
@@ -120,6 +135,7 @@ namespace PCG
             return gameObjectGrid;
         }
 
+        //This method replaces every ordinary tile inside of a path to the path tile
         private void ReplacePathTiles(GameObject[,] gameObjectGrid)
         {
             Dictionary<GameObject, GameObject> replacements = new();
@@ -129,7 +145,7 @@ namespace PCG
             {
                 foreach (GameObject tile in route)
                 {
-                    //Multiple paths can share the same tile
+                    //Multiple paths can share the same tile so skip them
                     if (replacements.ContainsKey(tile))
                         continue;
                     
@@ -141,14 +157,16 @@ namespace PCG
                     newGridTile.Initialize(coordinates);
                     newGridTile.SetType(TileType.Path);
                     newTile.name = "PathTile(Clone)";
-
+                    
+                    //Apply path layer to all objects in path tile
                     foreach (Transform child in newTile.GetComponentsInChildren<Transform>())
                     {
                         child.gameObject.layer = LayerMask.NameToLayer("Path");
                     }
                     
                     replacements.Add(tile, newTile);
-
+                    
+                    //Update both grid representations to point to the new path tile
                     gameObjectGrid[coordinates.x, coordinates.y] = newTile;
                     Grid[coordinates.x, coordinates.y] = newGridTile;
                 }
@@ -166,7 +184,8 @@ namespace PCG
             foreach (GameObject tile in replacements.Keys)
                 Destroy(tile);
         }
-
+        
+        //This method finds the generated path associated with a particular spawn point
         public List<GameObject> GetPathForSpawnPoint(Transform spawnPoint)
         {
             foreach (List<GameObject> path in GeneratedPaths)
@@ -175,7 +194,8 @@ namespace PCG
 
             return null;
         }
-
+        
+        //This method finds the path tile closest to a given position in the world
         public Transform GetClosestPathTile(Vector3 worldPosition)
         {
             Transform closestTile = null;
