@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Nova;
 using PCG;
 using Systems;
 using UnityEngine;
@@ -8,14 +9,13 @@ namespace Enemy
 {
     public class EnemyWaveManager : EntitySpawnManager
     {
-        [Header("References")] [SerializeField]
-        private EnemyData[] enemyData;
-
+        [Header("References")] 
+        [SerializeField] private EnemyData[] enemyData;
         [SerializeField] private WorldGenerator worldGenerator;
+        [SerializeField] private TextBlock waveText;
 
-        [Header("Wave Settings")] [SerializeField]
-        private float spawnRate = 1f;
-
+        [Header("Wave Settings")] 
+        [SerializeField] private float spawnRate = 1f;
         [SerializeField] private int enemiesPerWave = 4;
         [SerializeField] private float timeBetweenWaves = 5f;
         [SerializeField] private int extraEnemiesPerWave = 2;
@@ -37,7 +37,8 @@ namespace Enemy
 
             spawnTimer = new CountDownTimer(spawnRate);
             spawnTimer.OnTimerStop += HandleSpawnTimerStopped;
-
+            
+            waveText.Text = currentWave.ToString();
             nextWaveTimer = new CountDownTimer(timeBetweenWaves);
             nextWaveTimer.OnTimerStop += BeginWave;
 
@@ -71,6 +72,7 @@ namespace Enemy
             currentWave++;
             counter = 0;
             
+            waveText.Text = currentWave.ToString();
             currentWaveSize = enemiesPerWave + (currentWave - 1) * extraEnemiesPerWave;
             
             Debug.Log($"Starting wave {currentWave} with {currentWaveSize} enemies");
