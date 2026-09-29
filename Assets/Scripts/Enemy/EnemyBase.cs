@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Defenses.DefenseCharacters;
+using PCG;
 using StateMachine;
 using Systems;
 using UnityEngine;
@@ -63,7 +64,7 @@ namespace Enemy
             stateMachine.FixedUpdate();
         }
 
-        public virtual void Initialize(Transform target, List<GameObject> path)
+        public virtual void Initialize(Transform target, Path path)
         {
             towerTarget = target;
             currentTarget = target;
@@ -142,6 +143,14 @@ namespace Enemy
             
             //Death effects
             Destroy(gameObject);
+        }
+        
+        public void ConfigureForSpawn(EnemyData data)
+        {
+            enemyData = data;
+            currentHealth = data.MaxHealth;
+            agent.speed = data.MoveSpeed;
+            attackTimer = new CountDownTimer(data.TimeBetweenAttacks);
         }
     }
 }

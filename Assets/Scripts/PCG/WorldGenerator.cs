@@ -32,7 +32,7 @@ namespace PCG
         public float GridSize => gridSize;
         
         public GridTile[,] Grid { get; private set; }
-        public List<List<GameObject>> GeneratedPaths { get; private set; }
+        public List<Path> GeneratedPaths { get; private set; }
         public Transform Tower { get; private set; }
         public Transform[] SpawnPoints { get; private set; }
         public bool IsGenerated { get; private set; }
@@ -45,14 +45,14 @@ namespace PCG
             GameObject[,] gameObjectGrid = GenerateGrid();  //Generate the base grid of tiles
             
             //Find walkable paths from the grid perimeter to its center
-            Path pathGenerator = new Path(gameObjectGrid, turnChance);
+            PathGenerator pathGenerator = new PathGenerator(gameObjectGrid, turnChance);
             GeneratedPaths = pathGenerator.GeneratePaths(pathCount);
 
             //Replace the ordinary tiles in each route with path tiles
             ReplacePathTiles(gameObjectGrid);
             
             //First tile in a path becomes a spawn point
-            SpawnPoints = GeneratedPaths.Select(path => path[0].transform).ToArray();
+            SpawnPoints = GeneratedPaths.Select(path => path.SpawnPoint).ToArray();
             //Place tower in the center of the grid
             Tower = PlaceTowerAtCenter(gameObjectGrid);
             //Bake the nav mesh once everything is made
@@ -138,12 +138,12 @@ namespace PCG
         //This method replaces every ordinary tile inside of a path to the path tile
         private void ReplacePathTiles(GameObject[,] gameObjectGrid)
         {
-            Dictionary<GameObject, GameObject> replacements = new();
+            Dictionary<GridTile, GridTile> replacements = new();
             
             //Create a replacement for every unique path tile
-            foreach (List<GameObject> route in GeneratedPaths)
+            foreach (Path path in GeneratedPaths)
             {
-                foreach (GameObject tile in route)
+                foreach (GridTile tile in path.Tiles)
                 {
                     //Multiple paths can share the same tile so skip them
                     if (replacements.ContainsKey(tile))
@@ -161,7 +161,7 @@ namespace PCG
                     //Apply path layer to all objects in path tile
                     newTile.layer = LayerMask.NameToLayer("Path");
                     
-                    replacements.Add(tile, newTile);
+                    replacements.Add(tile, newGridTile);
                     
                     //Update both grid representations to point to the new path tile
                     gameObjectGrid[coordinates.x, coordinates.y] = newTile;
@@ -169,26 +169,31 @@ namespace PCG
                 }
             }
 
-            foreach (var route in GeneratedPaths)
+            foreach (Path path in GeneratedPaths)
             {
-                for (int i = 0; i < route.Count; i++)
+                for (int i = 0; i < path.TileCount; i++)
                 {
-                    route[i] = replacements[route[i]];
+                    GridTile replacement = replacements[path.Tiles[i]];
+                    path.ReplaceTile(i, replacement);
                 }
             }
             
             //Remove original tiles
-            foreach (GameObject tile in replacements.Keys)
-                Destroy(tile);
+            foreach (GridTile originalTile in replacements.Keys)
+            {
+                originalTile.gameObject.SetActive(false);
+                Destroy(originalTile.gameObject);
+            }
         }
         
         //This method finds the generated path associated with a particular spawn point
-        public List<GameObject> GetPathForSpawnPoint(Transform spawnPoint)
+        public Path GetPathForSpawnPoint(Transform spawnPoint)
         {
-            foreach (List<GameObject> path in GeneratedPaths)
-                if (path.Count > 0 && path[0].transform == spawnPoint)
+            foreach (Path path in GeneratedPaths)
+            {
+                if (path.SpawnPoint == spawnPoint)
                     return path;
-
+            }
             return null;
         }
         

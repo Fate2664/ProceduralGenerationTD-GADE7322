@@ -13,8 +13,13 @@ namespace Systems
 
         public T Create(Transform spawnPoint)
         {
-            EntityData entityData = data[Random.Range(0, data.Length)];
-            GameObject instance = GameObject.Instantiate(entityData.prefab, spawnPoint.position, spawnPoint.rotation);
+            EntityData selected = data[Random.Range(0, data.Length)];
+            return Create(selected, spawnPoint);
+        }
+        
+        public T Create(EntityData selected, Transform spawnPoint)
+        {
+            GameObject instance = GameObject.Instantiate(selected.prefab, spawnPoint.position, spawnPoint.rotation);
             return instance.GetComponent<T>();
         }
     }

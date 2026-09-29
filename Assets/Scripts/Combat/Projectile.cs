@@ -60,7 +60,11 @@ public class Projectile : MonoBehaviour
 
             if (target.TryGetComponent<IDamageable>(out IDamageable damageable))
             {
-                Instantiate(particleEffectPrefab, impactPosition, impactRotation);
+                GameObject effect = Instantiate(particleEffectPrefab, impactPosition, impactRotation);
+                ParticleSystem particles = effect.GetComponent<ParticleSystem>();
+                var main = particles.main;
+                main.loop = false;
+                main.stopAction = ParticleSystemStopAction.Destroy;
                 damageable.TakeDamage(damage);
             }
             Destroy(gameObject);

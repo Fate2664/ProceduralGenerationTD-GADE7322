@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using PCG;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,7 +9,7 @@ namespace Enemy
     public class EnemyWalkState : EnemyBaseState
     {
         private readonly NavMeshAgent agent;
-        private readonly List<GameObject> path;
+        private readonly Path path;
         
         private const float tileStoppingDistance = 0.1f;
         private const float finalStoppingDistance = 5.0f;
@@ -18,7 +19,7 @@ namespace Enemy
         public bool HasFinishedPath { get;  private set; }
         public event Action<int> PathTileChanged;
         
-        public EnemyWalkState(EnemyBase enemyBase, Animator animator, NavMeshAgent agent, List<GameObject> path) : base(enemyBase, animator)
+        public EnemyWalkState(EnemyBase enemyBase, Animator animator, NavMeshAgent agent, Path path) : base(enemyBase, animator)
         {
             this.agent = agent;
             this.path = path;
@@ -45,7 +46,7 @@ namespace Enemy
                 return;
             
             //If the current destination is the final - tower tile
-            if (pathIndex >= path.Count - 1)
+            if (pathIndex >= path.TileCount - 1)
             {
                 HasFinishedPath = true;
                 return;
@@ -57,7 +58,7 @@ namespace Enemy
 
         private void SetCurrentDestination()
         {
-            GameObject tile = path[pathIndex];
+            GridTile tile = path.Tiles[pathIndex];
             
             //Get tile center
             Vector3 tileCenter = tile.GetComponentInChildren<Renderer>().bounds.center;
@@ -65,7 +66,7 @@ namespace Enemy
             if (!NavMesh.SamplePosition(tileCenter, out NavMeshHit hit, 3.0f, agent.areaMask))
                 return;
             
-            bool isFinalTile = pathIndex == path.Count - 1;
+            bool isFinalTile = pathIndex == path.TileCount - 1;
             agent.stoppingDistance = isFinalTile ? finalStoppingDistance : tileStoppingDistance;
             
             agent.SetDestination(hit.position);

@@ -10,19 +10,19 @@ namespace Enemy
     public class CommonEnemy : EnemyBase
     {
         private EnemyWalkState enemyWalkState;
-        private List<GameObject> path;
+        private Path path;
         private GridTile[,] grid;
 
         private readonly HashSet<int> seenDefense = new();
         
-        public override void Initialize(Transform target, List<GameObject> path)
+        public override void Initialize(Transform target, Path path)
         {
             base.Initialize(target, path);
-            if (target == null || path == null || path.Count < 2)
+            if (target == null || path == null || path.TileCount < 2)
                 return;
             
             this.path = path;
-            WorldGenerator worldGenerator = path[0].GetComponentInParent<WorldGenerator>();
+            WorldGenerator worldGenerator = path.Tiles[0].GetComponentInParent<WorldGenerator>();
             if (worldGenerator == null)
                 return;
             
@@ -44,8 +44,8 @@ namespace Enemy
             if (HasDefenseTarget)
                 return;
             
-            GridTile previousPathTile = path[index - 1].GetComponent<GridTile>();
-            GridTile currentPathTile = path[index].GetComponent<GridTile>();
+            GridTile previousPathTile = path.Tiles[index - 1];
+            GridTile currentPathTile = path.Tiles[index];
             
             Vector2Int pathDirection = currentPathTile.Coordinates - previousPathTile.Coordinates;
             Vector2Int sideOffset = new Vector2Int(-pathDirection.y, pathDirection.x);
