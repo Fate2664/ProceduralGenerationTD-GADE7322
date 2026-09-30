@@ -476,7 +476,7 @@ MonoBehaviour:
         Raw: 0
         Type: 0
       Y:
-        Raw: -2.5
+        Raw: -34.500004
         Type: 0
       Z:
         Raw: 0
@@ -997,7 +997,7 @@ MonoBehaviour:
         Raw: 0
         Type: 0
       Y:
-        Raw: -2.5
+        Raw: -34.500004
         Type: 0
       Z:
         Raw: 0
@@ -6292,6 +6292,7 @@ MonoBehaviour:
   enemyData:
   - {fileID: 11400000, guid: 6de9cb70e09d8b543a9ea66b84489f97, type: 2}
   - {fileID: 11400000, guid: 2888003dea245634eb07fd303e9c399b, type: 2}
+  - {fileID: 11400000, guid: d5830745ad0e8a84aafbd5e4775b579e, type: 2}
   worldGenerator: {fileID: 1149953627}
   waveText: {fileID: 1101633039}
   startingBudget: 4

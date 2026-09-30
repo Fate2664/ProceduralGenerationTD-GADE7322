@@ -76,8 +76,7 @@ namespace Enemy
             }
 
             enemy.Initialize(worldGenerator.Tower, instruction.PathProfile.Path);
-            activeEnemies.Add(enemy);
-            enemy.Died += HandleEnemyDied;
+            RegisterEnemy(enemy);
 
             nextInstruction++;
         }
@@ -134,6 +133,17 @@ namespace Enemy
             activeEnemies.Remove(enemy);
 
             FinishWave();
+        }
+
+        public void RegisterEnemy(EnemyBase enemy)
+        {
+            if (!activeEnemies.Add(enemy))
+                return;
+
+            enemy.Died += HandleEnemyDied;
+            
+            if (enemy is SwarmerEnemy.SwarmerEnemy swarmer)
+                swarmer.SetWaveManager(this);
         }
 
         private void FinishWave()

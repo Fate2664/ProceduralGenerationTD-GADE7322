@@ -25,6 +25,7 @@ namespace Defenses.DefenseCharacters
         private Transform pathTarget;
         private float currentHealth;
 
+        public bool IsDead => currentHealth <= 0f;
         public event Action<DefenseCharacterBase> Died;
 
         private void Awake()
