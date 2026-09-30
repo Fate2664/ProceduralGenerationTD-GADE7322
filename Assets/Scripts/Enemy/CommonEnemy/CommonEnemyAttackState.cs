@@ -5,12 +5,12 @@ using UnityEngine.AI;
 
 namespace Enemy
 {
-    public class EnemyAttackState : EnemyBaseState
+    public class CommonEnemyAttackState : EnemyBaseState
     {
         private readonly NavMeshAgent agent;
         private readonly Transform tower;
         
-        public EnemyAttackState(EnemyBase enemyBase, Animator animator, NavMeshAgent agent) : base(enemyBase, animator)
+        public CommonEnemyAttackState(EnemyBase enemyBase, Animator animator, NavMeshAgent agent) : base(enemyBase, animator)
         {
             this.agent = agent;
         }

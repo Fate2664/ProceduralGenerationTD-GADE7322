@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 64bd5c03009d4939ac22e63eeb886593
+TextureImporter:
+  serializedVersion: 13
+  mipmaps:
+    enableMipMap: 1
+    sRGBTexture: 0
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  textureType: 0
+  textureShape: 1
+  alphaUsage: 0
+  alphaIsTransparency: 0
+  maxTextureSize: 256
+  userData: RGB copy of Cartoon FX Remaster cfxr fire circle plain for URP particle tinting.

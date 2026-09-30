@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21496394b98245fdbf7b463ee85c93ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
-  health: 100
+  maxHealth: 100
   attackDamage: 5
   timeBetweenAttacks: 1
 --- !u!65 &1470377030917225935
@@ -68,8 +68,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.1622908, y: 3.243076, z: 2.3022435}
-  m_Center: {x: -0.062287338, y: 1.1215398, z: -0.08491438}
+  m_Size: {x: 1.970083, y: 1.8959575, z: 2.0013964}
+  m_Center: {x: -0.05810881, y: 0.4479819, z: -0.0682007}
 --- !u!1001 &8401940944357950608
 PrefabInstance:
   m_ObjectHideFlags: 0

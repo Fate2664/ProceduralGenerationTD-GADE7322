@@ -476,7 +476,7 @@ MonoBehaviour:
         Raw: 0
         Type: 0
       Y:
-        Raw: -34.500004
+        Raw: -2.5
         Type: 0
       Z:
         Raw: 0
@@ -997,7 +997,7 @@ MonoBehaviour:
         Raw: 0
         Type: 0
       Y:
-        Raw: -34.500004
+        Raw: -2.5
         Type: 0
       Z:
         Raw: 0
@@ -6225,8 +6225,8 @@ GameObject:
   - component: {fileID: 1149953627}
   - component: {fileID: 1149953629}
   - component: {fileID: 1149953631}
-  - component: {fileID: 1149953630}
   - component: {fileID: 1149953632}
+  - component: {fileID: 1149953630}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -6260,7 +6260,7 @@ MonoBehaviour:
   - {fileID: 2906440025805600797, guid: 8546df3067cf2ea49a9fcd96b82ccf32, type: 3}
   - {fileID: 2906440025805600797, guid: ce56917d6c5a8a440b4d9ab74ec53cef, type: 3}
   - {fileID: 2906440025805600797, guid: d7d9fe2b5b73f194999e3ee061c5e186, type: 3}
-  obstacleSpawnChance: 0.2
+  obstacleSpawnChance: 0.15
 --- !u!4 &1149953628
 Transform:
   m_ObjectHideFlags: 0
@@ -6291,12 +6291,16 @@ MonoBehaviour:
   spawnPointStrategyType: 0
   enemyData:
   - {fileID: 11400000, guid: 6de9cb70e09d8b543a9ea66b84489f97, type: 2}
+  - {fileID: 11400000, guid: 2888003dea245634eb07fd303e9c399b, type: 2}
   worldGenerator: {fileID: 1149953627}
   waveText: {fileID: 1101633039}
+  startingBudget: 4
+  budgetIncreasePerWave: 2
+  maxWaveBudget: 100
+  maxEnemiesPerWave: 100
   spawnRate: 0.5
-  enemiesPerWave: 4
   timeBetweenWaves: 5
-  extraEnemiesPerWave: 2
+  waveSeed: 12345
 --- !u!114 &1149953630
 MonoBehaviour:
   m_ObjectHideFlags: 0
