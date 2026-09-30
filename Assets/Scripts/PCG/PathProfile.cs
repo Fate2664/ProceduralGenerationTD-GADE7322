@@ -18,6 +18,7 @@ namespace PCG
         public PathProfile(Path path, int adjacentBuildableTiles,
             int adjacentDefenseCount, float adjacentDefenseRatio)
         {
+            Path = path;
             AdjacentBuildableTiles = adjacentBuildableTiles;
             AdjacentDefenseCount = adjacentDefenseCount;
             AdjacentDefenseRatio = Mathf.Clamp01(adjacentDefenseRatio);

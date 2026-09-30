@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 2a8b3ba5c7e047dbb27f2c0484bfba27
+TextureImporter:
+  serializedVersion: 13
+  mipmaps:
+    enableMipMap: 1
+    sRGBTexture: 0
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  textureType: 0
+  textureShape: 1
+  alphaUsage: 0
+  alphaIsTransparency: 0
+  maxTextureSize: 256
+  userData: RGB copy of Cartoon FX Remaster cfxr star for URP particle tinting.

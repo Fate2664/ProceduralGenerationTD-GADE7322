@@ -9,7 +9,7 @@ namespace Enemy
 {
     public class CommonEnemy : EnemyBase
     {
-        private EnemyWalkState enemyWalkState;
+        private CommonEnemyWalkState _commonEnemyWalkState;
         private Path path;
         private GridTile[,] grid;
 
@@ -28,13 +28,13 @@ namespace Enemy
             
             grid = worldGenerator.Grid;
             
-            enemyWalkState = new EnemyWalkState(this, animator, agent, path);
-            walkState = enemyWalkState;
-            attackState = new EnemyAttackState(this, animator, agent);
-            enemyWalkState.PathTileChanged += CheckForDefenseTargets;
+            _commonEnemyWalkState = new CommonEnemyWalkState(this, animator, agent, path);
+            walkState = _commonEnemyWalkState;
+            attackState = new CommonEnemyAttackState(this, animator, agent);
+            _commonEnemyWalkState.PathTileChanged += CheckForDefenseTargets;
             
-            At(walkState, attackState, new FuncPredicate(() => enemyWalkState.HasFinishedPath || HasDefenseTarget));  
-            At(attackState, walkState, new FuncPredicate(() => !HasDefenseTarget && !enemyWalkState.HasFinishedPath));  
+            At(walkState, attackState, new FuncPredicate(() => _commonEnemyWalkState.HasFinishedPath || HasDefenseTarget));  
+            At(attackState, walkState, new FuncPredicate(() => !HasDefenseTarget && !_commonEnemyWalkState.HasFinishedPath));  
             
             stateMachine.SetState(walkState);
         }

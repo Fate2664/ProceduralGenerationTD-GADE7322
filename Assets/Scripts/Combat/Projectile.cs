@@ -55,19 +55,7 @@ public class Projectile : MonoBehaviour
 
         if (t >= 1f)
         {
-            Vector3 impactPosition = transform.position;
-            Quaternion impactRotation = transform.rotation;
-
-            if (target.TryGetComponent<IDamageable>(out IDamageable damageable))
-            {
-                GameObject effect = Instantiate(particleEffectPrefab, impactPosition, impactRotation);
-                ParticleSystem particles = effect.GetComponent<ParticleSystem>();
-                var main = particles.main;
-                main.loop = false;
-                main.stopAction = ParticleSystemStopAction.Destroy;
-                damageable.TakeDamage(damage);
-            }
-            Destroy(gameObject);
+            Impact();
         }
     }
 
@@ -93,9 +81,37 @@ public class Projectile : MonoBehaviour
         Vector3 targetPosition = target.position + Vector3.up * targetHeightOffset;
         float flightDistance = Vector3.Distance(startPosition, targetPosition);
 
-        flightDuration = flightDistance / moveSpeed;
+        flightDuration = Mathf.Max(0.01f, flightDistance / Mathf.Max(0.01f, moveSpeed));
         
         initialized = true;
+    }
+
+    private void Impact()
+    {
+        if (!initialized)
+            return;
+        
+        initialized = false;
+
+        if (target != null && target.TryGetComponent<IDamageable>(out IDamageable damageable))
+        {
+            damageable.TakeDamage(damage);
+            if (particleEffectPrefab != null)
+            {
+                GameObject effect = Instantiate(particleEffectPrefab, transform.position, transform.rotation);
+                if (effect.TryGetComponent<ParticleSystem>(out ParticleSystem particles))
+                {
+                    var main = particles.main;
+                    main.loop = false;
+                    main.stopAction = ParticleSystemStopAction.Destroy;
+                }
+                else
+                {
+                    Destroy(effect, 3f);
+                }
+            }
+        }
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -103,9 +119,19 @@ public class Projectile : MonoBehaviour
         if (!initialized || other.isTrigger)
             return;
 
+        if (target != null && (other.transform == target || other.transform.IsChildOf(target)))
+        {
+            Impact();
+            return;
+        }
+        
+        if (other.isTrigger)
+            return;
+
         if (other.GetComponentInParent<Enemy.EnemyBase>() != null)
             return;
-        
+
+        initialized = false;
         //Destroy projectile when it hits an obstacle
         Destroy(gameObject);
     }

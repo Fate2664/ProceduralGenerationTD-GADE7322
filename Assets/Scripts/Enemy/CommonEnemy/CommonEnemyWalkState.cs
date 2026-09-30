@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 namespace Enemy
 {
-    public class EnemyWalkState : EnemyBaseState
+    public class CommonEnemyWalkState : EnemyBaseState
     {
         private readonly NavMeshAgent agent;
         private readonly Path path;
@@ -19,7 +19,7 @@ namespace Enemy
         public bool HasFinishedPath { get;  private set; }
         public event Action<int> PathTileChanged;
         
-        public EnemyWalkState(EnemyBase enemyBase, Animator animator, NavMeshAgent agent, Path path) : base(enemyBase, animator)
+        public CommonEnemyWalkState(EnemyBase enemyBase, Animator animator, NavMeshAgent agent, Path path) : base(enemyBase, animator)
         {
             this.agent = agent;
             this.path = path;
