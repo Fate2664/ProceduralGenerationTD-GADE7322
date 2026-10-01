@@ -10,7 +10,6 @@ namespace Defenses.DefenseCharacters
         [SerializeField] private float detectionRadius = 10.0f; //Distance from defense
         [SerializeField] private float innerDetectionRadius = 5.0f; //Small detection circle around defense
         [SerializeField] private float detectionCooldown = 1f; //Time between detections
-        [SerializeField] private float detectionRange = 2f;
         
         public Transform Enemy { get; private set; }
         private CountDownTimer detectionTimer;

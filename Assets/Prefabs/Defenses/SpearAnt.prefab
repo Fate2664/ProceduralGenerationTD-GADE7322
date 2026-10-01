@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 1766992058873870452}
   - component: {fileID: 8488918860485897176}
   m_Layer: 0
-  m_Name: DefenseAnt
+  m_Name: SpearAnt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

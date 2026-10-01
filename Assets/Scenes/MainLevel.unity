@@ -6361,6 +6361,8 @@ MonoBehaviour:
   placementGrid: {fileID: 1149953631}
   defensesOptions:
   - {fileID: 11400000, guid: 69b5784d1d18ad24d980447c2c611c45, type: 2}
+  - {fileID: 11400000, guid: f4958a5960fa98f46a4fe9b339f358a6, type: 2}
+  - {fileID: 11400000, guid: b1a697fb6dad202408add8fc24eb1fb6, type: 2}
 --- !u!1 &1166734681
 GameObject:
   m_ObjectHideFlags: 0

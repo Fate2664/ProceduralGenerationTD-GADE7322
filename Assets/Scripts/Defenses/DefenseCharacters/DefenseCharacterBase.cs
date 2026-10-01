@@ -6,6 +6,13 @@ using UnityEngine;
 
 namespace Defenses.DefenseCharacters
 {
+    public enum DefenseCharacterType
+    {
+        Spear,
+        Melee,
+        AOE
+    }
+    
     public class DefenseCharacterBase : Entity, IDamageable
     {
         [SerializeField] private float timeBetweenAttacks = 1.47f;  //This must be the time of the attack animation  
@@ -13,6 +20,7 @@ namespace Defenses.DefenseCharacters
         [SerializeField] private float maxHealth = 10f;
         [SerializeField] private GameObject damageEffectPrefab;
         [SerializeField] private Transform damageEffectPoint;
+        [SerializeField] private DefenseCharacterType defenseCharacterType = DefenseCharacterType.Spear;
                 
         protected StateMachine.StateMachine stateMachine;
         protected Animator animator;
