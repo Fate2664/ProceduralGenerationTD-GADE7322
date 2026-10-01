@@ -92,18 +92,17 @@ namespace Spawning
 
         private static float GetTypeWeight(EnemyType type, PathProfile path)
         {
-            float coverage = path.AdjacentDefenseRatio;
 
             switch (type)
             {
                 case EnemyType.Common:
                     return 1f;
                 
-                case EnemyType.Tank:
-                    return Mathf.Lerp(0.75f, 1.25f, coverage);
+                case EnemyType.Swarmer:
+                    return 1f + 0.15f * Mathf.Min(path.AdjacentDefenseCount, 4);
                 
                 case EnemyType.Ranger:
-                    return 1f + 0.15f * Mathf.Min(path.AdjacentDefenseCount, 4);
+                    return Mathf.Lerp(0.75f, 1.25f, path.AdjacentDefenseRatio);
                 
                 default: return 1f;
             }

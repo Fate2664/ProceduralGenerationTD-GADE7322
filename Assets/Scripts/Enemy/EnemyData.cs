@@ -7,7 +7,8 @@ namespace Enemy
     {
         Common, 
         Tank,
-        Ranger
+        Ranger,
+        Swarmer
     }
     
     [CreateAssetMenu(menuName = "Entity/EnemyData")]
