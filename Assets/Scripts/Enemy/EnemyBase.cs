@@ -4,6 +4,7 @@ using Defenses.DefenseCharacters;
 using PCG;
 using StateMachine;
 using Systems;
+using UI;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -30,16 +31,23 @@ namespace Enemy
         protected bool HasDefenseTarget => defenseTarget != null;
         
         public Transform CurrentTarget => currentTarget;
+        public bool HasReachedTower { get; private set; }
+        
         public event Action<EnemyBase> Died;
-
+        public event Action<EnemyBase> ReachedTower;
+        public event Action<Projectile> ProjectileSpawned;
+        
         private float currentHealth;
+        private CharacterHealthBar healthBar;
 
         protected virtual void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
             animator = GetComponentInChildren<Animator>();
-
+            healthBar = GetComponentInChildren<CharacterHealthBar>(true);
+            
             currentHealth = enemyData.MaxHealth;
+            healthBar?.SetHealth(currentHealth, enemyData.MaxHealth);
 
             stateMachine = new StateMachine.StateMachine();
             attackTimer = new CountDownTimer(enemyData.TimeBetweenAttacks);
@@ -101,6 +109,7 @@ namespace Enemy
             PlayDamageEffect();
             
             currentHealth = Mathf.Max(0, currentHealth - damage);
+            healthBar?.SetHealth(currentHealth, enemyData.MaxHealth);
 
             if (currentHealth <= 0)
                 Die();
@@ -140,8 +149,6 @@ namespace Enemy
         protected virtual void Die()
         {
             Died?.Invoke(this);
-            
-            //Death effects
             Destroy(gameObject);
         }
         
@@ -149,8 +156,23 @@ namespace Enemy
         {
             enemyData = data;
             currentHealth = data.MaxHealth;
+            healthBar?.SetHealth(currentHealth, data.MaxHealth);
             agent.speed = data.MoveSpeed;
             attackTimer = new CountDownTimer(data.TimeBetweenAttacks);
+        }
+
+        public void ReportReachedTower()
+        {
+            if (HasReachedTower)
+                return;
+            
+            HasReachedTower = true;
+            ReachedTower?.Invoke(this);
+        }
+
+        protected void ReportProjectileSpawned(Projectile projectile)
+        {
+            ProjectileSpawned?.Invoke(projectile);
         }
     }
 }

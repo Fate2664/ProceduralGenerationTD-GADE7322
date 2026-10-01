@@ -24,6 +24,7 @@ namespace Defenses
         private readonly Dictionary<DefenseOptionData, CountDownTimer> placementCooldowns = new();
         private readonly Dictionary<DefenseOptionData, DefenseButtonVisuals> boundButtons = new();
 
+        public event Action<DefenseCharacterBase> DefensePlaced;
 
         private void Awake()
         {
@@ -185,8 +186,12 @@ namespace Defenses
             Vector3 position = tile.transform.position;
             Transform pathTarget = placementGrid.WorldGenerator.GetClosestPathTile(position);
             GameObject defense = Instantiate(prefab, position, prefab.transform.rotation, tile.transform);
-            defense.GetComponent<DefenseCharacterBase>()?.Initialize(pathTarget);
+            DefenseCharacterBase defenseCharacter = defense.GetComponent<DefenseCharacterBase>();
+            defenseCharacter?.Initialize(pathTarget);
             tile.SetOccupant(defense);
+            
+            if (defenseCharacter != null)
+                DefensePlaced?.Invoke(defenseCharacter);
             
             StartCooldown(selectedDefense);
 

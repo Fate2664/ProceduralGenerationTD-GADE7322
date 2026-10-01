@@ -34,7 +34,7 @@ namespace Defenses.DefenseCharacters.MeleeAnt
             Transform hitTarget = target;
             target = null;
             
-            if (IsDead || stateMachine.CurrentState != attackState)
+            if (IsDead || stateMachine.CurrentState != attackState || hitTarget == null)
                 return;
             
             if (!IsInMeleeRange(hitTarget))

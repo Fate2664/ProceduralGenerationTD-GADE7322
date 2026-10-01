@@ -20,6 +20,10 @@ public class Tower : MonoBehaviour, IDamageable
     private static readonly int AttackTrigger = Animator.StringToHash("Attack");
 
     public event Action<float> OnHealthChanged;
+    public event Action<float> Damaged;
+    
+    public float CurrentHealth => currentHealth;
+    public float MaxHealth => maxHealth;
     public float HealthPercentage => currentHealth / maxHealth;
     
     private void Awake()
@@ -99,10 +103,17 @@ public class Tower : MonoBehaviour, IDamageable
 
     public void TakeDamage(int attackDamage)
     {
-        currentHealth = Mathf.Max(currentHealth - attackDamage, 0);
+        if (currentHealth <= 0f || attackDamage <= 0)
+            return;
+
+        float previousHealth = currentHealth;
+        currentHealth = Mathf.Max(currentHealth - attackDamage, 0f);
+        float actualDamage = previousHealth - currentHealth;
+
+        Damaged?.Invoke(actualDamage);
         OnHealthChanged?.Invoke(HealthPercentage);
 
-        if (currentHealth <= 0)
+        if (currentHealth <= 0f)
         {
             Destroy(gameObject);
             Debug.Log("Tower has been destroyed");

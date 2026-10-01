@@ -110,20 +110,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   targetHeightOffset: 1.5
-  particleEffectPrefab: {fileID: 5586783540032275536, guid: 6e57a3cf9435eb14fb9928fa4ee60c63, type: 3}
---- !u!114 &7916345624098175302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6276651640788527783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7621a3741d1142c3b1c7453e8e5d17de, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::BulletTrail
-  trailPrefab: {fileID: 8423493668737072353, guid: d742c0ed9889f46438b375b829bf69f9, type: 3}
+  particleEffectPrefab: {fileID: 500345726442012828, guid: 50a810bfd70577b41a2d43ae0241ea2d, type: 3}
 --- !u!54 &1053261093216937767
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -172,6 +159,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.05545616, y: 0.057478666, z: 0.17285156}
   m_Center: {x: -0.000166893, y: -0.00039231777, z: 0.00784874}
+--- !u!114 &7916345624098175302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6276651640788527783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7621a3741d1142c3b1c7453e8e5d17de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BulletTrail
+  trailPrefab: {fileID: 8423493668737072353, guid: d742c0ed9889f46438b375b829bf69f9, type: 3}
 --- !u!1001 &3727941051667860097
 PrefabInstance:
   m_ObjectHideFlags: 0

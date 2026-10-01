@@ -39,9 +39,24 @@ namespace Defenses.DefenseCharacters.BombAnt
             if (target == null || heldBomb == null) return;
 
             heldBomb.SetActive(false);
-            Projectile spear = Instantiate(bombPrefab, bombSpawnPoint.position, bombSpawnPoint.rotation)
-                .GetComponent<Projectile>();
-            spear.InitializeProjectile(target, bombSpeed, attackDamage);
+            GameObject bombObject = Instantiate(bombPrefab, bombSpawnPoint.position, bombSpawnPoint.rotation);
+            
+            if (!bombObject.TryGetComponent<Projectile>(out Projectile bomb)) return;
+            
+            Collider[] bombColliders = bombObject.GetComponentsInChildren<Collider>();
+            Collider[] ownerColliders = GetComponentsInChildren<Collider>();
+
+            foreach (var bombCollider in bombColliders)
+            {
+                foreach (var ownerCollider in ownerColliders)
+                {
+                    Physics.IgnoreCollision(bombCollider, ownerCollider);
+                }
+            }
+            
+            heldBomb.SetActive(false);
+            bomb.InitializeProjectile(target, bombSpeed, attackDamage, bombAOERadius);
+            target = null;
         }
 
         public void RestoreHeldBomb()

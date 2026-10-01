@@ -2,6 +2,7 @@
 using DG.Tweening;
 using StateMachine;
 using Systems;
+using UI;
 using UnityEngine;
 
 namespace Defenses.DefenseCharacters
@@ -30,6 +31,8 @@ namespace Defenses.DefenseCharacters
         protected IState attackState;
 
         protected CountDownTimer attackTimer;
+        
+        private CharacterHealthBar healthBar;
         private Transform pathTarget;
         private float currentHealth;
 
@@ -40,7 +43,7 @@ namespace Defenses.DefenseCharacters
         {
             animator = GetComponentInChildren<Animator>();
             enemyDetector = GetComponent<EnemyDetector>();
-
+            healthBar = GetComponentInChildren<CharacterHealthBar>(true);
             stateMachine = new StateMachine.StateMachine();
             attackTimer =  new CountDownTimer(timeBetweenAttacks);
         }
@@ -70,7 +73,8 @@ namespace Defenses.DefenseCharacters
         {
             pathTarget = nearestPath;
             currentHealth = maxHealth;
-
+            healthBar?.SetHealth(currentHealth, maxHealth);
+            
             if (pathTarget != null)
             {
                 Vector3 direction = pathTarget.position - transform.position;
@@ -119,7 +123,8 @@ namespace Defenses.DefenseCharacters
             PlayDamageEffect();
             
             currentHealth = Mathf.Max(0, currentHealth - damage);
-
+            healthBar?.SetHealth(currentHealth, maxHealth);
+            
             if (currentHealth <= 0)
                 Die();
         }

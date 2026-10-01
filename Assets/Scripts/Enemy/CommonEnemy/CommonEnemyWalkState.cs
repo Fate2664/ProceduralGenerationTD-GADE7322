@@ -49,6 +49,7 @@ namespace Enemy
             if (pathIndex >= path.TileCount - 1)
             {
                 HasFinishedPath = true;
+                EnemyBase.ReportReachedTower();
                 return;
             }
             

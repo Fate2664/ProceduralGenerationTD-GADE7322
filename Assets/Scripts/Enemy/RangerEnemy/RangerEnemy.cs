@@ -77,6 +77,7 @@ namespace Enemy.RangerEnemy
             
             Projectile bullet = Instantiate(bulletPrefab, spawnPoint.position, spawnPoint.rotation);
             bullet.InitializeProjectile(currentTarget, bulletSpeed, EnemyData.AttackDamage);
+            ReportProjectileSpawned(bullet);
         }
 
         public void FinishShooting()
