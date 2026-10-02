@@ -32,7 +32,7 @@ namespace PCG
         public float GridSize => gridSize;
         
         public GridTile[,] Grid { get; private set; }
-        public List<Path> GeneratedPaths { get; private set; }
+        public List<Path> GeneratedPaths { get; private set; }  //<-- This now returns the Path data type
         public Transform Tower { get; private set; }
         public Transform[] SpawnPoints { get; private set; }
         public bool IsGenerated { get; private set; }

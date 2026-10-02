@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21496394b98245fdbf7b463ee85c93ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
-  maxHealth: 100
+  maxHealth: 500
   attackDamage: 5
   timeBetweenAttacks: 1
 --- !u!65 &1470377030917225935

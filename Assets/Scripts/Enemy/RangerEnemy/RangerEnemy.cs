@@ -6,23 +6,23 @@ namespace Enemy.RangerEnemy
 {
     public class RangerEnemy : EnemyBase
     {
-        [Header("Movement")] 
-        [SerializeField] private int maxTilesToAdvance = 6;
+        [Header("Movement")] [SerializeField] private int maxTilesToAdvance = 6;
         [SerializeField] private int minTilesToAdvance = 3;
         [SerializeField] private float minTowerDistance = 10f;
-        
-        [Header("Shooting")]
-        [SerializeField] private Projectile bulletPrefab;
+
+        [Header("Shooting")] [SerializeField] private Projectile bulletPrefab;
         [SerializeField] private Transform[] bulletSpawnPoints;
         [SerializeField] private float bulletSpeed = 15f;
 
         private static readonly int shootHash = Animator.StringToHash("Shoot");
+        private static readonly int idleHash = Animator.StringToHash("Idle");
+        private float idleBlendDuration = 0.25f;
         private bool shotPending;
         private int nextPairIndex;
-        
+
         public int TilesToAdvance => Random.Range(minTilesToAdvance, maxTilesToAdvance + 1);
         public float MinTowerDistance => minTowerDistance;
-        
+
         public override void Initialize(Transform target, Path path)
         {
             base.Initialize(target, path);
@@ -32,9 +32,9 @@ namespace Enemy.RangerEnemy
             var rangerWalkState = new RangerEnemyWalkState(this, animator, agent, path);
             walkState = rangerWalkState;
             attackState = new RangerEnemyAttackState(this, animator, agent, path);
-           
+
             At(walkState, attackState, new FuncPredicate(() => rangerWalkState.HasReachedFiringPosition));
-            
+
             stateMachine.SetState(walkState);
         }
 
@@ -64,9 +64,9 @@ namespace Enemy.RangerEnemy
             nextPairIndex++;
             if (currentTarget == null)
                 return;
-            
+
             int firstSpawnIndex = pairIndex * 2;
-            
+
             SpawnBullet(firstSpawnIndex);
             SpawnBullet(firstSpawnIndex + 1);
         }
@@ -74,7 +74,7 @@ namespace Enemy.RangerEnemy
         private void SpawnBullet(int spawnIndex)
         {
             Transform spawnPoint = bulletSpawnPoints[spawnIndex];
-            
+
             Projectile bullet = Instantiate(bulletPrefab, spawnPoint.position, spawnPoint.rotation);
             bullet.InitializeProjectile(currentTarget, bulletSpeed, EnemyData.AttackDamage);
             ReportProjectileSpawned(bullet);
@@ -82,7 +82,12 @@ namespace Enemy.RangerEnemy
 
         public void FinishShooting()
         {
+            if (!shotPending)
+                return;
+
             shotPending = false;
+            animator.CrossFadeInFixedTime(idleHash, idleBlendDuration, 0, 0f);
+    
         }
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace PCG
 {
+    //This class 
     public sealed class PathProfile
     {
         public Path Path { get; }

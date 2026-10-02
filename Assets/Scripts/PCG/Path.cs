@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace PCG
 {
+    //Path class is now a data class
     public class Path
     {
         public int Id { get; }

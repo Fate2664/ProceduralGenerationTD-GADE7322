@@ -49,6 +49,16 @@ namespace Enemy.RangerEnemy
             if (stateInfo.shortNameHash != walkHash)
                 return;
 
+            Vector3 direction = jumpEnd - jumpStart;
+            direction.y = 0f;
+
+            if (direction.sqrMagnitude > 0.001f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                ranger.transform.rotation = Quaternion.RotateTowards(ranger.transform.rotation, targetRotation,
+                    agent.angularSpeed * Time.deltaTime);
+            }
+
             float animationProgress = stateInfo.normalizedTime;
             float movementProgress = Mathf.InverseLerp(takeofftime, landingTime, animationProgress);
             Vector3 position = Vector3.Lerp(jumpStart, jumpEnd, movementProgress);
@@ -96,14 +106,6 @@ namespace Enemy.RangerEnemy
 
             jumpStart = ranger.transform.position;
             jumpEnd = hit.position;
-
-            Vector3 direction = jumpEnd - jumpStart;
-            direction.y = 0f;
-
-            if (direction.sqrMagnitude > 0.001f)
-            {
-                ranger.transform.rotation = Quaternion.LookRotation(direction);
-            }
 
             animator.Play(walkHash, 0, 0f);
             animator.Update(0f);
