@@ -7,6 +7,7 @@ using UnityEngine.WSA;
 
 namespace PCG
 {
+    //This class creates a Path Profile for each path
     public static class PathAnalyzer
     {
         private static readonly Vector2Int[] Directions =
@@ -26,8 +27,8 @@ namespace PCG
 
             foreach (Path path in world.GeneratedPaths)
             {
-                var buildableTiles = new HashSet<GridTile>();
-                var defenses = new HashSet<DefenseCharacterBase>();
+                var buildableTiles = new HashSet<GridTile>();       //Buildable tiles 
+                var defenses = new HashSet<DefenseCharacterBase>(); //Number of defenses
 
                 int coveredTiles = 0;
 
@@ -57,9 +58,10 @@ namespace PCG
                         }
                     }
                     if (hasAdjacentDefense)
-                        coveredTiles++;
+                        coveredTiles++; //increment covered tiles that have an adjacent defense
                 }
                 
+                //Covered tiles / path tile count = adjacent defense ratio
                 profiles.Add(new PathProfile(path, buildableTiles.Count, defenses.Count, coveredTiles / (float)path.TileCount));
             }
             return profiles;

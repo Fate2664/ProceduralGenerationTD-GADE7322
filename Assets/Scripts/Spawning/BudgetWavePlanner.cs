@@ -6,8 +6,10 @@ using UnityEngine.Audio;
 
 namespace Spawning
 {
+    //This class builds a wave planner by selecting weighted enemy and path combinations within a threat budget
     public sealed class BudgetWavePlanner
     {
+        //This represents one possible enemy and path combination with its selection weight
         private struct Candidate
         {
             public EnemyData Enemy;
@@ -20,16 +22,18 @@ namespace Spawning
         {
             var instructions = new List<SpawnInstruction>();
             int remainingBudget = budget;
-            int[] allocatedThreat = new int [paths.Count];
+            int[] allocatedThreat = new int [paths.Count];  //Tracks how much threat has already been assigned to each path in this plan
             int previousPath = -1;
             float averageLength = 0f;
             
+            //Calculate the average path length so each path can be weighted relative to others
             foreach(PathProfile path in paths)
                 averageLength += path.Length;
 
             averageLength = averageLength / paths.Count;
             var candidates = new List<Candidate>();
 
+            //Keep selecting enemies while budget remains and below max enemies
             while (remainingBudget > 0 && instructions.Count < maxEnemies)
             {
                 candidates.Clear();
@@ -37,6 +41,7 @@ namespace Spawning
 
                 foreach (EnemyData enemy in enemyTypes)
                 {
+                    //Skip enemies that have not been unlocked or are above the remaining budget
                     if (enemy.UnlockWave > waveNumber || enemy.ThreatCost > remainingBudget)
                         continue;
 
@@ -67,11 +72,13 @@ namespace Spawning
                 if (candidates.Count == 0 || totalWeight <= 0f)
                     break;
                 
+                //Randomly select a candidate
                 double roll = random.NextDouble() * totalWeight;
                 Candidate selected = candidates[candidates.Count - 1];
 
                 foreach (var candidate in candidates)
                 {
+                    //Larger weights occupy more of the selection range
                     roll -= candidate.Weight;
 
                     if (roll <= 0)
@@ -82,7 +89,9 @@ namespace Spawning
                 }
                 
                 instructions.Add(new SpawnInstruction(selected.Enemy, paths[selected.PathIndex]));
-                remainingBudget -= selected.Enemy.ThreatCost;
+                
+                //Spend the selected enemy's cost and update threat assigned to its path
+                remainingBudget -= selected.Enemy.ThreatCost;   
                 allocatedThreat[selected.PathIndex] += selected.Enemy.ThreatCost;
                 previousPath = selected.PathIndex;
             }
@@ -90,17 +99,19 @@ namespace Spawning
             return new WavePlan(budget, budget - remainingBudget, instructions);
         }
 
+        //Adjust the enemy's suitability according to the defenses adjacent to this path
         private static float GetTypeWeight(EnemyType type, PathProfile path)
         {
 
             switch (type)
             {
+                //Common enemies have no preference based on adjacent defenders
                 case EnemyType.Common:
                     return 1f;
-                
+                //Swarmer enemies favour more adjacent defenders - multiplier capped at 4
                 case EnemyType.Swarmer:
                     return 1f + 0.15f * Mathf.Min(path.AdjacentDefenseCount, 4);
-                
+                //Ranger enemies prefer paths with a higher proportion of tiles beside defenders
                 case EnemyType.Ranger:
                     return Mathf.Lerp(0.75f, 1.25f, path.AdjacentDefenseRatio);
                 

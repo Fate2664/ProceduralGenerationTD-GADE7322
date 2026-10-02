@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace PCG
 {
-    //This class 
+    //This is a data class to hold the path profile data for each path
     public sealed class PathProfile
     {
         public Path Path { get; }
@@ -13,7 +13,7 @@ namespace PCG
         public float Length => Path.Length;
         
         public int AdjacentBuildableTiles { get; }
-        public int AdjacentDefenseCount { get; }
+        public int AdjacentDefenseCount { get; }    //Number of defenses adjacent to this path
         public float AdjacentDefenseRatio { get; } //Fraction of path tiles that have a defense adjacent to them
 
         public PathProfile(Path path, int adjacentBuildableTiles,
@@ -25,6 +25,7 @@ namespace PCG
             AdjacentDefenseRatio = Mathf.Clamp01(adjacentDefenseRatio);
         }
 
+        //Estimated travel time depending on length of path
         public float EstimatedTravelTime(float moveSpeed) => Length / moveSpeed;
     }
 }

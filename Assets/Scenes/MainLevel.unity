@@ -6297,12 +6297,12 @@ MonoBehaviour:
   worldGenerator: {fileID: 1149953627}
   waveText: {fileID: 1101633039}
   startingBudget: 4
-  budgetIncreasePerWave: 2
+  budgetIncreasePerWave: 4
   maxWaveBudget: 100
   maxEnemiesPerWave: 100
-  maxMultiplierChangePerWave: 0.1
-  spawnRate: 0.5
-  timeBetweenWaves: 5
+  maxMultiplierChangePerWave: 0.2
+  spawnRate: 0.2
+  timeBetweenWaves: 3
   waveSeed: 12345
 --- !u!114 &1149953630
 MonoBehaviour:

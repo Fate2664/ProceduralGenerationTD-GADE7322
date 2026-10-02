@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 namespace Spawning
 {
+    //This is a data class to record the player's performance on the previous waves
     public sealed class WavePerformance
     {
         public int WaveNumber { get; }
@@ -32,8 +33,10 @@ namespace Spawning
         }
     }
 
+    //This class provides the logic to record the player's performance
     public sealed class WavePerformanceTracker : IDisposable
     {
+        //Hash sets prevent the same enemy, defender, or event from being counted more than once
         private readonly HashSet<EnemyBase> enemies = new();
         private readonly HashSet<EnemyBase> arrivals = new();
 
@@ -50,6 +53,7 @@ namespace Spawning
 
         public WavePerformance PreviousWave { get; private set; }
 
+        //This checks whether enemy projectiles could still cause damage before a wave ends
         public bool HasPendingProjectiles
         {
             get
@@ -59,6 +63,7 @@ namespace Spawning
             }
         }
 
+        //Clear the previous tracking data and starts recording for a new wave
         public void BeginWave(int number, float maxTowerHealth)
         {
             ClearTracking();
@@ -116,6 +121,7 @@ namespace Spawning
                 projectiles.Add(projectile);
         }
 
+        //We finish the wave by creating a Wave Performance for the previous wave
         public WavePerformance FinishWave()
         {
             PreviousWave = new WavePerformance(waveNumber, towerDamageTaken, towerMaxHealth, killedDefenders.Count,
