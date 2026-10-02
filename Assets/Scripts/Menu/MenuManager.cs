@@ -2,6 +2,7 @@ using System;
 using DG.Tweening;
 using Input;
 using Nova;
+using PCG;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -13,8 +14,50 @@ namespace Menu
         [SerializeField] private UIBlock2D pauseMenuUI;
         [SerializeField] private UIBlock2D pauseDimmer;
         [SerializeField] private GameInput input;
+        [SerializeField] private WorldGenerator worldGenerator;
+        [SerializeField] private UIBlock2D deathMenuUI;
+        
+        private Tower tower;
+        private bool isGameOver;
         
         public bool IsPaused {get ; private set;}
+
+        private void Start()
+        {
+            deathMenuUI.transform.localScale = Vector3.zero;
+            tower = worldGenerator.Tower.GetComponent<Tower>();
+            tower.OnHealthChanged += HandleTowerHealthChanged;
+            HandleTowerHealthChanged(tower.HealthPercentage);
+        }
+
+        private void HandleTowerHealthChanged(float percentage)
+        {
+            if (percentage <= 0f)
+                ShowDeathMenu();
+        }
+
+        private void ShowDeathMenu()
+        {
+            if (isGameOver || deathMenuUI == null)
+                return;
+
+            isGameOver = true;
+            IsPaused = true;
+            Time.timeScale = 0f;
+
+            if (pauseMenuUI != null)
+            {
+                pauseMenuUI.transform.DOKill();
+                pauseMenuUI.transform.localScale = Vector3.zero;
+            }
+
+            if (pauseDimmer != null)
+                pauseDimmer.BodyEnabled = true;
+
+            deathMenuUI.gameObject.SetActive(true);
+            deathMenuUI.transform.DOKill();
+            deathMenuUI.transform.DOScale(1f, 0.5f).SetEase(Ease.OutBack).SetUpdate(true);
+        }
 
         private void OnEnable()
         {

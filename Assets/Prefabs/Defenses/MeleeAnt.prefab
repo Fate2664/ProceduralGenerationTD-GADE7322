@@ -50,7 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Defenses.DefenseCharacters.MeleeAnt.MeleeDefenseCharacter
   timeBetweenAttacks: 1.2
   turnSpeed: 360
-  maxHealth: 10
+  maxHealth: 15
   damageEffectPrefab: {fileID: 4553287630450876385, guid: 15483e51212e3d74886ea57291f4639a, type: 3}
   damageEffectPoint: {fileID: 3379206754253569034}
   defenseCharacterType: 1

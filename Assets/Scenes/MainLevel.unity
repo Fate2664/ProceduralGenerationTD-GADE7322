@@ -10302,6 +10302,8 @@ MonoBehaviour:
   pauseMenuUI: {fileID: 1908867643}
   pauseDimmer: {fileID: 853645702}
   input: {fileID: 11400000, guid: 90afae88bdec19a4c9843f90b63f542a, type: 2}
+  worldGenerator: {fileID: 1149953627}
+  deathMenuUI: {fileID: 1166734683}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

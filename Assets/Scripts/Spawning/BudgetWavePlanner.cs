@@ -111,7 +111,7 @@ namespace Spawning
                 //Swarmer enemies favour more adjacent defenders - multiplier capped at 4
                 case EnemyType.Swarmer:
                     return 1f + 0.15f * Mathf.Min(path.AdjacentDefenseCount, 4);
-                //Ranger enemies prefer paths with a higher proportion of tiles beside defenders
+                //Ranger enemies prefer paths with a higher proportion of tiles with defenders
                 case EnemyType.Ranger:
                     return Mathf.Lerp(0.75f, 1.25f, path.AdjacentDefenseRatio);
                 

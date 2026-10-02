@@ -113,11 +113,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Defenses.DefenseCharacters.BombAnt.BombDefenseCharacter
   timeBetweenAttacks: 1.47
   turnSpeed: 360
-  maxHealth: 7
+  maxHealth: 10
   damageEffectPrefab: {fileID: 4553287630450876385, guid: 15483e51212e3d74886ea57291f4639a, type: 3}
   damageEffectPoint: {fileID: 585059711602908355}
   defenseCharacterType: 2
-  attackDamage: 6
+  attackDamage: 10
   bombPrefab: {fileID: 8135470136156544470, guid: f0f9a5d68fca1644dbf7e653097cd5f0, type: 3}
   bombSpeed: 10
   bombAOERadius: 3
