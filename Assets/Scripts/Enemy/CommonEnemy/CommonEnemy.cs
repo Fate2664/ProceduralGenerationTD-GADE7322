@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Defenses.DefenseCharacters;
-using Nova;
 using PCG;
 using StateMachine;
 using UnityEngine;

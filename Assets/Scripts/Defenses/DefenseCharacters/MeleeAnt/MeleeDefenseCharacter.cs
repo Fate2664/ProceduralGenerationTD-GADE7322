@@ -1,5 +1,4 @@
-﻿using System;
-using StateMachine;
+﻿using StateMachine;
 using UnityEngine;
 
 namespace Defenses.DefenseCharacters.MeleeAnt

@@ -1,6 +1,4 @@
-﻿using System;
-using PCG;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 namespace Enemy.SwarmerEnemy

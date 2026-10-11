@@ -1,10 +1,8 @@
-using System;
 using DG.Tweening;
 using Input;
 using Nova;
 using PCG;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace Menu

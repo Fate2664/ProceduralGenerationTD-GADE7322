@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Defenses.DefenseCharacters;
 using PCG;
 using StateMachine;

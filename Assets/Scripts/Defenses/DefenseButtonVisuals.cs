@@ -1,7 +1,6 @@
 using DG.Tweening;
 using Nova;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Defenses
 {
