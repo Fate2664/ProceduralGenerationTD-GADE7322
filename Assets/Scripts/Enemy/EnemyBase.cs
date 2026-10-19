@@ -14,6 +14,8 @@ namespace Enemy
         [SerializeField] private EnemyData enemyData;
         [SerializeField] private GameObject damageEffectPrefab;
         [SerializeField] private Transform damageEffectPoint;
+        [SerializeField] private GameObject damageEffectTarget;
+        [SerializeField] private float incomeDropAmount;
 
         protected EnemyData EnemyData => enemyData;
         protected StateMachine.StateMachine stateMachine;
@@ -38,6 +40,8 @@ namespace Enemy
         
         private float currentHealth;
         private CharacterHealthBar healthBar;
+
+        
 
         protected virtual void Awake()
         {
@@ -147,6 +151,7 @@ namespace Enemy
 
         protected virtual void Die()
         {
+            CurrencyManager.Instance.AddCurrency(incomeDropAmount);
             Died?.Invoke(this);
             Destroy(gameObject);
         }
