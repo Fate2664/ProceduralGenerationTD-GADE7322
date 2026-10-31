@@ -15,13 +15,19 @@ namespace Defenses.DefenseCharacters
     
     public class DefenseCharacterBase : Entity, IDamageable
     {
+        #region Class Variables
+        
+        [SerializeField] private int attackDamage;
         [SerializeField] private float timeBetweenAttacks = 1.47f;  //This must be the time of the attack animation  
         [SerializeField] private float turnSpeed = 360.0f;
         [SerializeField] private float maxHealth = 10f;
         [SerializeField] private GameObject damageEffectPrefab;
         [SerializeField] private Transform damageEffectPoint;
         [SerializeField] private DefenseCharacterType defenseCharacterType = DefenseCharacterType.Spear;
-                
+        [SerializeField] private DefenseUpradeData upgradeData;
+        #endregion
+        
+        #region Local Variables
         protected StateMachine.StateMachine stateMachine;
         protected Animator animator;
         protected EnemyDetector enemyDetector;
@@ -34,9 +40,19 @@ namespace Defenses.DefenseCharacters
         private CharacterHealthBar healthBar;
         private Transform pathTarget;
         private float currentHealth;
+        private int currentLevel = 1;
 
+        public int CurrentLevel => currentLevel;
+        public int MaxLevel => upgradeData.MaxLevel;
+        public int AttackDamage => attackDamage;
+        public float CurrentHealth => currentHealth;
+        public float MaxHealth => maxHealth;
         public bool IsDead => currentHealth <= 0f;
+        public DefenseUpgradeLevel NextUpgrade => upgradeData.GetNextUpgrade(currentLevel);
         public event Action<DefenseCharacterBase> Died;
+        public event Action OnDefenseLevelUpgraded;
+        
+        #endregion
 
         private void Awake()
         {
@@ -102,7 +118,9 @@ namespace Defenses.DefenseCharacters
             Quaternion targetRotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, turnSpeed * deltaTime);
         }
-
+        
+        #region Attacking
+        
         public virtual bool Attack()
         {
             if (attackTimer.IsRunning) return false;
@@ -113,6 +131,10 @@ namespace Defenses.DefenseCharacters
         }
 
         protected virtual void PerformAttack() {}
+        
+        #endregion
+        
+        #region TakingDamage
         
         public void TakeDamage(int damage)
         {
@@ -140,5 +162,32 @@ namespace Defenses.DefenseCharacters
             Quaternion rotation = damageEffectPoint.rotation;
             Instantiate(damageEffectPrefab, position, rotation);
         }
+        
+        #endregion
+        
+        #region Upgrading
+
+        public bool TryUpgrade(CurrencyManager currency)
+        {
+            DefenseUpgradeLevel nextUpgrade = NextUpgrade;
+            if (IsDead) return false;
+
+            if (!currency.TrySpend(nextUpgrade.Cost))
+                return false;
+
+            float healthIncrease = nextUpgrade.MaxHealth - maxHealth;
+
+            attackDamage = nextUpgrade.AttackDamage;
+            maxHealth = nextUpgrade.MaxHealth;
+            currentHealth = Mathf.Clamp(currentHealth + healthIncrease, 0f, maxHealth);
+            currentLevel++;
+            
+            healthBar.SetHealth(currentHealth, maxHealth);
+            OnDefenseLevelUpgraded?.Invoke();
+            
+            return true;
+        }
+        
+        #endregion
     }
 }

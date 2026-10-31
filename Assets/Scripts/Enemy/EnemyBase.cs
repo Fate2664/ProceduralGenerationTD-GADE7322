@@ -151,7 +151,7 @@ namespace Enemy
 
         protected virtual void Die()
         {
-            CurrencyManager.Instance.AddCurrency(incomeDropAmount);
+            //CurrencyManager.Instance.AddCurrency(incomeDropAmount);
             Died?.Invoke(this);
             Destroy(gameObject);
         }

@@ -5,7 +5,6 @@ namespace Defenses.DefenseCharacters
 {
     public class SpearDefenseCharacter : DefenseCharacterBase
     {
-        [SerializeField] private int attackDamage;
         [SerializeField] private GameObject spearPrefab;
         [SerializeField] private float spearSpeed;
         [SerializeField] private Transform spearSpawnPoint;
@@ -41,7 +40,7 @@ namespace Defenses.DefenseCharacters
             heldSpear.SetActive(false);
             Projectile spear = Instantiate(spearPrefab, spearSpawnPoint.position, spearSpawnPoint.rotation)
                 .GetComponent<Projectile>();
-            spear.InitializeProjectile(target, spearSpeed, attackDamage);
+            spear.InitializeProjectile(target, spearSpeed, AttackDamage);
         }
 
         public void RestoreHeldSpear()

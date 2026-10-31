@@ -5,7 +5,6 @@ namespace Defenses.DefenseCharacters.BombAnt
 {
     public class BombDefenseCharacter : DefenseCharacterBase
     {
-        [SerializeField] private int attackDamage;
         [SerializeField] private GameObject bombPrefab;
         [SerializeField] private float bombSpeed;
         [SerializeField] private float bombAOERadius;
@@ -55,7 +54,7 @@ namespace Defenses.DefenseCharacters.BombAnt
             }
             
             heldBomb.SetActive(false);
-            bomb.InitializeProjectile(target, bombSpeed, attackDamage, bombAOERadius);
+            bomb.InitializeProjectile(target, bombSpeed, AttackDamage, bombAOERadius);
             target = null;
         }
 

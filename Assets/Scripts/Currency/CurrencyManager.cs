@@ -34,11 +34,22 @@ public class CurrencyManager : MonoBehaviour
         PassiveIncome();
     }
 
-    public void AddCurrency(float Amount)
+    public void AddCurrency(float amount)
     {
-        currentBalance += Amount;
+        currentBalance += amount;
         currencyText.text = currentBalance.ToString();
 
+    }
+
+    public bool TrySpend(float amount)
+    {
+        if (currentBalance < amount)
+            return false;
+        
+        currentBalance -= amount;
+        currencyText.text = currentBalance.ToString();
+        
+        return true;
     }
 
     private void PassiveIncome()

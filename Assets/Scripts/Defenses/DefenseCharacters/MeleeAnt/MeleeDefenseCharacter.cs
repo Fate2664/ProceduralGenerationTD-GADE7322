@@ -5,7 +5,6 @@ namespace Defenses.DefenseCharacters.MeleeAnt
 {
     public class MeleeDefenseCharacter : DefenseCharacterBase
     {
-        [SerializeField] private int attackDamage = 1;
         [SerializeField] private float meleeRange = 2f;
 
         private Transform target;
@@ -41,7 +40,7 @@ namespace Defenses.DefenseCharacters.MeleeAnt
             
             if (hitTarget.TryGetComponent<IDamageable>(out IDamageable damageable))
             {
-                damageable.TakeDamage(attackDamage);
+                damageable.TakeDamage(AttackDamage);
             }
         }
 
