@@ -24,6 +24,7 @@ namespace Defenses
         private readonly Dictionary<DefenseOptionData, DefenseButtonVisuals> boundButtons = new();
 
         public event Action<DefenseCharacterBase> DefensePlaced;
+        public bool IsPlacingDefense => selectedDefense != null;
 
         private void Awake()
         {

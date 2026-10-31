@@ -7,31 +7,31 @@ namespace Defenses
 {
     public class DefenseUpgradeController : MonoBehaviour
     {
-        [SerializeField] private PlacementGridManager placementGrid;
         [SerializeField] private CurrencyManager currency;
+        [SerializeField] private DefenseHoverController hoverController;
 
         private DefenseCharacterBase selectedCharacter;
 
         private void OnEnable()
         {
-            placementGrid.CellClicked += HandleCellClicked;
+            hoverController.DefenseSelected += HandleSelectedCharacter;
         }
 
         private void OnDisable()
         {
-            placementGrid.CellClicked -= HandleCellClicked;
+            hoverController.DefenseSelected -= HandleSelectedCharacter;
+            ClearSelection();
         }
 
-        private void HandleCellClicked(GridTile tile)
+        private void HandleSelectedCharacter(DefenseCharacterBase character)
         {
             ClearSelection();
             
-            if (tile.Occupant == null)
+            if (character == null || character.IsDead)
                 return;
-            
-            selectedCharacter = tile.Occupant.GetComponent<DefenseCharacterBase>();
-            if (selectedCharacter != null)
-                selectedCharacter.Died += HandleSelectedCharacterDied;
+
+            selectedCharacter = character;
+            selectedCharacter.Died += HandleSelectedCharacterDied;
         }
 
         private void HandleSelectedCharacterDied(DefenseCharacterBase character)
@@ -41,6 +41,9 @@ namespace Defenses
 
         private void ClearSelection()
         {
+            if (selectedCharacter != null)
+                selectedCharacter.Died -= HandleSelectedCharacterDied;
+            
             selectedCharacter = null;
         }
     }

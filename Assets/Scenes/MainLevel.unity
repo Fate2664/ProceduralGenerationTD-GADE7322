@@ -6227,6 +6227,8 @@ GameObject:
   - component: {fileID: 1149953631}
   - component: {fileID: 1149953632}
   - component: {fileID: 1149953630}
+  - component: {fileID: 1149953633}
+  - component: {fileID: 1149953634}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -6365,6 +6367,41 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 69b5784d1d18ad24d980447c2c611c45, type: 2}
   - {fileID: 11400000, guid: f4958a5960fa98f46a4fe9b339f358a6, type: 2}
   - {fileID: 11400000, guid: b1a697fb6dad202408add8fc24eb1fb6, type: 2}
+--- !u!114 &1149953633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1149953626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c44893d793af4fcf995f06a17e8b8d4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Defenses.DefenseHoverController
+  camera: {fileID: 330585545}
+  placementManager: {fileID: 1149953632}
+  worldRaycastLayerMask:
+    serializedVersion: 2
+    m_Bits: 243
+  blockingUIMask:
+    serializedVersion: 2
+    m_Bits: 32
+  maxRayDistance: 500
+--- !u!114 &1149953634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1149953626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 122da0cd2049475a8071cef28a60ec16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Defenses.DefenseUpgradeController
+  currency: {fileID: 0}
+  hoverController: {fileID: 1149953633}
 --- !u!1 &1166734681
 GameObject:
   m_ObjectHideFlags: 0
