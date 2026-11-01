@@ -11,6 +11,8 @@ namespace Defenses.DefenseCharacters
         [SerializeField] private float detectionCooldown = 1f; //Time between detections
         
         public Transform Enemy { get; private set; }
+        public float DetectionRadius => detectionRadius;
+        
         private CountDownTimer detectionTimer;
         
         IDetectionStrategy detectionStrategy;
@@ -59,5 +61,11 @@ namespace Defenses.DefenseCharacters
         public bool CanSeeEnemy() => Enemy != null;
         
         public void SetDetectionStrategy(IDetectionStrategy strategy) =>  detectionStrategy = strategy;
+
+        public void SetDetectionRadius(float radius)
+        {
+            detectionStrategy = new ConeDetectionStrategy(detectionAngle, radius, innerDetectionRadius);
+            FindNearestEnemy();
+        }
     }
 }

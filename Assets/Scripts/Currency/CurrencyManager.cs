@@ -1,4 +1,4 @@
-using TMPro;
+using System;
 using UnityEngine;
 
 
@@ -6,27 +6,29 @@ public class CurrencyManager : MonoBehaviour
 {
     [SerializeField] private float startingBalance;
 
-    [Header("Passive Income")] 
-    [SerializeField] private float passiveIncomeAmount;
+    [Header("Passive Income")] [SerializeField]
+    private float passiveIncomeAmount;
+
     [SerializeField] private float passiveIncomeInterval;
 
-    [SerializeField] private TextMeshPro currencyText;
+    public static CurrencyManager Instance;
 
-    public static CurrencyManager Instance; 
-
-    public float currentBalance;
+    private float currentBalance;
     private float timer;
+
+    public float CurrentBalance => currentBalance;
+    public event Action BalanceChanged;
 
     private void Awake()
     {
         Instance = this;
+        currentBalance = startingBalance;
     }
 
 
     void Start()
     {
-        currentBalance = startingBalance;   
-        currencyText.text = currentBalance.ToString();
+        BalanceChanged?.Invoke();
     }
 
     private void Update()
@@ -37,31 +39,27 @@ public class CurrencyManager : MonoBehaviour
     public void AddCurrency(float amount)
     {
         currentBalance += amount;
-        currencyText.text = currentBalance.ToString();
-
+        BalanceChanged?.Invoke();
     }
 
     public bool TrySpend(float amount)
     {
         if (currentBalance < amount)
             return false;
-        
+
         currentBalance -= amount;
-        currencyText.text = currentBalance.ToString();
-        
+        BalanceChanged?.Invoke();
         return true;
     }
 
     private void PassiveIncome()
     {
-        timer += Time.time;
+        timer += Time.deltaTime;
+        if (timer < passiveIncomeInterval)
+            return;
 
-        if (timer == passiveIncomeInterval)
-        {
-            timer = 0;
-            AddCurrency(passiveIncomeAmount);
-        }
+        int payments = Mathf.FloorToInt(timer / passiveIncomeInterval);
+        timer -= payments * passiveIncomeInterval;
+        AddCurrency(payments * passiveIncomeAmount);
     }
-
-
 }

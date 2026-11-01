@@ -1,5 +1,6 @@
 ﻿using StateMachine;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Defenses.DefenseCharacters.BombAnt
 {
@@ -62,6 +63,22 @@ namespace Defenses.DefenseCharacters.BombAnt
         {
             if (heldBomb != null)
                 heldBomb.SetActive(true);
+        }
+
+        public override float GetUpgradeValue(DefenseUpgradeType type)
+        {
+            return type == DefenseUpgradeType.AOE ? bombAOERadius : base.GetUpgradeValue(type);
+        }
+
+        protected override void ApplyUpgrade(DefenseUpgradeType type, float upgradeValue)
+        {
+            if (type == DefenseUpgradeType.AOE)
+            {
+                bombAOERadius = upgradeValue;
+                return;
+            }
+            
+            base.ApplyUpgrade(type, upgradeValue);
         }
     }
 }
