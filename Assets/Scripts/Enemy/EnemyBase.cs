@@ -41,10 +41,33 @@ namespace Enemy
         private float currentHealth;
         private CharacterHealthBar healthBar;
 
-        
+
+
+        private void OnEnable()
+        {
+            WeatherManager.OnWeatherChanged += HandleWeatherChanged;
+        }
+
+        private void OnDisable()
+        {
+            WeatherManager.OnWeatherChanged -= HandleWeatherChanged;
+        }
+
+        private void HandleWeatherChanged(WeatherManager.WeatherType newWeather)
+        {
+            ApplyWeather();
+        }
+
+        private void ApplyWeather()
+        {
+            float mult = WeatherManager.Instance != null ? WeatherManager.Instance.enemySpeedMultiplier : 1f;
+            agent.speed = enemyData.MoveSpeed * mult;
+        }
+
 
         protected virtual void Awake()
         {
+
             agent = GetComponent<NavMeshAgent>();
             animator = GetComponentInChildren<Animator>();
             healthBar = GetComponentInChildren<CharacterHealthBar>(true);
@@ -54,7 +77,8 @@ namespace Enemy
 
             stateMachine = new StateMachine.StateMachine();
             attackTimer = new CountDownTimer(enemyData.TimeBetweenAttacks);
-            agent.speed = enemyData.MoveSpeed;
+           
+            ApplyWeather();
         }
 
         protected void At(IState from, IState to, IPredicate condition) => stateMachine.AddTransition(from, to, condition);
@@ -101,7 +125,16 @@ namespace Enemy
             PerformAttack();
             attackTimer.Start();
         }
-        
+
+        protected int CurrentAttackDamage
+        {
+            get
+            {
+                float mult = WeatherManager.Instance != null ? WeatherManager.Instance.enemyDamageMultiplier : 1f;
+                return Mathf.RoundToInt(enemyData.AttackDamage * mult);
+            }
+        }
+
         protected virtual void PerformAttack() {}
 
         public void TakeDamage(int damage)
@@ -161,7 +194,7 @@ namespace Enemy
             enemyData = data;
             currentHealth = data.MaxHealth;
             healthBar?.SetHealth(currentHealth, data.MaxHealth);
-            agent.speed = data.MoveSpeed;
+            ApplyWeather();
             attackTimer = new CountDownTimer(data.TimeBetweenAttacks);
         }
 

@@ -1,23 +1,24 @@
 using UnityEngine;
 using System;
 using Enemy;
+using System.Collections;
 
 public class WeatherManager : MonoBehaviour
 {
-    public static WeatherManager Instance; 
+    public static WeatherManager Instance;
+
+    public static event Action<WeatherType> OnWeatherChanged;
 
     [SerializeField] int MaxDuration = 40;
     [SerializeField] int MinDuration = 20;
     private int duration;
-
-    private EnemyData[] enemyData;
 
     public float enemySpeedMultiplier = 1f;
     public float enemyDamageMultiplier = 1f;
     public float towerRangeMultiplier = 1f;
     public float towerFireRateMultiplier = 1f;
 
-
+    private bool weatherActive = true;
 
     public enum WeatherType
     {
@@ -27,17 +28,41 @@ public class WeatherManager : MonoBehaviour
         ThunderStorm
     }
 
-    
-    private WeatherType weatherType;
+    public WeatherType currentWeather;
 
     private void Awake()
     {
         Instance = this;
     }
 
+    private void Start()
+    {
+        StartCoroutine(WeatherLoop());
+    }
+
+    private IEnumerator WeatherLoop()
+    {
+        while (weatherActive)
+        {
+            WeatherSelector();
+            RandomiseDuration();
+            ChangeStats();
+            OnWeatherChanged?.Invoke(currentWeather);
+
+
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
     public void ChangeStats()
     {
-        switch (weatherType)
+        //Reset stats
+        enemySpeedMultiplier = 1f;
+        enemyDamageMultiplier = 1f;
+        towerRangeMultiplier = 1f;
+        towerFireRateMultiplier = 1f;
+
+        switch (currentWeather)
         {
             case WeatherType.Sunny:
                 break;
@@ -62,10 +87,8 @@ public class WeatherManager : MonoBehaviour
 
     public void WeatherSelector()
     {
-       int randomCount = Enum.GetValues(typeof(WeatherType)).Length;
-       int randomIndex = UnityEngine.Random.Range(0, randomCount);
-
-       weatherType = (WeatherType)randomIndex;
+        int count = Enum.GetValues(typeof(WeatherType)).Length;
+        currentWeather = (WeatherType)UnityEngine.Random.Range(0, count);
 
     }
 
