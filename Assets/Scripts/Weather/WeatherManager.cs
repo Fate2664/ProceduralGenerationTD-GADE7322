@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
-using Enemy;
 using System.Collections;
+
 
 public class WeatherManager : MonoBehaviour
 {
@@ -15,12 +15,32 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] int MinDuration = 20;
     private int duration;
 
+    [Header("Multipliers")]
     public float enemySpeedMultiplier = 1f;
     public float enemyDamageMultiplier = 1f;
     public float towerRangeMultiplier = 1f;
     public float towerFireRateMultiplier = 1f;
 
+    [Header("Visuals")]
+    [SerializeField] private Light sun;
+    [SerializeField] private WeatherLook[] looks;
+    [SerializeField] private float transitionSpeed = 1f;
+
+    private WeatherLook targetLook;
+
     private bool weatherActive = true;
+
+    [System.Serializable]
+    public class WeatherLook
+    {
+        public WeatherType weather;
+        public float lightIntensity = 1f;
+        public Color lightColor = Color.white;
+        public Color ambientColor = Color.gray;
+        public float fogDensity = 0f;
+    }
+
+
 
     public enum WeatherType
     {
@@ -40,9 +60,36 @@ public class WeatherManager : MonoBehaviour
 
     private void Start()
     {
+        RenderSettings.fog = true;
+        RenderSettings.fogMode = FogMode.Exponential;
+
         StartCoroutine(WeatherLoop());
     }
 
+    private void Update()
+    {
+        if (targetLook == null) return;
+
+        float t = transitionSpeed * Time.deltaTime;
+
+        sun.intensity = Mathf.Lerp(sun.intensity, targetLook.lightIntensity, t);
+        sun.color = Color.Lerp(sun.color, targetLook.lightColor, t);
+        RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, targetLook.ambientColor, t);
+        RenderSettings.fogDensity = Mathf.Lerp(RenderSettings.fogDensity, targetLook.fogDensity, t);
+    }
+    private void SetTargetLook()
+    {
+        foreach (var look in looks)
+        {
+            if (look.weather == currentWeather)
+            {
+                targetLook = look;
+                return;
+            }
+        }
+    }
+
+    
     private IEnumerator WeatherLoop()
     {
         while (weatherActive)
@@ -50,6 +97,7 @@ public class WeatherManager : MonoBehaviour
             WeatherSelector();
             RandomiseDuration();
             ChangeStats();
+            SetTargetLook();
             OnWeatherChanged?.Invoke(currentWeather);
 
 
