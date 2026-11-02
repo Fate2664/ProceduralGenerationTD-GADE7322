@@ -1,22 +1,23 @@
 using System;
+using Nova;
 using UnityEngine;
 
 
 public class CurrencyManager : MonoBehaviour
 {
-    [SerializeField] private float startingBalance;
+    [SerializeField] private TextBlock currencyText;
+    [SerializeField] private int startingBalance = 100;
 
-    [Header("Passive Income")] [SerializeField]
-    private float passiveIncomeAmount;
-
+    [Header("Passive Income")]
+    [SerializeField] private float passiveIncomeAmount;
     [SerializeField] private float passiveIncomeInterval;
 
     public static CurrencyManager Instance;
 
-    private float currentBalance;
+    private int currentBalance;
     private float timer;
 
-    public float CurrentBalance => currentBalance;
+    public int CurrentBalance => currentBalance;
     public event Action BalanceChanged;
 
     private void Awake()
@@ -31,18 +32,24 @@ public class CurrencyManager : MonoBehaviour
         BalanceChanged?.Invoke();
     }
 
+    private void OnEnable()
+    {
+        BalanceChanged += UpdateCurrencyText;
+        UpdateCurrencyText();
+    }
+
     private void Update()
     {
         PassiveIncome();
     }
 
-    public void AddCurrency(float amount)
+    public void AddCurrency(int amount)
     {
         currentBalance += amount;
         BalanceChanged?.Invoke();
     }
 
-    public bool TrySpend(float amount)
+    public bool TrySpend(int amount)
     {
         if (currentBalance < amount)
             return false;
@@ -60,6 +67,16 @@ public class CurrencyManager : MonoBehaviour
 
         int payments = Mathf.FloorToInt(timer / passiveIncomeInterval);
         timer -= payments * passiveIncomeInterval;
-        AddCurrency(payments * passiveIncomeAmount);
+        AddCurrency(Mathf.FloorToInt(payments * passiveIncomeAmount));
+    }
+
+    private void UpdateCurrencyText()
+    {
+        currencyText.Text = CurrentBalance.ToString("0");
+    }
+
+    private void OnDisable()
+    {
+        BalanceChanged -= UpdateCurrencyText;
     }
 }

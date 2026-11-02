@@ -56,7 +56,7 @@ MonoBehaviour:
   damageEffectPrefab: {fileID: 4553287630450876385, guid: 15483e51212e3d74886ea57291f4639a, type: 3}
   damageEffectPoint: {fileID: 3379206754253569034}
   defenseCharacterType: 1
-  upgradeData: {fileID: 0}
+  upgradeData: {fileID: 11400000, guid: 94426c6d2aec49d489e40ef45a4cdffb, type: 2}
   meleeRange: 4
 --- !u!114 &1439768347846895057
 MonoBehaviour:

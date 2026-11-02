@@ -14,8 +14,15 @@ public class DefenseUpgradeVisuals : ItemVisuals
     public void Bind(DefenseUpgrade upgrade, float currentValue)
     {
         UpgradeName.Text = upgrade.UpgradeName;
-        CurrentAmount.Text = currentValue.ToString();
+        CurrentAmount.Text = FormatValue(upgrade.UpgradeType, currentValue);
         NewAmount.Text = upgrade.UpgradedValue.ToString();
         UpgradeIcon.SetImage(upgrade.Icon);
+    }
+    
+    private static string FormatValue(DefenseUpgradeType type, float value)
+    {
+        return type == DefenseUpgradeType.AttackSpeed
+            ? $"{value:0.##}"
+            : value.ToString("0.##");
     }
 }
