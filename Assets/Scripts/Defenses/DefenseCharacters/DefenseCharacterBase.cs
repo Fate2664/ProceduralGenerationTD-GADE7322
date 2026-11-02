@@ -14,6 +14,8 @@ namespace Defenses.DefenseCharacters
         AOE
     }
 
+  
+
     public class DefenseCharacterBase : Entity, IDamageable
     {
         #region Inspector Variables
@@ -59,16 +61,23 @@ namespace Defenses.DefenseCharacters
         public event Action<DefenseCharacterBase> Died;
         public event Action OnDefenseUpgraded;
 
+        public static List<DefenseCharacterBase> All = new List<DefenseCharacterBase>();
+        private float baseDetectionRadius;
+
         #endregion
 
         private void Awake()
         {
+        
             animator = GetComponentInChildren<Animator>();
             enemyDetector = GetComponent<EnemyDetector>();
             healthBar = GetComponentInChildren<CharacterHealthBar>(true);
             stateMachine = new StateMachine.StateMachine();
             attackTimer = new CountDownTimer(timeBetweenAttacks);
             initialAttackInterval = timeBetweenAttacks;
+
+            baseDetectionRadius = enemyDetector.DetectionRadius;
+            ApplyWeatherRange();
         }
 
         protected void At(IState from, IState to, IPredicate condition) => stateMachine.AddTransition(from, to, condition);
@@ -90,6 +99,30 @@ namespace Defenses.DefenseCharacters
             if (stateMachine.CurrentState == null) return;
 
             stateMachine.FixedUpdate();
+        }
+
+        private void OnEnable()
+        {
+            All.Add(this);
+            WeatherManager.OnWeatherChanged += HandleWeatherChanged;
+        }
+
+        private void OnDisable()
+        {
+            All.Remove(this);
+            WeatherManager.OnWeatherChanged -= HandleWeatherChanged;
+        }
+
+
+        private void HandleWeatherChanged(WeatherManager.WeatherType newWeather)
+        {
+            ApplyWeatherRange();
+        }
+
+        private void ApplyWeatherRange()
+        {
+            float mult = WeatherManager.Instance != null ? WeatherManager.Instance.currTowerRangeMult : 1f;
+            enemyDetector.SetDetectionRadius(baseDetectionRadius * mult);
         }
 
         public virtual void Initialize(Transform nearestPath = null)
@@ -186,7 +219,7 @@ namespace Defenses.DefenseCharacters
                 case DefenseUpgradeType.Damage:
                     return attackDamage;
                 case DefenseUpgradeType.Range:
-                    return enemyDetector.DetectionRadius;
+                    return baseDetectionRadius;
                 case DefenseUpgradeType.AttackSpeed:
                     return 1f / timeBetweenAttacks;
                 case DefenseUpgradeType.MaxHealth:
@@ -230,7 +263,9 @@ namespace Defenses.DefenseCharacters
                     attackDamage = Mathf.RoundToInt(upgradeValue);
                     break;
                 case DefenseUpgradeType.Range:
-                    enemyDetector.SetDetectionRadius(upgradeValue);
+                    baseDetectionRadius = upgradeValue;
+                    ApplyWeatherRange();
+                    //enemyDetector.SetDetectionRadius(upgradeValue);
                     break;
                 case DefenseUpgradeType.AttackSpeed:
                     timeBetweenAttacks = 1f / upgradeValue;

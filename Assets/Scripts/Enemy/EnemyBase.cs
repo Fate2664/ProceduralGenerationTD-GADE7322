@@ -1,7 +1,8 @@
-using System;
 using Defenses.DefenseCharacters;
 using PCG;
 using StateMachine;
+using System;
+using System.Collections.Generic;
 using Systems;
 using UI;
 using UnityEngine;
@@ -41,15 +42,19 @@ namespace Enemy
         private float currentHealth;
         private CharacterHealthBar healthBar;
 
+        public static List<EnemyBase> All = new List<EnemyBase>();
+
 
 
         private void OnEnable()
         {
+            All.Add(this);
             WeatherManager.OnWeatherChanged += HandleWeatherChanged;
         }
 
         private void OnDisable()
         {
+            All.Add(this);
             WeatherManager.OnWeatherChanged -= HandleWeatherChanged;
         }
 

@@ -25,7 +25,8 @@ public class Tower : MonoBehaviour, IDamageable
     public float MaxHealth => maxHealth;
     public float HealthPercentage => currentHealth / maxHealth;
 
-    
+
+
     private void Awake()
     {
         worldGenerator = GetComponentInParent<WorldGenerator>();
@@ -53,7 +54,7 @@ public class Tower : MonoBehaviour, IDamageable
         }
         
         attackTimer.Start();
-    }   
+    }
 
     private List<GridTile> GetSurroundingTiles()
     {
@@ -76,8 +77,7 @@ public class Tower : MonoBehaviour, IDamageable
 
     private bool AttackEnemiesOnSurroundingTiles()
     {
-        float rangeMult = WeatherManager.Instance != null ? WeatherManager.Instance.currTowerRangeMult : 1f;
-        float halfTileSize = worldGenerator.GridOffset * .5f * rangeMult;
+        float halfTileSize = worldGenerator.GridOffset * .5f;
         bool attackedEnemy = false;
 
         foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))

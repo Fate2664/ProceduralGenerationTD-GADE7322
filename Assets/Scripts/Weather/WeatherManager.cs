@@ -1,6 +1,8 @@
-using UnityEngine;
+using Defenses.DefenseCharacters;
+using Enemy;
 using System;
 using System.Collections;
+using UnityEngine;
 
 
 public class WeatherManager : MonoBehaviour
@@ -21,15 +23,24 @@ public class WeatherManager : MonoBehaviour
     public float towerRangeMult = 0.9f;
     public float towerFireRateMult = 0.7f;
 
-    public float currEnemySpeedMult = 1f;
-    public float currEnemyDamageMult = 1f;
-    public float currTowerRangeMult = 1f;
-    public float currTowerFireRateMult = 1f;
+    [HideInInspector] public float currEnemySpeedMult = 1f;
+    [HideInInspector] public float currEnemyDamageMult = 1f;
+    [HideInInspector] public float currTowerRangeMult = 1f;
+    [HideInInspector] public float currTowerFireRateMult = 1f;
 
     [Header("Visuals")]
     [SerializeField] private Light sun;
     [SerializeField] private WeatherLook[] looks;
     [SerializeField] private float transitionSpeed = 1f;
+
+    [Header("Lightning")]
+    [SerializeField] float minLightningInterval = 3f;
+    [SerializeField] float maxLightningInterval = 8f;
+    [SerializeField] int lightningDamage = 5;
+    [Range(0f, 1f)][SerializeField] private float chanceToHitDefense = 0.2f;
+    [SerializeField] GameObject lightningObject;
+
+    private Coroutine lightningRoutine;
 
     private WeatherLook targetLook;
 
@@ -44,7 +55,6 @@ public class WeatherManager : MonoBehaviour
         public Color ambientColor = Color.gray;
         public float fogDensity = 0f;
     }
-
 
 
     public enum WeatherType
@@ -82,6 +92,67 @@ public class WeatherManager : MonoBehaviour
         RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, targetLook.ambientColor, t);
         RenderSettings.fogDensity = Mathf.Lerp(RenderSettings.fogDensity, targetLook.fogDensity, t);
     }
+
+    #region Lightning
+    private IEnumerator LightningLoop()
+    {
+        while (currentWeather == WeatherType.ThunderStorm)
+        {
+            yield return new WaitForSeconds(UnityEngine.Random.Range(minLightningInterval, maxLightningInterval));
+            StrikeLightning();
+        }
+    }
+
+    private void StrikeLightning()
+    {
+        EnemyBase.All.RemoveAll(e => e == null);
+        DefenseCharacterBase.All.RemoveAll(d => d == null);
+
+        bool hasEnemies = EnemyBase.All.Count > 0;
+        bool hasDefenses = DefenseCharacterBase.All.Count > 0;
+        if (!hasEnemies && !hasDefenses) return;
+
+        bool hitDefense = hasDefenses && (!hasEnemies || UnityEngine.Random.value < chanceToHitDefense);
+
+        Vector3 strikePos;
+        if (hitDefense)
+        {
+            DefenseCharacterBase defense = DefenseCharacterBase.All[UnityEngine.Random.Range(0, DefenseCharacterBase.All.Count)];
+            strikePos = defense.transform.position;
+            defense.TakeDamage(lightningDamage);
+            Debug.Log("Lightning hit " + defense.name);
+        }
+        else
+        {
+            EnemyBase enemy = EnemyBase.All[UnityEngine.Random.Range(0, EnemyBase.All.Count)];
+            strikePos = enemy.transform.position;
+            enemy.TakeDamage(lightningDamage);
+            Debug.Log("Lightning hit " + enemy.name);
+        }
+
+        if (lightningObject != null)
+        {
+            GameObject flash = Instantiate(lightningObject, strikePos, Quaternion.identity);
+            Destroy(flash, 0.5f);
+        }
+    }
+
+    private void StartLightning()
+    {
+        StopLightning();
+        lightningRoutine = StartCoroutine(LightningLoop());
+    }
+
+    private void StopLightning()
+    {
+        if (lightningRoutine != null)
+        {
+            StopCoroutine(lightningRoutine);
+            lightningRoutine = null;
+        }
+    }
+
+    #endregion
     private void SetTargetLook()
     {
         foreach (var look in looks)
@@ -93,8 +164,6 @@ public class WeatherManager : MonoBehaviour
             }
         }
     }
-
-    
     private IEnumerator WeatherLoop()
     {
         while (weatherActive)
@@ -109,7 +178,6 @@ public class WeatherManager : MonoBehaviour
             yield return new WaitForSeconds(duration);
         }
     }
-
     public void ChangeStats()
     {
         //Reset stats and visual effects
@@ -118,6 +186,7 @@ public class WeatherManager : MonoBehaviour
         currTowerRangeMult = 1f;
         currTowerFireRateMult = 1f;
         rainParticles.Stop();
+        StopLightning();
 
         switch (currentWeather)
         {
@@ -137,25 +206,26 @@ public class WeatherManager : MonoBehaviour
 
                 case WeatherType.ThunderStorm:
                 rainParticles.Play();
+                StartLightning();
                 currEnemySpeedMult = enemySpeedMult;
                 currEnemyDamageMult = enemyDamageMult;
                 break;
         }
            
     }
-
     public void WeatherSelector()
     {
         int count = Enum.GetValues(typeof(WeatherType)).Length;
-        currentWeather = (WeatherType)UnityEngine.Random.Range(0, count);
+        //currentWeather = (WeatherType)UnityEngine.Random.Range(0, count);
+        currentWeather = WeatherType.ThunderStorm;
 
     }
-
     public void RandomiseDuration()
     {
         int randomDuration = UnityEngine.Random.Range(MinDuration, MaxDuration + 1);
 
         duration = randomDuration; 
     }
+
 
 }
