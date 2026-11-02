@@ -39,6 +39,10 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] int lightningDamage = 5;
     [Range(0f, 1f)][SerializeField] private float chanceToHitDefense = 0.2f;
     [SerializeField] GameObject lightningObject;
+    [SerializeField] private float flashIntensity = 3f;
+    [SerializeField] private float flashDuration = 0.08f;
+
+    [SerializeField] private Lightning lightningBoltPrefab;
 
     private Coroutine lightningRoutine;
 
@@ -80,6 +84,13 @@ public class WeatherManager : MonoBehaviour
 
         StartCoroutine(WeatherLoop());
     }
+    private IEnumerator Flash()
+    {
+        sun.intensity = flashIntensity;
+        yield return new WaitForSeconds(flashDuration);
+        sun.intensity = targetLook != null ? targetLook.lightIntensity : 1f;
+    }
+
 
     private void Update()
     {
@@ -132,9 +143,12 @@ public class WeatherManager : MonoBehaviour
 
         if (lightningObject != null)
         {
-            GameObject flash = Instantiate(lightningObject, strikePos, Quaternion.identity);
-            Destroy(flash, 0.5f);
+            Lightning bolt = Instantiate(lightningBoltPrefab);
+            bolt.Strike(strikePos);
         }
+
+        StartCoroutine(Flash());
+
     }
 
     private void StartLightning()
