@@ -230,8 +230,8 @@ public class WeatherManager : MonoBehaviour
     public void WeatherSelector()
     {
         int count = Enum.GetValues(typeof(WeatherType)).Length;
-        //currentWeather = (WeatherType)UnityEngine.Random.Range(0, count);
-        currentWeather = WeatherType.ThunderStorm;
+        currentWeather = (WeatherType)UnityEngine.Random.Range(0, count);
+      
 
     }
     public void RandomiseDuration()
