@@ -16,10 +16,15 @@ public class WeatherManager : MonoBehaviour
     private int duration;
 
     [Header("Multipliers")]
-    public float enemySpeedMultiplier = 1f;
-    public float enemyDamageMultiplier = 1f;
-    public float towerRangeMultiplier = 1f;
-    public float towerFireRateMultiplier = 1f;
+    public float enemySpeedMult = 0.8f;
+    public float enemyDamageMult = 1f;
+    public float towerRangeMult = 0.9f;
+    public float towerFireRateMult = 0.7f;
+
+    public float currEnemySpeedMult = 1f;
+    public float currEnemyDamageMult = 1f;
+    public float currTowerRangeMult = 1f;
+    public float currTowerFireRateMult = 1f;
 
     [Header("Visuals")]
     [SerializeField] private Light sun;
@@ -108,10 +113,10 @@ public class WeatherManager : MonoBehaviour
     public void ChangeStats()
     {
         //Reset stats and visual effects
-        enemySpeedMultiplier = 1f;
-        enemyDamageMultiplier = 1f;
-        towerRangeMultiplier = 1f;
-        towerFireRateMultiplier = 1f;
+        currEnemySpeedMult = 1f;
+        currEnemyDamageMult = 1f;
+        currTowerRangeMult = 1f;
+        currTowerFireRateMult = 1f;
         rainParticles.Stop();
 
         switch (currentWeather)
@@ -122,18 +127,18 @@ public class WeatherManager : MonoBehaviour
 
             case WeatherType.Rain:
                 rainParticles.Play();
-                enemySpeedMultiplier = 0.8f;
-                towerFireRateMultiplier = 0.9f; 
+                currEnemySpeedMult = enemySpeedMult;
+                currTowerFireRateMult = towerFireRateMult; 
                 break;
 
                 case WeatherType.Fog:
-                towerRangeMultiplier = 0.9f;
+                currTowerRangeMult = towerRangeMult;
                 break;
 
                 case WeatherType.ThunderStorm:
                 rainParticles.Play();
-                enemySpeedMultiplier = 0.9f;
-                enemyDamageMultiplier = 1.2f;
+                currEnemySpeedMult = enemySpeedMult;
+                currEnemyDamageMult = enemyDamageMult;
                 break;
         }
            

@@ -10719,10 +10719,14 @@ MonoBehaviour:
   rainParticles: {fileID: 721255793}
   MaxDuration: 40
   MinDuration: 20
-  enemySpeedMultiplier: 1
-  enemyDamageMultiplier: 1
-  towerRangeMultiplier: 1
-  towerFireRateMultiplier: 1
+  enemySpeedMult: 0.2
+  enemyDamageMult: 1
+  towerRangeMult: 0.9
+  towerFireRateMult: 1
+  currEnemySpeedMult: 1
+  currEnemyDamageMult: 1
+  currTowerRangeMult: 1
+  currTowerFireRateMult: 1
   sun: {fileID: 410087040}
   looks:
   - weather: 0
@@ -11917,7 +11921,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlacementGridManager
   Root: {fileID: 1096052396}
   CellGrid: {fileID: 1096052395}
-  WorldGenerator: {fileID: 0}
+  WorldGenerator: {fileID: 1122166804}
   cellSize: 1.5
   surfaceOffset: 0.5
 --- !u!4 &1764515006

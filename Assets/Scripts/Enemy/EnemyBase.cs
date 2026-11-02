@@ -60,7 +60,7 @@ namespace Enemy
 
         private void ApplyWeather()
         {
-            float mult = WeatherManager.Instance != null ? WeatherManager.Instance.enemySpeedMultiplier : 1f;
+            float mult = WeatherManager.Instance != null ? WeatherManager.Instance.currEnemySpeedMult : 1f;
             agent.speed = enemyData.MoveSpeed * mult;
         }
 
@@ -130,7 +130,7 @@ namespace Enemy
         {
             get
             {
-                float mult = WeatherManager.Instance != null ? WeatherManager.Instance.enemyDamageMultiplier : 1f;
+                float mult = WeatherManager.Instance != null ? WeatherManager.Instance.currEnemyDamageMult : 1f;
                 return Mathf.RoundToInt(enemyData.AttackDamage * mult);
             }
         }

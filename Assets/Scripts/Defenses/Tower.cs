@@ -76,7 +76,7 @@ public class Tower : MonoBehaviour, IDamageable
 
     private bool AttackEnemiesOnSurroundingTiles()
     {
-        float rangeMult = WeatherManager.Instance.towerRangeMultiplier;
+        float rangeMult = WeatherManager.Instance != null ? WeatherManager.Instance.currTowerRangeMult : 1f;
         float halfTileSize = worldGenerator.GridOffset * .5f * rangeMult;
         bool attackedEnemy = false;
 
