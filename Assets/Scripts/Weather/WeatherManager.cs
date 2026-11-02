@@ -9,6 +9,8 @@ public class WeatherManager : MonoBehaviour
 
     public static event Action<WeatherType> OnWeatherChanged;
 
+    [SerializeField] ParticleSystem rainParticles;
+
     [SerializeField] int MaxDuration = 40;
     [SerializeField] int MinDuration = 20;
     private int duration;
@@ -33,6 +35,7 @@ public class WeatherManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        rainParticles.Stop();
     }
 
     private void Start()
@@ -56,11 +59,12 @@ public class WeatherManager : MonoBehaviour
 
     public void ChangeStats()
     {
-        //Reset stats
+        //Reset stats and visual effects
         enemySpeedMultiplier = 1f;
         enemyDamageMultiplier = 1f;
         towerRangeMultiplier = 1f;
         towerFireRateMultiplier = 1f;
+        rainParticles.Stop();
 
         switch (currentWeather)
         {
@@ -69,6 +73,7 @@ public class WeatherManager : MonoBehaviour
 
 
             case WeatherType.Rain:
+                rainParticles.Play();
                 enemySpeedMultiplier = 0.8f;
                 towerFireRateMultiplier = 0.9f; 
                 break;
@@ -78,6 +83,7 @@ public class WeatherManager : MonoBehaviour
                 break;
 
                 case WeatherType.ThunderStorm:
+                rainParticles.Play();
                 enemySpeedMultiplier = 0.9f;
                 enemyDamageMultiplier = 1.2f;
                 break;
