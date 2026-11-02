@@ -2,6 +2,7 @@ using Defenses.DefenseCharacters;
 using Nova;
 using UnityEngine;
 
+[System.Serializable]
 public class DefenseUpgradeVisuals : ItemVisuals
 {
     [SerializeField] private UIBlock2D Background;

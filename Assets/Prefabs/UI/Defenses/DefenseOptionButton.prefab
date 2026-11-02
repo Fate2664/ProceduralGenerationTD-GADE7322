@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6204504823735268292}
   - component: {fileID: 5100188478191103054}
   - component: {fileID: 2460826330885846289}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: DefenseOptionButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -383,7 +383,7 @@ GameObject:
   - component: {fileID: 3725381655669933562}
   - component: {fileID: 4226630892307836060}
   - component: {fileID: 1017068994023049136}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -675,7 +675,7 @@ GameObject:
   - component: {fileID: 4042357168993105807}
   - component: {fileID: 3170128032101404916}
   - component: {fileID: 6859264920347848572}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CoolDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}

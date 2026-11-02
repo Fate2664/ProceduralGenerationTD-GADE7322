@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e728fa61dfd480fa2104896aef0836f, type: 3}
+  m_Name: SpearAntUpgrade
+  m_EditorClassIdentifier: Assembly-CSharp::Defenses.DefenseCharacters.DefenseUpgradeData
+  <DefenseDisplayName>k__BackingField: Spear Ant
+  <Icon>k__BackingField: {fileID: 21300000, guid: 8e37ac42e5220d747a11f43d48e921db, type: 3}
+  <Cost>k__BackingField: 100
+  upgrades:
+  - <UpgradeType>k__BackingField: 0
+    <UpgradeName>k__BackingField: Damage
+    <Icon>k__BackingField: {fileID: 21300000, guid: 280963c05450644449c337ae48dc0a04, type: 3}
+    <UpgradedValue>k__BackingField: 8
+  - <UpgradeType>k__BackingField: 1
+    <UpgradeName>k__BackingField: Range
+    <Icon>k__BackingField: {fileID: 21300000, guid: 374c2a70c9747cb4ab4d0189d7926911, type: 3}
+    <UpgradedValue>k__BackingField: 16
+  - <UpgradeType>k__BackingField: 3
+    <UpgradeName>k__BackingField: Health
+    <Icon>k__BackingField: {fileID: 21300000, guid: e5916f83d01c24041a45157837a936d1, type: 3}
+    <UpgradedValue>k__BackingField: 12

@@ -1,5 +1,6 @@
 ﻿using System;
 using Defenses.DefenseCharacters;
+using DG.Tweening;
 using Nova;
 using PCG;
 using UnityEngine;
@@ -16,14 +17,17 @@ namespace Defenses
         [SerializeField] private TextBlock defenseLevel;
         [SerializeField] private UIBlock2D defenseIcon;
         [SerializeField] private UIBlock2D upgradeButton;
-        
+        [SerializeField] private ParticleSystem selectedIndicator;
+        [SerializeField] private Vector3 selectedIndicatorOffset = new Vector3(0f, 0.5f, 0f);
+
         private DefenseCharacterBase selectedCharacter;
+        private ParticleSystem selectedIndicatorInstance;
 
         private void Awake()
         {
             upgradesList.AddDataBinder<DefenseUpgrade, DefenseUpgradeVisuals>(BindUpgrade);
             upgradeButton.AddGestureHandler<Gesture.OnClick>(HandlePurchase);
-            upgradeRoot.gameObject.SetActive(false);
+            upgradeRoot.transform.localScale = Vector3.zero;
         }
 
         private void OnEnable()
@@ -34,24 +38,31 @@ namespace Defenses
 
         private void OnDisable()
         {
-            hoverController.DefenseSelected -= HandleSelectedCharacter;
-            currency.BalanceChanged -= Refresh;
+            if (hoverController != null)
+                hoverController.DefenseSelected -= HandleSelectedCharacter;
+            
+            if (currency != null)
+                currency.BalanceChanged -= Refresh;
+            
             ClearSelection();
         }
 
         private void HandleSelectedCharacter(DefenseCharacterBase character)
         {
             ClearSelection();
-            
-            if (character == null || character.IsDead)
+
+            if (character == null || character.IsDead || character.UpgradeData == null)
                 return;
 
             selectedCharacter = character;
             selectedCharacter.Died += HandleSelectedCharacterDied;
             selectedCharacter.OnDefenseUpgraded += Refresh;
             
-            //Play show animation
-            
+            ShowSelectedIndicator();
+
+            upgradeRoot.transform.DOKill();
+            upgradeRoot.transform.DOScale(1f, 0.35f).SetEase(Ease.OutCubic);
+
             upgradesList.SetDataSource(character.UpgradeData.Upgrades);
             Refresh();
         }
@@ -63,12 +74,19 @@ namespace Defenses
 
         private void HandlePurchase(Gesture.OnClick evt)
         {
+            if (selectedCharacter == null || selectedCharacter.IsDead)
+                return;
+
             selectedCharacter.TryUpgrade(currency);
             Refresh();
+            ClearSelection();
         }
 
         private void Refresh()
         {
+            if (selectedCharacter == null)
+                return;
+
             DefenseUpgradeData data = selectedCharacter.UpgradeData;
             defenseTitle.Text = data.DefenseDisplayName;
             defenseLevel.Text = $"Level {selectedCharacter.CurrentLevel}";
@@ -81,17 +99,52 @@ namespace Defenses
             ClearSelection();
         }
 
+        private void ShowSelectedIndicator()
+        {
+            HideSelectedIndicator();
+
+            if (selectedCharacter == null)
+                return;
+            
+            selectedIndicatorInstance = Instantiate(selectedIndicator, selectedCharacter.transform, false);
+            selectedIndicatorInstance.transform.localPosition = selectedIndicatorOffset;
+            selectedIndicatorInstance.gameObject.SetActive(true);
+            
+            selectedIndicatorInstance.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            selectedIndicatorInstance.Play(true);
+        }
+
+        private void HideSelectedIndicator()
+        {
+            if (selectedIndicatorInstance == null)
+                return;
+            
+            selectedIndicatorInstance.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            selectedIndicatorInstance.gameObject.SetActive(false);
+            Destroy(selectedIndicatorInstance.gameObject);
+            selectedIndicatorInstance = null;
+        }
+
         private void ClearSelection()
         {
+            HideSelectedIndicator();
+            
             if (selectedCharacter != null)
             {
                 selectedCharacter.Died -= HandleSelectedCharacterDied;
                 selectedCharacter.OnDefenseUpgraded -= Refresh;
             }
-            
+
             selectedCharacter = null;
-            upgradesList.SetDataSource<DefenseUpgrade>(null);
-            upgradeRoot.gameObject.SetActive(false);
+            
+            if (upgradesList != null)
+                upgradesList.SetDataSource<DefenseUpgrade>(null);
+
+            if (upgradeRoot == null)
+                return;
+
+            upgradeRoot.transform.DOKill();
+            upgradeRoot.transform.DOScale(0f, 0.35f).SetEase(Ease.OutCubic);
         }
     }
 }

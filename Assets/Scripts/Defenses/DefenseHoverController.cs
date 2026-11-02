@@ -53,9 +53,10 @@ namespace Defenses
             
             SetHovered(nextOutline);
 
-            if (hoveredOutline != null && mouse.leftButton.wasPressedThisFrame)
+            if (mouse.leftButton.wasPressedThisFrame)
             {
-                DefenseSelected?.Invoke(hoveredOutline.Character);
+                DefenseCharacterBase clickedCharacter = hoveredOutline != null ? hoveredOutline.Character : null;
+                DefenseSelected?.Invoke(clickedCharacter);
             }
         }
 

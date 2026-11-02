@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1562366336821646709}
   - component: {fileID: 981939949680151349}
   - component: {fileID: 7179425170225918939}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CurrentAmountText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -385,7 +385,7 @@ GameObject:
   - component: {fileID: 2931589279859640229}
   - component: {fileID: 8503916964018764723}
   - component: {fileID: 8930127374365646375}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: DefenseUpgrade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -687,7 +687,12 @@ MonoBehaviour:
     RefIds:
     - rid: 2163767457149354067
       type: {class: DefenseUpgradeVisuals, ns: , asm: Assembly-CSharp}
-      data: 
+      data:
+        Background: {fileID: 8503916964018764723}
+        UpgradeIcon: {fileID: 8477112000384146544}
+        UpgradeName: {fileID: 1026275085440786481}
+        CurrentAmount: {fileID: 981939949680151349}
+        NewAmount: {fileID: 8137189803293103699}
 --- !u!1 &2027349068993068000
 GameObject:
   m_ObjectHideFlags: 0
@@ -701,7 +706,7 @@ GameObject:
   - component: {fileID: 1803076091725156391}
   - component: {fileID: 1026275085440786481}
   - component: {fileID: 160812673447734286}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: UpgradeNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1072,7 +1077,7 @@ GameObject:
   - component: {fileID: 532617869041205853}
   - component: {fileID: 1623335227240702470}
   - component: {fileID: 8477112000384146544}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: UpgradeIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1366,7 +1371,7 @@ GameObject:
   - component: {fileID: 3633176809219902094}
   - component: {fileID: 8137189803293103699}
   - component: {fileID: 12379848460151001}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: NewAmountText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1737,7 +1742,7 @@ GameObject:
   - component: {fileID: 1587834929113963111}
   - component: {fileID: 1909964962480864633}
   - component: {fileID: 5526307005515088290}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: AmountIncreaseRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1963,7 +1968,7 @@ GameObject:
   - component: {fileID: 3784343812245475545}
   - component: {fileID: 7735018089944115248}
   - component: {fileID: 2253595074400893934}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ContextRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2190,7 +2195,7 @@ GameObject:
   - component: {fileID: 3559254176822127121}
   - component: {fileID: 6078807064657102622}
   - component: {fileID: 1940882305864997122}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
