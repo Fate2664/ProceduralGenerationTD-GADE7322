@@ -20,12 +20,31 @@ Shader "Shader Graphs/CloudShaderGenerated"
         _Fresnel_Effect_Power("Fresnel Effect Power", Float) = 1
         _Fresnel_Effect_Opacity("Fresnel Effect Opacity", Float) = 1
         _Fade_Depth("Fade Depth", Float) = 100
+        _CloudCoverage("Cloud Coverage", Range(0, 1)) = 1
+        _CloudFormationScale("Cloud Formation Scale", Float) = 0.05
         [HideInInspector]_QueueOffset("_QueueOffset", Float) = 0
         [HideInInspector]_QueueControl("_QueueControl", Float) = -1
         [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
         [HideInInspector][NoScaleOffset]unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {}
         [HideInInspector][NoScaleOffset]unity_ShadowMasks("unity_ShadowMasks", 2DArray) = "" {}
     }
+    
+    HLSLINCLUDE 
+    
+    float4 _CloudExclusionBounds;
+    float _CloudExclusionEnabled;
+    
+    void ApplyCloudExclusion(float3 worldPosition)
+    {
+        //float2 distanceFromCenter = abs(worldPosition.xz - _CloudExclusionBounds.xy);
+        //if (_CloudExclusionEnabled > 0.5 && all(distanceFromCenter <= _CloudExclusionBounds.zw))
+        //{
+          //  clip(-0.5);
+        //}
+    }
+    
+    ENDHLSL
+
     SubShader
     {
         Tags
@@ -348,6 +367,8 @@ Shader "Shader Graphs/CloudShaderGenerated"
         float _Fresnel_Effect_Power;
         float _Fresnel_Effect_Opacity;
         float _Fade_Depth;
+        float _CloudCoverage;
+        float _CloudFormationScale;
         UNITY_TEXTURE_STREAMING_DEBUG_VARS;
         CBUFFER_END
         
@@ -629,6 +650,12 @@ Shader "Shader Graphs/CloudShaderGenerated"
         
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
+            ApplyCloudExclusion(IN.WorldSpacePosition);
+            float formationNoise;
+            float formationScale = max(_CloudFormationScale, 0.0001);
+            Unity_GradientNoise_Deterministic_float(IN.WorldSpacePosition.xz,float3(formationScale, formationScale, formationScale),formationNoise);
+            float formationThreshold = lerp(1.001, -0.001, saturate(_CloudCoverage));
+            clip(saturate(formationNoise) - formationThreshold);
             SurfaceDescription surface = (SurfaceDescription)0;
             float4 _Property_08f55cc2215f457abdf288e58daaa696_Out_0_Vector4 = _Color_A;
             float4 _Property_acbafd3dca104c65b7b71611d4639044_Out_0_Vector4 = _Color_B;
@@ -1139,6 +1166,8 @@ Shader "Shader Graphs/CloudShaderGenerated"
         float _Fresnel_Effect_Power;
         float _Fresnel_Effect_Opacity;
         float _Fade_Depth;
+        float _CloudCoverage;
+        float _CloudFormationScale;
         UNITY_TEXTURE_STREAMING_DEBUG_VARS;
         CBUFFER_END
         
@@ -1420,6 +1449,12 @@ Shader "Shader Graphs/CloudShaderGenerated"
         
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
+            ApplyCloudExclusion(IN.WorldSpacePosition);
+            float formationNoise;
+            float formationScale = max(_CloudFormationScale, 0.0001);
+            Unity_GradientNoise_Deterministic_float(IN.WorldSpacePosition.xz,float3(formationScale, formationScale, formationScale),formationNoise);
+            float formationThreshold = lerp(1.001, -0.001, saturate(_CloudCoverage));
+            clip(saturate(formationNoise) - formationThreshold);
             SurfaceDescription surface = (SurfaceDescription)0;
             float4 _Property_08f55cc2215f457abdf288e58daaa696_Out_0_Vector4 = _Color_A;
             float4 _Property_acbafd3dca104c65b7b71611d4639044_Out_0_Vector4 = _Color_B;
@@ -1824,6 +1859,8 @@ Shader "Shader Graphs/CloudShaderGenerated"
         float _Fresnel_Effect_Power;
         float _Fresnel_Effect_Opacity;
         float _Fade_Depth;
+        float _CloudCoverage;
+        float _CloudFormationScale;
         UNITY_TEXTURE_STREAMING_DEBUG_VARS;
         CBUFFER_END
         
@@ -2079,6 +2116,12 @@ Shader "Shader Graphs/CloudShaderGenerated"
         
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
+            ApplyCloudExclusion(IN.WorldSpacePosition);
+            float formationNoise;
+            float formationScale = max(_CloudFormationScale, 0.0001);
+            Unity_GradientNoise_Deterministic_float(IN.WorldSpacePosition.xz,float3(formationScale, formationScale, formationScale),formationNoise);
+            float formationThreshold = lerp(1.001, -0.001, saturate(_CloudCoverage));
+            clip(saturate(formationNoise) - formationThreshold);
             SurfaceDescription surface = (SurfaceDescription)0;
             float _SceneDepth_7a3cc358e0f44107b8bce7383895b953_Out_1_Float;
             Unity_SceneDepth_Eye_float(float4(IN.NDCPosition.xy, 0, 0), _SceneDepth_7a3cc358e0f44107b8bce7383895b953_Out_1_Float);
@@ -2377,6 +2420,8 @@ Shader "Shader Graphs/CloudShaderGenerated"
         float _Fresnel_Effect_Power;
         float _Fresnel_Effect_Opacity;
         float _Fade_Depth;
+        float _CloudCoverage;
+        float _CloudFormationScale;
         UNITY_TEXTURE_STREAMING_DEBUG_VARS;
         CBUFFER_END
         
@@ -2628,6 +2673,12 @@ Shader "Shader Graphs/CloudShaderGenerated"
         
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
+            ApplyCloudExclusion(IN.WorldSpacePosition);
+            float formationNoise;
+            float formationScale = max(_CloudFormationScale, 0.0001);
+            Unity_GradientNoise_Deterministic_float(IN.WorldSpacePosition.xz,float3(formationScale, formationScale, formationScale),formationNoise);
+            float formationThreshold = lerp(1.001, -0.001, saturate(_CloudCoverage));
+            clip(saturate(formationNoise) - formationThreshold);
             SurfaceDescription surface = (SurfaceDescription)0;
             float _SceneDepth_7a3cc358e0f44107b8bce7383895b953_Out_1_Float;
             Unity_SceneDepth_Eye_float(float4(IN.NDCPosition.xy, 0, 0), _SceneDepth_7a3cc358e0f44107b8bce7383895b953_Out_1_Float);
@@ -2929,6 +2980,8 @@ Shader "Shader Graphs/CloudShaderGenerated"
         float _Fresnel_Effect_Power;
         float _Fresnel_Effect_Opacity;
         float _Fade_Depth;
+        float _CloudCoverage;
+        float _CloudFormationScale;
         UNITY_TEXTURE_STREAMING_DEBUG_VARS;
         CBUFFER_END
         
@@ -3184,6 +3237,12 @@ Shader "Shader Graphs/CloudShaderGenerated"
         
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
+            ApplyCloudExclusion(IN.WorldSpacePosition);
+            float formationNoise;
+            float formationScale = max(_CloudFormationScale, 0.0001);
+            Unity_GradientNoise_Deterministic_float(IN.WorldSpacePosition.xz,float3(formationScale, formationScale, formationScale),formationNoise);
+            float formationThreshold = lerp(1.001, -0.001, saturate(_CloudCoverage));
+            clip(saturate(formationNoise) - formationThreshold);
             SurfaceDescription surface = (SurfaceDescription)0;
             float _SceneDepth_7a3cc358e0f44107b8bce7383895b953_Out_1_Float;
             Unity_SceneDepth_Eye_float(float4(IN.NDCPosition.xy, 0, 0), _SceneDepth_7a3cc358e0f44107b8bce7383895b953_Out_1_Float);
@@ -3499,6 +3558,8 @@ Shader "Shader Graphs/CloudShaderGenerated"
         float _Fresnel_Effect_Power;
         float _Fresnel_Effect_Opacity;
         float _Fade_Depth;
+        float _CloudCoverage;
+        float _CloudFormationScale;
         UNITY_TEXTURE_STREAMING_DEBUG_VARS;
         CBUFFER_END
         
@@ -3755,6 +3816,12 @@ Shader "Shader Graphs/CloudShaderGenerated"
         
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
+            ApplyCloudExclusion(IN.WorldSpacePosition);
+            float formationNoise;
+            float formationScale = max(_CloudFormationScale, 0.0001);
+            Unity_GradientNoise_Deterministic_float(IN.WorldSpacePosition.xz,float3(formationScale, formationScale, formationScale),formationNoise);
+            float formationThreshold = lerp(1.001, -0.001, saturate(_CloudCoverage));
+            clip(saturate(formationNoise) - formationThreshold);
             SurfaceDescription surface = (SurfaceDescription)0;
             float _SceneDepth_7a3cc358e0f44107b8bce7383895b953_Out_1_Float;
             Unity_SceneDepth_Eye_float(float4(IN.NDCPosition.xy, 0, 0), _SceneDepth_7a3cc358e0f44107b8bce7383895b953_Out_1_Float);
@@ -4086,6 +4153,8 @@ Shader "Shader Graphs/CloudShaderGenerated"
         float _Fresnel_Effect_Power;
         float _Fresnel_Effect_Opacity;
         float _Fade_Depth;
+        float _CloudCoverage;
+        float _CloudFormationScale;
         UNITY_TEXTURE_STREAMING_DEBUG_VARS;
         CBUFFER_END
         
@@ -4363,6 +4432,12 @@ Shader "Shader Graphs/CloudShaderGenerated"
         
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
+            ApplyCloudExclusion(IN.WorldSpacePosition);
+            float formationNoise;
+            float formationScale = max(_CloudFormationScale, 0.0001);
+            Unity_GradientNoise_Deterministic_float(IN.WorldSpacePosition.xz,float3(formationScale, formationScale, formationScale),formationNoise);
+            float formationThreshold = lerp(1.001, -0.001, saturate(_CloudCoverage));
+            clip(saturate(formationNoise) - formationThreshold);
             SurfaceDescription surface = (SurfaceDescription)0;
             float4 _Property_08f55cc2215f457abdf288e58daaa696_Out_0_Vector4 = _Color_A;
             float4 _Property_acbafd3dca104c65b7b71611d4639044_Out_0_Vector4 = _Color_B;
@@ -4754,6 +4829,8 @@ Shader "Shader Graphs/CloudShaderGenerated"
         float _Fresnel_Effect_Power;
         float _Fresnel_Effect_Opacity;
         float _Fade_Depth;
+        float _CloudCoverage;
+        float _CloudFormationScale;
         UNITY_TEXTURE_STREAMING_DEBUG_VARS;
         CBUFFER_END
         
@@ -5009,6 +5086,12 @@ Shader "Shader Graphs/CloudShaderGenerated"
         
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
+            ApplyCloudExclusion(IN.WorldSpacePosition);
+            float formationNoise;
+            float formationScale = max(_CloudFormationScale, 0.0001);
+            Unity_GradientNoise_Deterministic_float(IN.WorldSpacePosition.xz,float3(formationScale, formationScale, formationScale),formationNoise);
+            float formationThreshold = lerp(1.001, -0.001, saturate(_CloudCoverage));
+            clip(saturate(formationNoise) - formationThreshold);
             SurfaceDescription surface = (SurfaceDescription)0;
             float _SceneDepth_7a3cc358e0f44107b8bce7383895b953_Out_1_Float;
             Unity_SceneDepth_Eye_float(float4(IN.NDCPosition.xy, 0, 0), _SceneDepth_7a3cc358e0f44107b8bce7383895b953_Out_1_Float);
@@ -5310,6 +5393,8 @@ Shader "Shader Graphs/CloudShaderGenerated"
         float _Fresnel_Effect_Power;
         float _Fresnel_Effect_Opacity;
         float _Fade_Depth;
+        float _CloudCoverage;
+        float _CloudFormationScale;
         UNITY_TEXTURE_STREAMING_DEBUG_VARS;
         CBUFFER_END
         
@@ -5571,6 +5656,12 @@ Shader "Shader Graphs/CloudShaderGenerated"
         
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
+            ApplyCloudExclusion(IN.WorldSpacePosition);
+            float formationNoise;
+            float formationScale = max(_CloudFormationScale, 0.0001);
+            Unity_GradientNoise_Deterministic_float(IN.WorldSpacePosition.xz,float3(formationScale, formationScale, formationScale),formationNoise);
+            float formationThreshold = lerp(1.001, -0.001, saturate(_CloudCoverage));
+            clip(saturate(formationNoise) - formationThreshold);
             SurfaceDescription surface = (SurfaceDescription)0;
             float4 _Property_08f55cc2215f457abdf288e58daaa696_Out_0_Vector4 = _Color_A;
             float4 _Property_acbafd3dca104c65b7b71611d4639044_Out_0_Vector4 = _Color_B;
@@ -5944,6 +6035,8 @@ Shader "Shader Graphs/CloudShaderGenerated"
         float _Fresnel_Effect_Power;
         float _Fresnel_Effect_Opacity;
         float _Fade_Depth;
+        float _CloudCoverage;
+        float _CloudFormationScale;
         UNITY_TEXTURE_STREAMING_DEBUG_VARS;
         CBUFFER_END
         
@@ -6205,6 +6298,12 @@ Shader "Shader Graphs/CloudShaderGenerated"
         
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
+            ApplyCloudExclusion(IN.WorldSpacePosition);
+            float formationNoise;
+            float formationScale = max(_CloudFormationScale, 0.0001);
+            Unity_GradientNoise_Deterministic_float(IN.WorldSpacePosition.xz,float3(formationScale, formationScale, formationScale),formationNoise);
+            float formationThreshold = lerp(1.001, -0.001, saturate(_CloudCoverage));
+            clip(saturate(formationNoise) - formationThreshold);
             SurfaceDescription surface = (SurfaceDescription)0;
             float4 _Property_08f55cc2215f457abdf288e58daaa696_Out_0_Vector4 = _Color_A;
             float4 _Property_acbafd3dca104c65b7b71611d4639044_Out_0_Vector4 = _Color_B;

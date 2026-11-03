@@ -2,23 +2,18 @@ using Defenses.DefenseCharacters;
 using Enemy;
 using System;
 using System.Collections;
+using DG.Tweening;
+using PCG;
 using UnityEngine;
 
 
 public class WeatherManager : MonoBehaviour
 {
-    public static WeatherManager Instance;
-
-    public static event Action<WeatherType> OnWeatherChanged;
-
     [SerializeField] ParticleSystem rainParticles;
-
     [SerializeField] int MaxDuration = 40;
     [SerializeField] int MinDuration = 20;
-    private int duration;
 
-    [Header("Multipliers")]
-    public float enemySpeedMult = 0.8f;
+    [Header("Multipliers")] public float enemySpeedMult = 0.8f;
     public float enemyDamageMult = 1f;
     public float towerRangeMult = 0.9f;
     public float towerFireRateMult = 0.7f;
@@ -28,27 +23,37 @@ public class WeatherManager : MonoBehaviour
     [HideInInspector] public float currTowerRangeMult = 1f;
     [HideInInspector] public float currTowerFireRateMult = 1f;
 
-    [Header("Visuals")]
-    [SerializeField] private Light sun;
+    [Header("Visuals")] [SerializeField] private Light sun;
     [SerializeField] private WeatherLook[] looks;
     [SerializeField] private float transitionSpeed = 1f;
 
-    [Header("Lightning")]
-    [SerializeField] float minLightningInterval = 3f;
+    [Header("Clouds")] [SerializeField] private WorldGenerator worldGenerator;
+    [SerializeField] private float cloudExclusionPadding = 2f;
+    [SerializeField] private Renderer weatherCloudRenderer;
+    [SerializeField] private float cloudFormationDuration = 6f;
+
+    [Header("Lightning")] [SerializeField] float minLightningInterval = 3f;
     [SerializeField] float maxLightningInterval = 8f;
     [SerializeField] int lightningDamage = 5;
-    [Range(0f, 1f)][SerializeField] private float chanceToHitDefense = 0.2f;
+    [Range(0f, 1f)] [SerializeField] private float chanceToHitDefense = 0.2f;
     [SerializeField] GameObject lightningObject;
     [SerializeField] private float flashIntensity = 3f;
     [SerializeField] private float flashDuration = 0.08f;
-
     [SerializeField] private Lightning lightningBoltPrefab;
 
+    private int duration;
     private Coroutine lightningRoutine;
-
     private WeatherLook targetLook;
-
     private bool weatherActive = true;
+    private Material weatherCloudMaterial;
+    private Tween cloudCoverageTween;
+    private float targetCloudCoverage;
+    private static readonly int CloudExclusionBoundsId = Shader.PropertyToID("_CloudExclusionBounds");
+    private static readonly int CloudExclusionEnabledId = Shader.PropertyToID("_CloudExclusionEnabled");
+
+    public static WeatherManager Instance;
+    public static event Action<WeatherType> OnWeatherChanged;
+    public WeatherType currentWeather;
 
     [System.Serializable]
     public class WeatherLook
@@ -60,7 +65,6 @@ public class WeatherManager : MonoBehaviour
         public float fogDensity = 0f;
     }
 
-
     public enum WeatherType
     {
         Sunny,
@@ -68,8 +72,6 @@ public class WeatherManager : MonoBehaviour
         Fog,
         ThunderStorm
     }
-
-    public WeatherType currentWeather;
 
     private void Awake()
     {
@@ -82,8 +84,15 @@ public class WeatherManager : MonoBehaviour
         RenderSettings.fog = true;
         RenderSettings.fogMode = FogMode.Exponential;
 
+        if (weatherCloudRenderer != null)
+        {
+            weatherCloudMaterial = weatherCloudRenderer.material;
+            weatherCloudMaterial.SetFloat("_CloudCoverage", 0f);
+        }
+
         StartCoroutine(WeatherLoop());
     }
+
     private IEnumerator Flash()
     {
         sun.intensity = flashIntensity;
@@ -104,7 +113,23 @@ public class WeatherManager : MonoBehaviour
         RenderSettings.fogDensity = Mathf.Lerp(RenderSettings.fogDensity, targetLook.fogDensity, t);
     }
 
+    private void LateUpdate()
+    {
+        if (!worldGenerator.IsGenerated)
+        {
+            Shader.SetGlobalFloat(CloudExclusionEnabledId, 0f);
+            return;
+        }
+
+        Vector3 center = worldGenerator.transform.position;
+        float halfExtent = worldGenerator.GridSize * worldGenerator.GridOffset * 0.5f + cloudExclusionPadding;
+
+        Shader.SetGlobalVector(CloudExclusionBoundsId, new Vector4(center.x, center.z, halfExtent, halfExtent));
+        Shader.SetGlobalFloat(CloudExclusionEnabledId, 1f);
+    }
+
     #region Lightning
+
     private IEnumerator LightningLoop()
     {
         while (currentWeather == WeatherType.ThunderStorm)
@@ -128,7 +153,8 @@ public class WeatherManager : MonoBehaviour
         Vector3 strikePos;
         if (hitDefense)
         {
-            DefenseCharacterBase defense = DefenseCharacterBase.All[UnityEngine.Random.Range(0, DefenseCharacterBase.All.Count)];
+            DefenseCharacterBase defense =
+                DefenseCharacterBase.All[UnityEngine.Random.Range(0, DefenseCharacterBase.All.Count)];
             strikePos = defense.transform.position;
             defense.TakeDamage(lightningDamage);
             Debug.Log("Lightning hit " + defense.name);
@@ -148,7 +174,6 @@ public class WeatherManager : MonoBehaviour
         }
 
         StartCoroutine(Flash());
-
     }
 
     private void StartLightning()
@@ -167,6 +192,7 @@ public class WeatherManager : MonoBehaviour
     }
 
     #endregion
+
     private void SetTargetLook()
     {
         foreach (var look in looks)
@@ -178,6 +204,7 @@ public class WeatherManager : MonoBehaviour
             }
         }
     }
+
     private IEnumerator WeatherLoop()
     {
         while (weatherActive)
@@ -192,6 +219,35 @@ public class WeatherManager : MonoBehaviour
             yield return new WaitForSeconds(duration);
         }
     }
+
+    private void UpdateCloudCoverage()
+    {
+        if (weatherCloudMaterial == null)
+            return;
+
+        bool needsClouds = currentWeather == WeatherType.Rain || currentWeather == WeatherType.ThunderStorm;
+        float target = needsClouds ? 1f : 0f;
+
+        if (cloudCoverageTween != null && Mathf.Approximately(targetCloudCoverage, target))
+            return;
+
+        cloudCoverageTween?.Kill();
+        cloudCoverageTween = null;
+        targetCloudCoverage = target;
+
+        float current = weatherCloudMaterial.GetFloat("_CloudCoverage");
+
+        if (Mathf.Approximately(current, target))
+        {
+            weatherCloudMaterial.SetFloat("_CloudCoverage", target);
+            return;
+        }
+
+        float duration = cloudFormationDuration * Mathf.Abs(target - current);
+        cloudCoverageTween = weatherCloudMaterial.DOFloat(target, "_CloudCoverage", duration).SetEase(Ease.InOutSine)
+            .SetAutoKill(true).OnKill(() => cloudCoverageTween = null);
+    }
+
     public void ChangeStats()
     {
         //Reset stats and visual effects
@@ -211,35 +267,40 @@ public class WeatherManager : MonoBehaviour
             case WeatherType.Rain:
                 rainParticles.Play();
                 currEnemySpeedMult = enemySpeedMult;
-                currTowerFireRateMult = towerFireRateMult; 
+                currTowerFireRateMult = towerFireRateMult;
                 break;
 
-                case WeatherType.Fog:
+            case WeatherType.Fog:
                 currTowerRangeMult = towerRangeMult;
                 break;
 
-                case WeatherType.ThunderStorm:
+            case WeatherType.ThunderStorm:
                 rainParticles.Play();
                 StartLightning();
                 currEnemySpeedMult = enemySpeedMult;
                 currEnemyDamageMult = enemyDamageMult;
                 break;
         }
-           
+        
+        UpdateCloudCoverage();
     }
+
     public void WeatherSelector()
     {
         int count = Enum.GetValues(typeof(WeatherType)).Length;
         currentWeather = (WeatherType)UnityEngine.Random.Range(0, count);
-      
-
     }
+
     public void RandomiseDuration()
     {
         int randomDuration = UnityEngine.Random.Range(MinDuration, MaxDuration + 1);
-
-        duration = randomDuration; 
+        duration = randomDuration;
     }
 
-
+    private void OnDisable()
+    {
+        Shader.SetGlobalFloat(CloudExclusionEnabledId, 0f);
+        cloudCoverageTween?.Kill();
+        cloudCoverageTween = null;
+    }
 }
