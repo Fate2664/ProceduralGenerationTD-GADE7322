@@ -98,6 +98,7 @@ Transform:
   - {fileID: 8368764465537957829}
   - {fileID: 585059711602908355}
   - {fileID: 4240123204475989963}
+  - {fileID: 430773493582168729}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1798649147902124633
@@ -119,7 +120,11 @@ MonoBehaviour:
   damageEffectPrefab: {fileID: 4553287630450876385, guid: 15483e51212e3d74886ea57291f4639a, type: 3}
   damageEffectPoint: {fileID: 585059711602908355}
   defenseCharacterType: 2
-  upgradeData: {fileID: 0}
+  upgradeData: {fileID: 11400000, guid: 0f9b49e0914b43b43981e270c013d994, type: 2}
+  secondUpgradeData: {fileID: 11400000, guid: 4b653d4faec22bd4f89ea11c88bcb4ca, type: 2}
+  upgradeEffect1Prefab: {fileID: 2363131651324413607, guid: ee8a300c26781c244bc8be5f76e19205, type: 3}
+  upgradeEffect2Prefab: {fileID: 2363131651324413607, guid: c2239cb96eb3efd4380e09dddfb24861, type: 3}
+  upgradeEffectPoint: {fileID: 430773493582168729}
   bombPrefab: {fileID: 8135470136156544470, guid: f0f9a5d68fca1644dbf7e653097cd5f0, type: 3}
   bombSpeed: 10
   bombAOERadius: 3
@@ -173,6 +178,37 @@ MonoBehaviour:
   - {fileID: 5395097588431663106}
   - {fileID: 6420382900822733891}
   - {fileID: 2973768174913155993}
+--- !u!1 &8112260897541018554
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 430773493582168729}
+  m_Layer: 0
+  m_Name: UpgradeEffectSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &430773493582168729
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8112260897541018554}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.056, y: 1.104, z: 0.284}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5060547704698489514}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &388075895464769086
 PrefabInstance:
   m_ObjectHideFlags: 0

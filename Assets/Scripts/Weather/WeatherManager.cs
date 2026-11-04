@@ -28,9 +28,15 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] private float transitionSpeed = 1f;
 
     [Header("Clouds")] [SerializeField] private WorldGenerator worldGenerator;
-    [SerializeField] private float cloudExclusionPadding = 2f;
     [SerializeField] private Renderer weatherCloudRenderer;
     [SerializeField] private float cloudFormationDuration = 6f;
+
+    [Header("Fog Clouds")] [SerializeField]
+    private float fogCloudWorldY = 35f;
+
+    [SerializeField, Range(0.05f, 1f)] private float fogClearSize = 0.5f;
+    [SerializeField] private float fogExlusionFeather = 5f;
+    [SerializeField] private float fogTransitionDuration = 4f;
 
     [Header("Lightning")] [SerializeField] float minLightningInterval = 3f;
     [SerializeField] float maxLightningInterval = 8f;
@@ -48,8 +54,13 @@ public class WeatherManager : MonoBehaviour
     private Material weatherCloudMaterial;
     private Tween cloudCoverageTween;
     private float targetCloudCoverage;
+    private float normalCloudWorldY;
+    private Tween cloudHeightTween;
+    private Tween cloudExclusionTween;
+    private Tween cloudNoiseHeightTween;
     private static readonly int CloudExclusionBoundsId = Shader.PropertyToID("_CloudExclusionBounds");
     private static readonly int CloudExclusionEnabledId = Shader.PropertyToID("_CloudExclusionEnabled");
+    private static readonly int CloudExclusionFeatherId = Shader.PropertyToID("_CloudExclusionFeather");
 
     public static WeatherManager Instance;
     public static event Action<WeatherType> OnWeatherChanged;
@@ -86,8 +97,13 @@ public class WeatherManager : MonoBehaviour
 
         if (weatherCloudRenderer != null)
         {
+            normalCloudWorldY = weatherCloudRenderer.transform.position.y;
+
             weatherCloudMaterial = weatherCloudRenderer.material;
             weatherCloudMaterial.SetFloat("_CloudCoverage", 0f);
+            weatherCloudMaterial.SetFloat(CloudExclusionEnabledId, 0f);
+
+            UpdateFogExclusionBounds();
         }
 
         StartCoroutine(WeatherLoop());
@@ -115,17 +131,7 @@ public class WeatherManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!worldGenerator.IsGenerated)
-        {
-            Shader.SetGlobalFloat(CloudExclusionEnabledId, 0f);
-            return;
-        }
-
-        Vector3 center = worldGenerator.transform.position;
-        float halfExtent = worldGenerator.GridSize * worldGenerator.GridOffset * 0.5f + cloudExclusionPadding;
-
-        Shader.SetGlobalVector(CloudExclusionBoundsId, new Vector4(center.x, center.z, halfExtent, halfExtent));
-        Shader.SetGlobalFloat(CloudExclusionEnabledId, 1f);
+        UpdateFogExclusionBounds();
     }
 
     #region Lightning
@@ -220,12 +226,15 @@ public class WeatherManager : MonoBehaviour
         }
     }
 
+    #region Clouds
+
     private void UpdateCloudCoverage()
     {
         if (weatherCloudMaterial == null)
             return;
 
-        bool needsClouds = currentWeather == WeatherType.Rain || currentWeather == WeatherType.ThunderStorm;
+        bool needsClouds = currentWeather == WeatherType.Rain || currentWeather == WeatherType.ThunderStorm ||
+                           currentWeather == WeatherType.Fog;
         float target = needsClouds ? 1f : 0f;
 
         if (cloudCoverageTween != null && Mathf.Approximately(targetCloudCoverage, target))
@@ -247,6 +256,35 @@ public class WeatherManager : MonoBehaviour
         cloudCoverageTween = weatherCloudMaterial.DOFloat(target, "_CloudCoverage", duration).SetEase(Ease.InOutSine)
             .SetAutoKill(true).OnKill(() => cloudCoverageTween = null);
     }
+
+    private void UpdateFogExclusionBounds()
+    {
+        Vector3 center = worldGenerator.transform.position;
+        float halfExtent = worldGenerator.GridSize * worldGenerator.GridOffset * fogClearSize * 0.5f;
+        weatherCloudMaterial.SetVector(CloudExclusionBoundsId, new Vector4(center.x, center.z, halfExtent, halfExtent));
+        weatherCloudMaterial.SetFloat(CloudExclusionFeatherId, fogExlusionFeather);
+    }
+
+    private void UpdateFogCloudState()
+    {
+        bool isFog = currentWeather == WeatherType.Fog;
+        weatherCloudMaterial.SetFloat("_Noise_Height", isFog ? 3f : 30f);
+        float targetHeight = isFog ? fogCloudWorldY : normalCloudWorldY;
+        float exlcusionStrength = isFog ? 1f : 0f;
+        cloudHeightTween?.Kill();
+        cloudExclusionTween?.Kill();
+        cloudNoiseHeightTween?.Kill();
+
+        cloudHeightTween = weatherCloudRenderer.transform.DOMoveY(targetHeight, fogTransitionDuration)
+            .SetEase(Ease.InOutSine).SetAutoKill(true).OnKill(() => cloudHeightTween = null);
+        cloudExclusionTween = weatherCloudMaterial
+            .DOFloat(exlcusionStrength, CloudExclusionEnabledId, fogTransitionDuration).SetEase(Ease.InOutSine)
+            .SetAutoKill(true).OnKill(() => cloudExclusionTween = null);
+        cloudNoiseHeightTween = weatherCloudMaterial.DOFloat(isFog ? 3f : 30f, "_Noise_Height", fogTransitionDuration)
+            .SetEase(Ease.InOutSine).SetAutoKill(true).OnKill(() => cloudNoiseHeightTween = null);
+    }
+
+    #endregion
 
     public void ChangeStats()
     {
@@ -281,7 +319,8 @@ public class WeatherManager : MonoBehaviour
                 currEnemyDamageMult = enemyDamageMult;
                 break;
         }
-        
+
+        UpdateFogCloudState();
         UpdateCloudCoverage();
     }
 
@@ -299,8 +338,22 @@ public class WeatherManager : MonoBehaviour
 
     private void OnDisable()
     {
-        Shader.SetGlobalFloat(CloudExclusionEnabledId, 0f);
         cloudCoverageTween?.Kill();
+        cloudHeightTween?.Kill();
+        cloudExclusionTween?.Kill();
+        cloudNoiseHeightTween?.Kill();
+
         cloudCoverageTween = null;
+        cloudNoiseHeightTween = null;
+        cloudHeightTween = null;
+        cloudExclusionTween = null;
+    }
+
+    private void OnDestroy()
+    {
+        cloudCoverageTween?.Kill();
+        cloudHeightTween?.Kill();
+        cloudExclusionTween?.Kill();
+        Destroy(weatherCloudMaterial);
     }
 }

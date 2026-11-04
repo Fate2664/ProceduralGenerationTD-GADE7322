@@ -8,10 +8,6 @@ public class CurrencyManager : MonoBehaviour
     [SerializeField] private TextBlock currencyText;
     [SerializeField] private int startingBalance = 100;
 
-    [Header("Passive Income")]
-    [SerializeField] private float passiveIncomeAmount;
-    [SerializeField] private float passiveIncomeInterval;
-
     public static CurrencyManager Instance;
 
     private int currentBalance;
@@ -38,11 +34,6 @@ public class CurrencyManager : MonoBehaviour
         UpdateCurrencyText();
     }
 
-    private void Update()
-    {
-        PassiveIncome();
-    }
-
     public void AddCurrency(int amount)
     {
         currentBalance += amount;
@@ -51,23 +42,12 @@ public class CurrencyManager : MonoBehaviour
 
     public bool TrySpend(int amount)
     {
-        if (currentBalance < amount)
+        if (amount < 0 || currentBalance < amount)
             return false;
 
         currentBalance -= amount;
         BalanceChanged?.Invoke();
         return true;
-    }
-
-    private void PassiveIncome()
-    {
-        timer += Time.deltaTime;
-        if (timer < passiveIncomeInterval)
-            return;
-
-        int payments = Mathf.FloorToInt(timer / passiveIncomeInterval);
-        timer -= payments * passiveIncomeInterval;
-        AddCurrency(Mathf.FloorToInt(payments * passiveIncomeAmount));
     }
 
     private void UpdateCurrencyText()

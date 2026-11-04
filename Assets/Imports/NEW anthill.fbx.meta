@@ -3,7 +3,22 @@ guid: 3e36d9c73ec7471498ba455480059779
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AntHillDirtMat
+    second: {fileID: 2100000, guid: e6910a7a4d3cfb34a9f213a0a225868f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: DarkDirtyMat
+    second: {fileID: 2100000, guid: e6910a7a4d3cfb34a9f213a0a225868f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.004
+    second: {fileID: 2100000, guid: e6910a7a4d3cfb34a9f213a0a225868f, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

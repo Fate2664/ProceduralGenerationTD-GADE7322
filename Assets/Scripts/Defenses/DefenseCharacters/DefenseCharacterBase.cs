@@ -14,7 +14,6 @@ namespace Defenses.DefenseCharacters
         AOE
     }
 
-  
 
     public class DefenseCharacterBase : Entity, IDamageable
     {
@@ -28,6 +27,10 @@ namespace Defenses.DefenseCharacters
         [SerializeField] private Transform damageEffectPoint;
         [SerializeField] private DefenseCharacterType defenseCharacterType = DefenseCharacterType.Spear;
         [SerializeField] private DefenseUpgradeData upgradeData;
+        [SerializeField] private DefenseUpgradeData secondUpgradeData;
+        [SerializeField] private GameObject upgradeEffect1Prefab;
+        [SerializeField] private GameObject upgradeEffect2Prefab;
+        [SerializeField] private Transform upgradeEffectPoint;
 
         #endregion
 
@@ -46,17 +49,31 @@ namespace Defenses.DefenseCharacters
         private Transform pathTarget;
         private float currentHealth;
         private float initialAttackInterval;
-        private bool isUpgraded;
+        private int upgradesPurchased;
         private bool upgradeInProgress;
+        private GameObject upgradeEffectInstance;
 
         private static readonly int AttackSpeedMultiplierId = Animator.StringToHash("AttackSpeedMultiplier");
 
         public int AttackDamage => attackDamage;
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
-        public DefenseUpgradeData UpgradeData => upgradeData;
-        public bool IsUpgraded => isUpgraded;
-        public int CurrentLevel => isUpgraded ? 2 : 1;
+
+        public DefenseUpgradeData UpgradeData
+        {
+            get
+            {
+                switch (upgradesPurchased)
+                {
+                    case 0: return upgradeData;
+                    case 1: return secondUpgradeData;
+                    default: return null;
+                }
+            }
+        }
+
+        public bool IsUpgraded => upgradesPurchased > 0;
+        public int CurrentLevel => upgradesPurchased + 1;
         public bool IsDead => currentHealth <= 0f;
         public event Action<DefenseCharacterBase> Died;
         public event Action OnDefenseUpgraded;
@@ -68,7 +85,6 @@ namespace Defenses.DefenseCharacters
 
         private void Awake()
         {
-        
             animator = GetComponentInChildren<Animator>();
             enemyDetector = GetComponent<EnemyDetector>();
             healthBar = GetComponentInChildren<CharacterHealthBar>(true);
@@ -80,9 +96,11 @@ namespace Defenses.DefenseCharacters
             ApplyWeatherRange();
         }
 
-        protected void At(IState from, IState to, IPredicate condition) => stateMachine.AddTransition(from, to, condition);
+        protected void At(IState from, IState to, IPredicate condition) =>
+            stateMachine.AddTransition(from, to, condition);
+
         protected void Any(IState to, IPredicate condition) => stateMachine.AddAnyTransition(to, condition);
-        
+
         private void Update()
         {
             if (stateMachine.CurrentState == null) return;
@@ -229,22 +247,29 @@ namespace Defenses.DefenseCharacters
             }
         }
 
-        public bool TryUpgrade( CurrencyManager currency)
+        public bool TryUpgrade(CurrencyManager currency)
         {
+            if (currency == null || IsDead || upgradeInProgress)
+                return false;
+
+            DefenseUpgradeData nextUpgrade = UpgradeData;
+            if (nextUpgrade == null || nextUpgrade.Cost < 0 || nextUpgrade.Upgrades == null)
+                return false;
+
             upgradeInProgress = true;
-            
+
             try
             {
-
-                if (!currency.TrySpend(upgradeData.Cost))
+                if (!currency.TrySpend(nextUpgrade.Cost))
                     return false;
 
-                foreach (var upgrade in upgradeData.Upgrades)
+                foreach (var upgrade in nextUpgrade.Upgrades)
                 {
                     ApplyUpgrade(upgrade.UpgradeType, upgrade.UpgradedValue);
                 }
-                
-                isUpgraded =  true;
+
+                upgradesPurchased++;
+                UpdateUpgradeEffect();
             }
             finally
             {
@@ -253,6 +278,25 @@ namespace Defenses.DefenseCharacters
 
             OnDefenseUpgraded?.Invoke();
             return true;
+        }
+
+        private void UpdateUpgradeEffect()
+        {
+            if (upgradesPurchased == 0)
+                return;
+
+            GameObject effectPrefab = upgradesPurchased == 1
+                ? upgradeEffect1Prefab
+                : upgradeEffect2Prefab;
+
+            if (upgradeEffectInstance != null)
+            {
+                upgradeEffectInstance.SetActive(false);
+                Destroy(upgradeEffectInstance);
+            }
+
+            upgradeEffectInstance = Instantiate(effectPrefab, upgradeEffectPoint.position, upgradeEffectPoint.rotation,
+                upgradeEffectPoint);
         }
 
         protected virtual void ApplyUpgrade(DefenseUpgradeType type, float upgradeValue)

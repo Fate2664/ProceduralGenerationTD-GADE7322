@@ -63,7 +63,6 @@ namespace Defenses
             upgradeRoot.transform.DOKill();
             upgradeRoot.transform.DOScale(1f, 0.35f).SetEase(Ease.OutCubic);
 
-            upgradesList.SetDataSource(character.UpgradeData.Upgrades);
             Refresh();
         }
 
@@ -77,9 +76,8 @@ namespace Defenses
             if (selectedCharacter == null || selectedCharacter.IsDead)
                 return;
 
-            selectedCharacter.TryUpgrade(currency);
-            Refresh();
-            ClearSelection();
+            if (selectedCharacter.TryUpgrade(currency))
+                ClearSelection();
         }
 
         private void Refresh()
@@ -88,9 +86,15 @@ namespace Defenses
                 return;
 
             DefenseUpgradeData data = selectedCharacter.UpgradeData;
+            if (selectedCharacter.IsDead || data == null)
+            {
+                ClearSelection();
+                return;
+            }
             defenseTitle.Text = data.DefenseDisplayName;
             defenseLevel.Text = $"Level {selectedCharacter.CurrentLevel}";
             defenseIcon.SetImage(data.Icon);
+            upgradesList.SetDataSource(data.Upgrades);
             upgradesList.Refresh();
         }
 

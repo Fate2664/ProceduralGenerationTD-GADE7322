@@ -1136,7 +1136,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 666928f8e47d30846bbbaa15a4ba3cbc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 65.4
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 666928f8e47d30846bbbaa15a4ba3cbc, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2686,7 +2686,7 @@ Transform:
   m_GameObject: {fileID: 456010219}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -45, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4694,7 +4694,7 @@ MonoBehaviour:
       Mode: 1
     SoftenEdges: 1
     FillEnabled: 1
-  texture: {fileID: 2800000, guid: 93978dcbff65c754c82f146ed36c1c45, type: 3}
+  texture: {fileID: 2800000, guid: 4a878f6cd3f95d44186cc4fefeff1254, type: 3}
   sprite: {fileID: 0}
 --- !u!114 &677922347
 MonoBehaviour:
@@ -10212,9 +10212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyManager
   currencyText: {fileID: 707429033}
-  startingBalance: 200
-  passiveIncomeAmount: 0
-  passiveIncomeInterval: 0
+  startingBalance: 400
 --- !u!1 &1166734681
 GameObject:
   m_ObjectHideFlags: 0
@@ -11131,7 +11129,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 666928f8e47d30846bbbaa15a4ba3cbc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -6
+      value: -45
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 666928f8e47d30846bbbaa15a4ba3cbc, type: 3}
       propertyPath: m_LocalPosition.z
@@ -12287,9 +12285,12 @@ MonoBehaviour:
     fogDensity: 0.015
   transitionSpeed: 1
   worldGenerator: {fileID: 1122166804}
-  cloudExclusionPadding: 0.1
   weatherCloudRenderer: {fileID: 2118098050}
   cloudFormationDuration: 2
+  fogCloudWorldY: 1.5
+  fogClearSize: 0.5
+  fogExlusionFeather: 5
+  fogTransitionDuration: 4
   minLightningInterval: 3
   maxLightningInterval: 8
   lightningDamage: 5
@@ -13697,7 +13698,7 @@ MonoBehaviour:
       Mode: 1
     SoftenEdges: 1
     FillEnabled: 1
-  texture: {fileID: 2800000, guid: 93978dcbff65c754c82f146ed36c1c45, type: 3}
+  texture: {fileID: 2800000, guid: 4a878f6cd3f95d44186cc4fefeff1254, type: 3}
   sprite: {fileID: 0}
 --- !u!114 &1753139301
 MonoBehaviour:
@@ -13747,6 +13748,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 69b5784d1d18ad24d980447c2c611c45, type: 2}
   - {fileID: 11400000, guid: f4958a5960fa98f46a4fe9b339f358a6, type: 2}
   - {fileID: 11400000, guid: b1a697fb6dad202408add8fc24eb1fb6, type: 2}
+  currency: {fileID: 1149953631}
 --- !u!114 &1764515005
 MonoBehaviour:
   m_ObjectHideFlags: 0

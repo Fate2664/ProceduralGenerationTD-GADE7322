@@ -31,6 +31,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1566148241480628095}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3538572664427771361
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4865770314860634454}
+  m_Layer: 0
+  m_Name: UpgradeEffectSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4865770314860634454
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3538572664427771361}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.452, z: 0.129}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1566148241480628095}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5826771104805275950
 GameObject:
   m_ObjectHideFlags: 0
@@ -66,6 +97,7 @@ Transform:
   - {fileID: 4817798330871952041}
   - {fileID: 1471123413878414312}
   - {fileID: 879998150235897352}
+  - {fileID: 4865770314860634454}
   - {fileID: 6292033014425080347}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -89,6 +121,10 @@ MonoBehaviour:
   damageEffectPoint: {fileID: 879998150235897352}
   defenseCharacterType: 0
   upgradeData: {fileID: 11400000, guid: 879cb3305b5dff042addf7f6facfe2e0, type: 2}
+  secondUpgradeData: {fileID: 11400000, guid: 468a18bd97137cf459dcf8e03111c819, type: 2}
+  upgradeEffect1Prefab: {fileID: 2363131651324413607, guid: ee8a300c26781c244bc8be5f76e19205, type: 3}
+  upgradeEffect2Prefab: {fileID: 2363131651324413607, guid: c2239cb96eb3efd4380e09dddfb24861, type: 3}
+  upgradeEffectPoint: {fileID: 4865770314860634454}
   spearPrefab: {fileID: 8592720547555940479, guid: 37d4e5325721a864f9005fd0df93f482, type: 3}
   spearSpeed: 23
   spearSpawnPoint: {fileID: 1471123413878414312}

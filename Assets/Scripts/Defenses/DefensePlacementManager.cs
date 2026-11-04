@@ -10,11 +10,11 @@ namespace Defenses
 {
     public class DefensePlacementManager : MonoBehaviour
     {
-        [Header("References")] [SerializeField]
-        private ListView defensesOptionList;
-
+        [Header("References")] 
+        [SerializeField] private ListView defensesOptionList;
         [SerializeField] private PlacementGridManager placementGrid;
         [SerializeField] private List<DefenseOptionData> defensesOptions = new();
+        [SerializeField] private CurrencyManager currency;
 
         private DefenseOptionData selectedDefense;
         private GameObject dragPreview;
@@ -97,7 +97,7 @@ namespace Defenses
         private void HandleDefensePressed(Gesture.OnPress evt, DefenseButtonVisuals target, int index)
         {
             //Prevent selecting a defense on cooldown
-            if (IsOnCooldown(target.BoundData))
+            if (IsOnCooldown(target.BoundData) || currency.CurrentBalance < target.BoundData.Cost)
             {
                 DestroyDragPreview();
                 selectedDefense = null;
@@ -185,6 +185,10 @@ namespace Defenses
             GameObject prefab = selectedDefense.prefab;
             Vector3 position = tile.transform.position;
             Transform pathTarget = placementGrid.WorldGenerator.GetClosestPathTile(position);
+
+            if (!currency.TrySpend(selectedDefense.Cost))
+                return false;
+            
             GameObject defense = Instantiate(prefab, position, prefab.transform.rotation, tile.transform);
             DefenseCharacterBase defenseCharacter = defense.GetComponent<DefenseCharacterBase>();
             defenseCharacter?.Initialize(pathTarget);

@@ -11,6 +11,7 @@ namespace Defenses
         [SerializeField] private UIBlock2D background;
         [SerializeField] private UIBlock2D cooldown;
         [SerializeField] private UIBlock2D icon;
+        [SerializeField] private TextBlock costText;
 
         [Header("Hover Appearance")] [SerializeField]
         private Color hoverBackgroundColor = Color.white;
@@ -35,6 +36,7 @@ namespace Defenses
             EnsureInitialized();
 
             dataSource = data;
+            costText.Text = data.Cost.ToString();
             
             if (data.Icon != null)
                 icon.SetImage(data.Icon);
