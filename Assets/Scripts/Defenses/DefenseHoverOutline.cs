@@ -11,11 +11,11 @@ namespace Defenses
         private static readonly int OutlineEnabledId = Shader.PropertyToID("_DefenseOutlineEnabled");
         private MaterialPropertyBlock propertyBlock;
         
-        public DefenseCharacterBase Character { get; private set; }
+        public UpgradeableDefense Defense { get; private set; }
 
         private void Awake()
         {
-            Character = GetComponent<DefenseCharacterBase>();
+            Defense = GetComponent<UpgradeableDefense>();
             propertyBlock = new MaterialPropertyBlock();
             
             SetHovered(false);

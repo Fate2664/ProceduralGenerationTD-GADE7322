@@ -16,7 +16,7 @@ namespace Defenses
 
         private DefenseHoverOutline hoveredOutline;
         
-        public event Action<DefenseCharacterBase> DefenseSelected;
+        public event Action<UpgradeableDefense> DefenseSelected;
 
         private void Update()
         {
@@ -43,11 +43,11 @@ namespace Defenses
             if (Physics.Raycast(worldRay, out RaycastHit hit, maxRayDistance, worldRaycastLayerMask,
                     QueryTriggerInteraction.Collide))
             {
-                DefenseCharacterBase character = hit.collider.GetComponentInParent<DefenseCharacterBase>();
+                UpgradeableDefense defense = hit.collider.GetComponentInParent<UpgradeableDefense>();
 
-                if (character != null && !character.IsDead)
+                if (defense != null && !defense.IsDead)
                 {
-                    nextOutline = character.GetComponent<DefenseHoverOutline>();
+                    nextOutline = defense.GetComponent<DefenseHoverOutline>();
                 }
             }
             
@@ -55,8 +55,8 @@ namespace Defenses
 
             if (mouse.leftButton.wasPressedThisFrame)
             {
-                DefenseCharacterBase clickedCharacter = hoveredOutline != null ? hoveredOutline.Character : null;
-                DefenseSelected?.Invoke(clickedCharacter);
+                UpgradeableDefense clickedDefense = hoveredOutline != null ? hoveredOutline.Defense : null;
+                DefenseSelected?.Invoke(clickedDefense);
             }
         }
 

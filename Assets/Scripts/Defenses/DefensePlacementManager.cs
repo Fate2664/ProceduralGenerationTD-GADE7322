@@ -194,6 +194,9 @@ namespace Defenses
             defenseCharacter?.Initialize(pathTarget);
             tile.SetOccupant(defense);
             
+            if (defense.TryGetComponent<AnthillDefense>(out AnthillDefense anthillDefense))
+                anthillDefense.Initialize(currency);
+            
             if (defenseCharacter != null)
                 DefensePlaced?.Invoke(defenseCharacter);
             

@@ -20,7 +20,7 @@ namespace Defenses
         [SerializeField] private ParticleSystem selectedIndicator;
         [SerializeField] private Vector3 selectedIndicatorOffset = new Vector3(0f, 0.5f, 0f);
 
-        private DefenseCharacterBase selectedCharacter;
+        private UpgradeableDefense selectedCharacter;
         private ParticleSystem selectedIndicatorInstance;
 
         private void Awake()
@@ -47,15 +47,15 @@ namespace Defenses
             ClearSelection();
         }
 
-        private void HandleSelectedCharacter(DefenseCharacterBase character)
+        private void HandleSelectedCharacter(UpgradeableDefense defense)
         {
             ClearSelection();
 
-            if (character == null || character.IsDead || character.UpgradeData == null)
+            if (defense == null || defense.IsDead || defense.UpgradeData == null)
                 return;
 
-            selectedCharacter = character;
-            selectedCharacter.Died += HandleSelectedCharacterDied;
+            selectedCharacter = defense;
+            selectedCharacter.Unavailable += HandleSelectedCharacterUnavailable;
             selectedCharacter.OnDefenseUpgraded += Refresh;
             
             ShowSelectedIndicator();
@@ -98,7 +98,7 @@ namespace Defenses
             upgradesList.Refresh();
         }
 
-        private void HandleSelectedCharacterDied(DefenseCharacterBase character)
+        private void HandleSelectedCharacterUnavailable()
         {
             ClearSelection();
         }
@@ -135,7 +135,7 @@ namespace Defenses
             
             if (selectedCharacter != null)
             {
-                selectedCharacter.Died -= HandleSelectedCharacterDied;
+                selectedCharacter.Unavailable -= HandleSelectedCharacterUnavailable;
                 selectedCharacter.OnDefenseUpgraded -= Refresh;
             }
 

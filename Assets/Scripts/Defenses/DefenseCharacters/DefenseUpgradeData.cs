@@ -9,7 +9,9 @@ namespace Defenses.DefenseCharacters
         Range,
         AttackSpeed,
         MaxHealth,
-        AOE
+        AOE,
+        CurrencyProductionAmount,
+        CurrencyProductionSpeed
     }
     
     [Serializable]

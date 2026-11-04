@@ -15,7 +15,7 @@ namespace Defenses.DefenseCharacters
     }
 
 
-    public class DefenseCharacterBase : Entity, IDamageable
+    public class DefenseCharacterBase : UpgradeableDefense, IDamageable 
     {
         #region Inspector Variables
 
@@ -59,7 +59,7 @@ namespace Defenses.DefenseCharacters
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
 
-        public DefenseUpgradeData UpgradeData
+        public override DefenseUpgradeData UpgradeData
         {
             get
             {
@@ -73,10 +73,10 @@ namespace Defenses.DefenseCharacters
         }
 
         public bool IsUpgraded => upgradesPurchased > 0;
-        public int CurrentLevel => upgradesPurchased + 1;
-        public bool IsDead => currentHealth <= 0f;
+        public override int CurrentLevel => upgradesPurchased + 1;
+        public override bool IsDead => currentHealth <= 0f;
         public event Action<DefenseCharacterBase> Died;
-        public event Action OnDefenseUpgraded;
+        public override event Action OnDefenseUpgraded;
 
         public static List<DefenseCharacterBase> All = new List<DefenseCharacterBase>();
         private float baseDetectionRadius;
@@ -230,7 +230,7 @@ namespace Defenses.DefenseCharacters
 
         #region Upgrading
 
-        public virtual float GetUpgradeValue(DefenseUpgradeType type)
+        public override float GetUpgradeValue(DefenseUpgradeType type)
         {
             switch (type)
             {
@@ -247,7 +247,7 @@ namespace Defenses.DefenseCharacters
             }
         }
 
-        public bool TryUpgrade(CurrencyManager currency)
+        public override bool TryUpgrade(CurrencyManager currency)
         {
             if (currency == null || IsDead || upgradeInProgress)
                 return false;
