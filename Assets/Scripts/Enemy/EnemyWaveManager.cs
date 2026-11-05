@@ -14,7 +14,7 @@ namespace Enemy
         [Header("References")] 
         [SerializeField] private EnemyData[] enemyData;
         [SerializeField] private DefensePlacementManager defensePlacementManager;
-
+        [SerializeField] private WeatherManager weatherManager;
         [SerializeField] private WorldGenerator worldGenerator;
         [SerializeField] private TextBlock waveText;
 
@@ -63,6 +63,8 @@ namespace Enemy
             nextWaveTimer.OnTimerStop += BeginWave;
             defensePlacementManager.DefensePlaced += HandleDefensePlaced;
             tower.Damaged += HandleTowerDamaged;
+            if (weatherManager == null)
+                weatherManager = WeatherManager.Instance;
 
             BeginWave();
         }
@@ -106,6 +108,7 @@ namespace Enemy
         private void BeginWave()
         {
             currentWave++;
+            weatherManager.SetWaveNumber(currentWave);
             nextInstruction = 0;
             waveCompleted = false;
 
@@ -116,8 +119,10 @@ namespace Enemy
             int budget = Mathf.Clamp(Mathf.RoundToInt(baseBudget * budgetMultiplier), 1, maxWaveBudget);
             int seed = unchecked(waveSeed + currentWave * 397);
 
+            WeatherWaveProfile weatherProfile = weatherManager.GetCurrentWaveProfile();
+            
             currentPlan = planner.CreatePlan(currentWave, budget, enemyData, paths, new System.Random(seed),
-                maxEnemiesPerWave);
+                maxEnemiesPerWave, weatherProfile);
 
             performanceTracker.BeginWave(currentWave, tower.MaxHealth);
 

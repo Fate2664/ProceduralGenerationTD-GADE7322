@@ -9806,6 +9806,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2888003dea245634eb07fd303e9c399b, type: 2}
   - {fileID: 11400000, guid: d5830745ad0e8a84aafbd5e4775b579e, type: 2}
   defensePlacementManager: {fileID: 1764515004}
+  weatherManager: {fileID: 1503691561}
   worldGenerator: {fileID: 1122166804}
   waveText: {fileID: 1101633039}
   startingBudget: 4
@@ -12266,14 +12267,29 @@ MonoBehaviour:
   rainParticles: {fileID: 721255793}
   MaxDuration: 40
   MinDuration: 20
-  enemySpeedMult: 0.2
-  enemyDamageMult: 1
-  towerRangeMult: 0.9
-  towerFireRateMult: 1
-  currEnemySpeedMult: 1
-  currEnemyDamageMult: 1
-  currTowerRangeMult: 1
-  currTowerFireRateMult: 1
+  wetDefenseDamageMultiplier: 0.9
+  fogDefenseAttackSpeedMultiplier: 0.85
+  waveProfiles:
+  - weather: 0
+    firstWave: 1
+    commonWeight: 1
+    rangerWeight: 1
+    swarmerWeight: 1
+  - weather: 1
+    firstWave: 4
+    commonWeight: 1.2
+    rangerWeight: 1
+    swarmerWeight: 0.8
+  - weather: 3
+    firstWave: 6
+    commonWeight: 1
+    rangerWeight: 1.3
+    swarmerWeight: 0.7
+  - weather: 2
+    firstWave: 8
+    commonWeight: 0.8
+    rangerWeight: 1.1
+    swarmerWeight: 1.3
   sun: {fileID: 410087040}
   looks:
   - weather: 0
@@ -12307,11 +12323,13 @@ MonoBehaviour:
   minLightningInterval: 3
   maxLightningInterval: 8
   lightningDamage: 5
-  chanceToHitDefense: 0.2
-  lightningObject: {fileID: 5144244941493754468, guid: de09fa56dcea6d74d85f3256856ef81a, type: 3}
   flashIntensity: 3
   flashDuration: 0.08
   lightningBoltPrefab: {fileID: 4141462603498905233, guid: de09fa56dcea6d74d85f3256856ef81a, type: 3}
+  currEnemySpeedMult: 1
+  currEnemyDamageMult: 1
+  currTowerRangeMult: 1
+  currTowerFireRateMult: 1
   currentWeather: 0
 --- !u!1 &1599429095
 GameObject:

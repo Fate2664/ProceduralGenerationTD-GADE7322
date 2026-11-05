@@ -18,7 +18,7 @@ namespace Spawning
         }
 
         public WavePlan CreatePlan(int waveNumber, int budget, IReadOnlyList<EnemyData> enemyTypes,
-            IReadOnlyList<PathProfile> paths, System.Random random, int maxEnemies)
+            IReadOnlyList<PathProfile> paths, System.Random random, int maxEnemies, WeatherWaveProfile weatherProfile)
         {
             var instructions = new List<SpawnInstruction>();
             int remainingBudget = budget;
@@ -55,8 +55,11 @@ namespace Spawning
                         //Shorter paths recieve less weight
                         float lengthWeight = Mathf.Clamp(path.Length / averageLength, 0.5f, 1.5f);
                         
+                        //Enemy weights for the current weather
+                        float weatherWeight = weatherProfile?.GetEnemyWeight(enemy.Type) ?? 1f;
+                        
                         //Get total weighting
-                        float weight = enemy.SelectionWeight * GetTypeWeight(enemy.Type, path) * allocationWeight * repetitionWeight * lengthWeight;
+                        float weight = enemy.SelectionWeight * GetTypeWeight(enemy.Type, path) * allocationWeight * repetitionWeight * lengthWeight * weatherWeight;
 
                         candidates.Add(new Candidate
                         {

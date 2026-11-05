@@ -2,6 +2,7 @@ using Defenses.DefenseCharacters;
 using Enemy;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using PCG;
 using UnityEngine;
@@ -13,41 +14,50 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] int MaxDuration = 40;
     [SerializeField] int MinDuration = 20;
 
-    [Header("Multipliers")] public float enemySpeedMult = 0.8f;
-    public float enemyDamageMult = 1f;
-    public float towerRangeMult = 0.9f;
-    public float towerFireRateMult = 0.7f;
+    [Header("Weather Effects")]
+    [SerializeField, Range(0.1f, 1f)] private float wetDefenseDamageMultiplier = 0.9f;
+    [SerializeField, Range(0.1f, 1f)] private float fogDefenseAttackSpeedMultiplier = 0.85f;
+
+    [Header("Weather Wave Profiles")] 
+    [SerializeField] private WeatherWaveProfile[] waveProfiles =
+    {
+        new(WeatherType.Sunny, 1),
+        new(WeatherType.Rain, 4, commonWeight: 1.2f, swarmerWeight: 0.8f),
+        new(WeatherType.ThunderStorm, 6, rangerWeight: 1.3f, swarmerWeight: 0.7f),
+        new(WeatherType.Fog, 8, commonWeight: 0.8f, rangerWeight: 1.1f, swarmerWeight: 1.3f)
+    };
+
+    [Header("Visuals")] 
+    [SerializeField] private Light sun;
+    [SerializeField] private WeatherLook[] looks;
+    [SerializeField] private float transitionSpeed = 1f;
+
+    [Header("Clouds")] 
+    [SerializeField] private WorldGenerator worldGenerator;
+    [SerializeField] private Renderer weatherCloudRenderer;
+    [SerializeField] private float cloudFormationDuration = 6f;
+
+    [Header("Fog Clouds")] 
+    [SerializeField] private float fogCloudWorldY = 35f;
+    [SerializeField, Range(0.05f, 1f)] private float fogClearSize = 0.5f;
+    [SerializeField] private float fogExlusionFeather = 5f;
+    [SerializeField] private float fogTransitionDuration = 4f;
+
+    [Header("Lightning")] 
+    [SerializeField] float minLightningInterval = 3f;
+    [SerializeField] float maxLightningInterval = 8f;
+    [SerializeField] int lightningDamage = 5;
+    [SerializeField] private float flashIntensity = 3f;
+    [SerializeField] private float flashDuration = 0.08f;
+    [SerializeField] private Lightning lightningBoltPrefab;
 
     [HideInInspector] public float currEnemySpeedMult = 1f;
     [HideInInspector] public float currEnemyDamageMult = 1f;
     [HideInInspector] public float currTowerRangeMult = 1f;
     [HideInInspector] public float currTowerFireRateMult = 1f;
-
-    [Header("Visuals")] [SerializeField] private Light sun;
-    [SerializeField] private WeatherLook[] looks;
-    [SerializeField] private float transitionSpeed = 1f;
-
-    [Header("Clouds")] [SerializeField] private WorldGenerator worldGenerator;
-    [SerializeField] private Renderer weatherCloudRenderer;
-    [SerializeField] private float cloudFormationDuration = 6f;
-
-    [Header("Fog Clouds")] [SerializeField]
-    private float fogCloudWorldY = 35f;
-
-    [SerializeField, Range(0.05f, 1f)] private float fogClearSize = 0.5f;
-    [SerializeField] private float fogExlusionFeather = 5f;
-    [SerializeField] private float fogTransitionDuration = 4f;
-
-    [Header("Lightning")] [SerializeField] float minLightningInterval = 3f;
-    [SerializeField] float maxLightningInterval = 8f;
-    [SerializeField] int lightningDamage = 5;
-    [Range(0f, 1f)] [SerializeField] private float chanceToHitDefense = 0.2f;
-    [SerializeField] GameObject lightningObject;
-    [SerializeField] private float flashIntensity = 3f;
-    [SerializeField] private float flashDuration = 0.08f;
-    [SerializeField] private Lightning lightningBoltPrefab;
-
+    
     private int duration;
+    private int currentWave;
     private Coroutine lightningRoutine;
     private WeatherLook targetLook;
     private bool weatherActive = true;
@@ -61,10 +71,15 @@ public class WeatherManager : MonoBehaviour
     private static readonly int CloudExclusionBoundsId = Shader.PropertyToID("_CloudExclusionBounds");
     private static readonly int CloudExclusionEnabledId = Shader.PropertyToID("_CloudExclusionEnabled");
     private static readonly int CloudExclusionFeatherId = Shader.PropertyToID("_CloudExclusionFeather");
+    private readonly List<WeatherType> eligibleWeather = new();
+    private readonly List<DamageableDefense> lightningTargets = new();
 
     public static WeatherManager Instance;
-    public static event Action<WeatherType> OnWeatherChanged;
+    public float DefenseDamageMultiplier { get; private set; }
+    public float DefenseAttackSpeedMultiplier { get; private set; }
     public WeatherType currentWeather;
+    public static event Action<WeatherType> OnWeatherChanged;
+    public void SetWaveNumber(int waveNumber) => currentWave = waveNumber;
 
     [System.Serializable]
     public class WeatherLook
@@ -87,6 +102,7 @@ public class WeatherManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        currentWeather = WeatherType.Sunny;
         rainParticles.Stop();
     }
 
@@ -133,6 +149,103 @@ public class WeatherManager : MonoBehaviour
     {
         UpdateFogExclusionBounds();
     }
+    
+    private void SetTargetLook()
+    {
+        foreach (var look in looks)
+        {
+            if (look.weather == currentWeather)
+            {
+                targetLook = look;
+                return;
+            }
+        }
+    }
+
+    private IEnumerator WeatherLoop()
+    {
+        while (weatherActive)
+        {
+            RandomiseDuration();
+            ChangeStats();
+            SetTargetLook();
+            OnWeatherChanged?.Invoke(currentWeather);
+
+            yield return new WaitForSeconds(duration);
+            
+            WeatherSelector();
+        }
+    }
+    
+    public void ChangeStats()
+    {
+        //Reset stats and visual effects
+        currEnemySpeedMult = 1f;
+        currEnemyDamageMult = 1f;
+        currTowerRangeMult = 1f;
+        currTowerFireRateMult = 1f;
+        DefenseDamageMultiplier = 1f;
+        DefenseAttackSpeedMultiplier = 1f;
+        
+        rainParticles.Stop();
+        StopLightning();
+
+        switch (currentWeather)
+        {
+            case WeatherType.Rain:
+                rainParticles.Play();
+                DefenseDamageMultiplier = wetDefenseDamageMultiplier;
+                break;
+
+            case WeatherType.Fog:
+                DefenseAttackSpeedMultiplier = fogDefenseAttackSpeedMultiplier;
+                break;
+
+            case WeatherType.ThunderStorm:
+                rainParticles.Play();
+                DefenseDamageMultiplier = wetDefenseDamageMultiplier;
+                StartLightning();
+                break;
+        }
+
+        UpdateFogCloudState();
+        UpdateCloudCoverage();
+    }
+
+    public WeatherWaveProfile GetCurrentWaveProfile()
+    {
+        foreach (var profile in waveProfiles)
+        {
+            if (profile.Weather == currentWeather)
+                return profile;
+        }
+        return null;
+    }
+
+    public void WeatherSelector()
+    {
+        eligibleWeather.Clear();
+        eligibleWeather.Add(WeatherType.Sunny);
+
+        foreach (var profile in waveProfiles)
+        {
+            if (currentWave < profile.FirstWave)
+                continue;
+            
+            if (!eligibleWeather.Contains(profile.Weather))
+                eligibleWeather.Add(profile.Weather);
+        }
+        
+        int selectedIndex = UnityEngine.Random.Range(0, eligibleWeather.Count);
+        currentWeather = eligibleWeather[selectedIndex];
+    }
+
+    public void RandomiseDuration()
+    {
+        int randomDuration = UnityEngine.Random.Range(MinDuration, MaxDuration + 1);
+        duration = randomDuration;
+    }
+
 
     #region Lightning
 
@@ -147,38 +260,33 @@ public class WeatherManager : MonoBehaviour
 
     private void StrikeLightning()
     {
-        EnemyBase.All.RemoveAll(e => e == null);
-        DefenseCharacterBase.All.RemoveAll(d => d == null);
+        if (currentWeather != WeatherType.ThunderStorm)
+            return;
 
-        bool hasEnemies = EnemyBase.All.Count > 0;
-        bool hasDefenses = DefenseCharacterBase.All.Count > 0;
-        if (!hasEnemies && !hasDefenses) return;
+        lightningTargets.Clear();
 
-        bool hitDefense = hasDefenses && (!hasEnemies || UnityEngine.Random.value < chanceToHitDefense);
-
-        Vector3 strikePos;
-        if (hitDefense)
+        foreach (var tile in worldGenerator.Grid)
         {
-            DefenseCharacterBase defense =
-                DefenseCharacterBase.All[UnityEngine.Random.Range(0, DefenseCharacterBase.All.Count)];
-            strikePos = defense.transform.position;
-            defense.TakeDamage(lightningDamage);
-            Debug.Log("Lightning hit " + defense.name);
-        }
-        else
-        {
-            EnemyBase enemy = EnemyBase.All[UnityEngine.Random.Range(0, EnemyBase.All.Count)];
-            strikePos = enemy.transform.position;
-            enemy.TakeDamage(lightningDamage);
-            Debug.Log("Lightning hit " + enemy.name);
+            if (tile.Occupant == null)
+                continue;
+            if (!tile.Occupant.TryGetComponent(out DamageableDefense defense))
+                continue;
+            if (defense.IsDead)
+                continue;
+            
+            lightningTargets.Add(defense);
         }
 
-        if (lightningObject != null)
-        {
-            Lightning bolt = Instantiate(lightningBoltPrefab);
-            bolt.Strike(strikePos);
-        }
+        if (lightningTargets.Count == 0)
+            return;
+        
+        int targetIndex = UnityEngine.Random.Range(0, lightningTargets.Count);
+        DamageableDefense target = lightningTargets[targetIndex];
+        Vector3 strikePosition = target.transform.position;
 
+        Lightning bolt = Instantiate(lightningBoltPrefab);
+        bolt.Strike(strikePosition);
+        target.TakeDamage(lightningDamage);
         StartCoroutine(Flash());
     }
 
@@ -198,34 +306,7 @@ public class WeatherManager : MonoBehaviour
     }
 
     #endregion
-
-    private void SetTargetLook()
-    {
-        foreach (var look in looks)
-        {
-            if (look.weather == currentWeather)
-            {
-                targetLook = look;
-                return;
-            }
-        }
-    }
-
-    private IEnumerator WeatherLoop()
-    {
-        while (weatherActive)
-        {
-            WeatherSelector();
-            RandomiseDuration();
-            ChangeStats();
-            SetTargetLook();
-            OnWeatherChanged?.Invoke(currentWeather);
-
-
-            yield return new WaitForSeconds(duration);
-        }
-    }
-
+    
     #region Clouds
 
     private void UpdateCloudCoverage()
@@ -286,56 +367,6 @@ public class WeatherManager : MonoBehaviour
 
     #endregion
 
-    public void ChangeStats()
-    {
-        //Reset stats and visual effects
-        currEnemySpeedMult = 1f;
-        currEnemyDamageMult = 1f;
-        currTowerRangeMult = 1f;
-        currTowerFireRateMult = 1f;
-        rainParticles.Stop();
-        StopLightning();
-
-        switch (currentWeather)
-        {
-            case WeatherType.Sunny:
-                break;
-
-
-            case WeatherType.Rain:
-                rainParticles.Play();
-                currEnemySpeedMult = enemySpeedMult;
-                currTowerFireRateMult = towerFireRateMult;
-                break;
-
-            case WeatherType.Fog:
-                currTowerRangeMult = towerRangeMult;
-                break;
-
-            case WeatherType.ThunderStorm:
-                rainParticles.Play();
-                StartLightning();
-                currEnemySpeedMult = enemySpeedMult;
-                currEnemyDamageMult = enemyDamageMult;
-                break;
-        }
-
-        UpdateFogCloudState();
-        UpdateCloudCoverage();
-    }
-
-    public void WeatherSelector()
-    {
-        int count = Enum.GetValues(typeof(WeatherType)).Length;
-        currentWeather = (WeatherType)UnityEngine.Random.Range(0, count);
-    }
-
-    public void RandomiseDuration()
-    {
-        int randomDuration = UnityEngine.Random.Range(MinDuration, MaxDuration + 1);
-        duration = randomDuration;
-    }
-
     private void OnDisable()
     {
         cloudCoverageTween?.Kill();
@@ -356,4 +387,5 @@ public class WeatherManager : MonoBehaviour
         cloudExclusionTween?.Kill();
         Destroy(weatherCloudMaterial);
     }
+
 }

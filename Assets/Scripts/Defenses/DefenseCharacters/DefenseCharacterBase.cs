@@ -52,10 +52,21 @@ namespace Defenses.DefenseCharacters
         private int upgradesPurchased;
         private bool upgradeInProgress;
         private GameObject upgradeEffectInstance;
+        private float WeatherAttackSpeedMultiplier => WeatherManager.Instance != null
+            ? Mathf.Clamp(WeatherManager.Instance.DefenseAttackSpeedMultiplier, 0.1f, 1f)
+            : 1f;
 
         private static readonly int AttackSpeedMultiplierId = Animator.StringToHash("AttackSpeedMultiplier");
 
-        public int AttackDamage => attackDamage;
+        public int AttackDamage
+        {
+            get
+            {
+                float multiplier = WeatherManager.Instance != null ? WeatherManager.Instance.DefenseDamageMultiplier : 1f;
+                return Mathf.RoundToInt(attackDamage * multiplier);
+            }
+        }
+
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
 
@@ -105,11 +116,14 @@ namespace Defenses.DefenseCharacters
         {
             if (stateMachine.CurrentState == null) return;
 
+            float attackSpeedMultiplier = WeatherAttackSpeedMultiplier;
+            animator.SetFloat(AttackSpeedMultiplierId, initialAttackInterval / timeBetweenAttacks * attackSpeedMultiplier);
+            
             enemyDetector.TickDetection(Time.deltaTime);
             UpdateFacing(Time.deltaTime);
 
             stateMachine.Update();
-            attackTimer.Tick(Time.deltaTime);
+            attackTimer.Tick(Time.deltaTime * attackSpeedMultiplier);
         }
 
         private void FixedUpdate()
@@ -186,7 +200,7 @@ namespace Defenses.DefenseCharacters
 
             attackTimer.Reset(timeBetweenAttacks);
             attackTimer.Start();
-            animator.SetFloat(AttackSpeedMultiplierId, initialAttackInterval / timeBetweenAttacks);
+            animator.SetFloat(AttackSpeedMultiplierId, initialAttackInterval / timeBetweenAttacks * WeatherAttackSpeedMultiplier);
             PerformAttack();
             return true;
         }
