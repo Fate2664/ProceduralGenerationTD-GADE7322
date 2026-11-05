@@ -24,26 +24,26 @@ namespace Enemy
         protected Animator animator;
         protected Transform currentTarget;
         protected Transform towerTarget;
-        protected DefenseCharacterBase defenseTarget;
+        protected DamageableDefense defenseTarget;
 
         protected IState walkState;
         protected IState attackState;
-        
+
         protected CountDownTimer attackTimer;
-        protected bool HasDefenseTarget => defenseTarget != null;
         
+        public bool HasDefenseTarget => defenseTarget != null;
         public Transform CurrentTarget => currentTarget;
         public bool HasReachedTower { get; private set; }
-        
+
         public event Action<EnemyBase> Died;
         public event Action<EnemyBase> ReachedTower;
         public event Action<Projectile> ProjectileSpawned;
-        
+
         private float currentHealth;
         private CharacterHealthBar healthBar;
+        private WorldGenerator worldGenerator;
 
-        public static List<EnemyBase> All = new List<EnemyBase>();
-
+        public static List<EnemyBase> All = new();
 
 
         private void OnEnable()
@@ -66,33 +66,46 @@ namespace Enemy
         private void ApplyWeather()
         {
             float mult = WeatherManager.Instance != null ? WeatherManager.Instance.currEnemySpeedMult : 1f;
+            if (GetCurrentPathTerrain() == TerrainType.Desert)
+                mult *= worldGenerator.DesertEnemySpeedMultiplier;
             agent.speed = enemyData.MoveSpeed * mult;
+        }
+
+        public TerrainType GetCurrentPathTerrain()
+        {
+            if (worldGenerator != null && worldGenerator.TryGetTile(transform.position, out GridTile tile) && tile.Type == TileType.Path)
+                return tile.Terrain;
+
+            return TerrainType.Grassland;
         }
 
 
         protected virtual void Awake()
         {
-
             agent = GetComponent<NavMeshAgent>();
             animator = GetComponentInChildren<Animator>();
             healthBar = GetComponentInChildren<CharacterHealthBar>(true);
-            
+
             currentHealth = enemyData.MaxHealth;
             healthBar?.SetHealth(currentHealth, enemyData.MaxHealth);
 
             stateMachine = new StateMachine.StateMachine();
             attackTimer = new CountDownTimer(enemyData.TimeBetweenAttacks);
-           
+
             ApplyWeather();
         }
 
-        protected void At(IState from, IState to, IPredicate condition) => stateMachine.AddTransition(from, to, condition);
+        protected void At(IState from, IState to, IPredicate condition) =>
+            stateMachine.AddTransition(from, to, condition);
+
         protected void Any(IState to, IPredicate condition) => stateMachine.AddAnyTransition(to, condition);
 
         private void Update()
         {
             if (stateMachine.CurrentState == null) return;
-            
+
+            ApplyWeather();
+
             stateMachine.Update();
             attackTimer.Tick(Time.deltaTime);
         }
@@ -100,7 +113,7 @@ namespace Enemy
         private void FixedUpdate()
         {
             if (stateMachine.CurrentState == null) return;
-            
+
             stateMachine.FixedUpdate();
         }
 
@@ -108,6 +121,8 @@ namespace Enemy
         {
             towerTarget = target;
             currentTarget = target;
+            worldGenerator = path != null ? path.Tiles[0].GetComponentInParent<WorldGenerator>() : null;
+            ApplyWeather();
         }
 
         public bool PlaceOnNavMesh(Vector3 position, float maxDistance = 3f)
@@ -115,18 +130,18 @@ namespace Enemy
             int areaMask = agent.areaMask;
             if (!NavMesh.SamplePosition(position, out NavMeshHit hit, maxDistance, areaMask))
                 return false;
-            
+
             agent.enabled = false;
             transform.position = hit.position;
             agent.enabled = true;
 
             return agent.isOnNavMesh;
-        }        
+        }
 
         public virtual void Attack()
         {
             if (attackTimer.IsRunning) return;
-            
+
             PerformAttack();
             attackTimer.Start();
         }
@@ -135,12 +150,19 @@ namespace Enemy
         {
             get
             {
-                float mult = WeatherManager.Instance != null ? WeatherManager.Instance.currEnemyDamageMult : 1f;
-                return Mathf.RoundToInt(enemyData.AttackDamage * mult);
+                float multiplier = WeatherManager.Instance != null ? WeatherManager.Instance.currEnemyDamageMult : 1f;
+                
+                if (GetCurrentPathTerrain() == TerrainType.RockyGround && currentTarget != null &&
+                    currentTarget.TryGetComponent<DamageableDefense>(out _))
+                    multiplier *= worldGenerator.RockyEnemyDamageMultiplier;
+                
+                return Mathf.RoundToInt(enemyData.AttackDamage * multiplier);
             }
         }
 
-        protected virtual void PerformAttack() {}
+        protected virtual void PerformAttack()
+        {
+        }
 
         public void TakeDamage(int damage)
         {
@@ -148,7 +170,7 @@ namespace Enemy
                 return;
 
             PlayDamageEffect();
-            
+
             currentHealth = Mathf.Max(0, currentHealth - damage);
             healthBar?.SetHealth(currentHealth, enemyData.MaxHealth);
 
@@ -156,26 +178,26 @@ namespace Enemy
                 Die();
         }
 
-        protected bool TryTargetDefense(DefenseCharacterBase defenseCharacter)
+        protected bool TryTargetDefense(DamageableDefense defenseCharacter)
         {
             if (defenseTarget != null)
                 return false;
-            
+
             if (UnityEngine.Random.value > EnemyData.ChanceToAttackDefenses)
                 return false;
-            
+
             defenseTarget = defenseCharacter;
             currentTarget = defenseCharacter.transform;
-            defenseTarget.Died += HandleDefenseDied;
+            defenseTarget.DefenseDied += HandleDefenseDied;
             return true;
         }
 
-        public void HandleDefenseDied(DefenseCharacterBase defenseCharacter)
+        public void HandleDefenseDied(DamageableDefense defenseCharacter)
         {
             if (defenseCharacter != defenseTarget)
                 return;
 
-            defenseTarget.Died -= HandleDefenseDied;
+            defenseTarget.DefenseDied -= HandleDefenseDied;
             defenseTarget = null;
             currentTarget = towerTarget;
         }
@@ -193,7 +215,7 @@ namespace Enemy
             Died?.Invoke(this);
             Destroy(gameObject);
         }
-        
+
         public void ConfigureForSpawn(EnemyData data)
         {
             enemyData = data;
@@ -207,7 +229,7 @@ namespace Enemy
         {
             if (HasReachedTower)
                 return;
-            
+
             HasReachedTower = true;
             ReachedTower?.Invoke(this);
         }

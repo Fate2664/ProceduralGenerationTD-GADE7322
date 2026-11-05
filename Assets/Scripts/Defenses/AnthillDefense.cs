@@ -1,18 +1,23 @@
 ﻿using System;
 using Defenses.DefenseCharacters;
 using DG.Tweening;
+using PCG;
+using UI;
 using UnityEngine;
 
-public class AnthillDefense : UpgradeableDefense
+public class AnthillDefense : DamageableDefense
 {
-    [Header("Production")] [SerializeField]
-    private int currencyAmount = 10;
-
+    [Header("Production")]
+    [SerializeField] private int currencyAmount = 10;
     [SerializeField] private float productionRate = 10f;
+    
+    [Header("Health")]
+    [SerializeField] private float maxHealth = 10f;
+    [SerializeField] private GameObject damageEffectPrefab;
+    [SerializeField] private Transform damageEffectPoint;
 
-    [Header("Coin Visual")] [SerializeField]
-    private Transform coinRoot;
-
+    [Header("Coin Visual")]
+    [SerializeField] private Transform coinRoot;
     [SerializeField] private ParticleSystem currencyShine;
     [SerializeField] private float riseHeight = 1f;
     [SerializeField] private float riseDuration = 0.4f;
@@ -23,12 +28,15 @@ public class AnthillDefense : UpgradeableDefense
     [SerializeField] private Transform coinVisual;
     [SerializeField] private float spinDegreesPerSecond = 180f;
 
-    [Header("Upgrades")] [SerializeField] private DefenseUpgradeData upgradeData;
+    [Header("Upgrades")]
+    [SerializeField] private DefenseUpgradeData upgradeData;
     [SerializeField] private DefenseUpgradeData secondUpgradeData;
     [SerializeField] private GameObject upgradeEffect1Prefab;
     [SerializeField] private GameObject upgradeEffect2Prefab;
     [SerializeField] private Transform upgradeEffectPoint;
 
+    private float currentHealth;
+    private CharacterHealthBar healthbar;
     private CurrencyManager currency;
     private Sequence productionSequence;
     private Vector3 restingPosition;
@@ -39,6 +47,13 @@ public class AnthillDefense : UpgradeableDefense
     private bool producing;
     private bool upgradeInProgress;
     private Quaternion restingCoinRotation;
+    private GridTile placementTile;
+    private WorldGenerator worldGenerator;
+
+    private float ProductionSpeedMultiplier => placementTile != null &&
+        placementTile.Terrain == TerrainType.FertileSoil && worldGenerator != null
+            ? worldGenerator.FertileProductionSpeedMultiplier
+            : 1f;
 
     public override DefenseUpgradeData UpgradeData => upgradesPurchased switch
     {
@@ -48,12 +63,15 @@ public class AnthillDefense : UpgradeableDefense
     };
 
     public override int CurrentLevel => upgradesPurchased + 1;
-    public override bool IsDead => false;
+    public override bool IsDead => currentHealth <= 0f;
 
     public override event Action OnDefenseUpgraded;
 
     private void Awake()
     {
+        currentHealth = maxHealth;
+        healthbar = GetComponentInChildren<CharacterHealthBar>(true);
+        healthbar?.SetHealth(currentHealth, maxHealth);
         restingPosition = coinRoot.localPosition;
         visibleScale = coinRoot.localScale;
         restingCoinRotation = coinVisual.localRotation;
@@ -66,16 +84,42 @@ public class AnthillDefense : UpgradeableDefense
             return;
 
         currency = currencyManager;
+        placementTile = GetComponentInParent<GridTile>();
+        worldGenerator = GetComponentInParent<WorldGenerator>();
         elapsedTime = 0f;
         placed = true;
     }
 
     private void Update()
     {
-        elapsedTime += Time.deltaTime;
+        if (!placed || IsDead)
+            return;
 
-        if (elapsedTime >= productionRate)
+        elapsedTime += Time.deltaTime * ProductionSpeedMultiplier;
+
+        if (!producing && elapsedTime >= productionRate)
             ProduceCurrency();
+    }
+
+    public override void TakeDamage(int damage)
+    {
+        if (IsDead)
+            return;
+        
+        Instantiate(damageEffectPrefab, damageEffectPoint.position, damageEffectPoint.rotation);
+        currentHealth = Mathf.Max(0f, currentHealth - damage);
+        healthbar?.SetHealth(currentHealth, maxHealth);
+
+        if (!IsDead)
+            return;
+        
+        productionSequence?.Kill();
+        productionSequence = null;
+        producing = false;
+        placed = false;
+        
+        NotifyDefenseDied();
+        Destroy(gameObject);
     }
 
     private void ProduceCurrency()
@@ -94,7 +138,9 @@ public class AnthillDefense : UpgradeableDefense
 
         float raisedY = restingPosition.y + riseHeight;
 
+        //Coin animation:
         productionSequence = DOTween.Sequence();
+        productionSequence.timeScale = ProductionSpeedMultiplier;
         productionSequence.Append(coinRoot.DOLocalMoveY(raisedY, riseDuration).SetEase(Ease.OutCubic));
         productionSequence.Join(coinRoot.DOScale(visibleScale, riseDuration).SetEase(Ease.OutBack));
         productionSequence.Append(coinRoot.DOLocalMoveY(raisedY + bobHeight, bobHalfDuration).SetEase(Ease.InOutSine)
@@ -110,7 +156,7 @@ public class AnthillDefense : UpgradeableDefense
             productionSequence = null;
             HideCoin();
             producing = false;
-            currency.AddCurrency(payout);
+            currency.AddCurrency(payout);   //Add currency
         });
     }
 
@@ -140,7 +186,7 @@ public class AnthillDefense : UpgradeableDefense
     {
         DefenseUpgradeData nextUpgrade = UpgradeData;
 
-        if (upgradeInProgress)
+        if (upgradeInProgress || IsDead)
             return false;
 
         upgradeInProgress = true;

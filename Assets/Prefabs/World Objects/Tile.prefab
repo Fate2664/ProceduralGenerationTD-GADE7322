@@ -173,6 +173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5b6fa3b848c44a3a196333ddd5d68df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PCG.GridTile
+  groundRenderer: {fileID: 3129396079271875608}
 --- !u!1001 &446415965223027839
 PrefabInstance:
   m_ObjectHideFlags: 0

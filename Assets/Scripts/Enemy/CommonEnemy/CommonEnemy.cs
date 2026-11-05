@@ -66,7 +66,7 @@ namespace Enemy
             GridTile tile = grid[coordinates.x, coordinates.y];
             GameObject occupant =  tile.Occupant;
 
-            if (occupant == null || !occupant.TryGetComponent(out DefenseCharacterBase defense))
+            if (occupant == null || !occupant.TryGetComponent(out DamageableDefense defense))
                 return;
 
             int defenseID = defense.GetEntityId();
@@ -84,7 +84,7 @@ namespace Enemy
             
             //Attack tower if it is close enough
             if (currentTarget.TryGetComponent<IDamageable>(out var damageable))
-                damageable.TakeDamage(EnemyData.AttackDamage);
+                damageable.TakeDamage(CurrentAttackDamage);
         }
 
     }

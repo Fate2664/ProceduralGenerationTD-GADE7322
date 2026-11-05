@@ -72,7 +72,7 @@ namespace Enemy.SwarmerEnemy
             GridTile tile = grid[coordinates.x, coordinates.y];
             GameObject occupant =  tile.Occupant;
 
-            if (occupant == null || !occupant.TryGetComponent(out DefenseCharacterBase defense))
+            if (occupant == null || !occupant.TryGetComponent(out DamageableDefense defense))
                 return;
             
             if (defense.IsDead)
@@ -99,10 +99,10 @@ namespace Enemy.SwarmerEnemy
             if (!currentTarget.TryGetComponent<IDamageable>(out IDamageable damageable))
                 return;
             
-            DefenseCharacterBase attackedDefense = currentTarget.GetComponent<DefenseCharacterBase>();
+            DamageableDefense attackedDefense = currentTarget.GetComponent<DamageableDefense>();
             bool wasAlive = attackedDefense != null && !attackedDefense.IsDead;
             
-            damageable.TakeDamage(EnemyData.AttackDamage);
+            damageable.TakeDamage(CurrentAttackDamage);
 
             if (wasAlive && attackedDefense.IsDead)
                 SpawnOffspring();

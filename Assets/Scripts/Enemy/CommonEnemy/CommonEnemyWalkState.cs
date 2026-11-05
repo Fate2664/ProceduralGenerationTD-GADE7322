@@ -10,10 +10,11 @@ namespace Enemy
         private readonly NavMeshAgent agent;
         private readonly Path path;
         
-        private const float tileStoppingDistance = 0.1f;
+        private const float tileStoppingDistance = 0.05f;
         private const float finalStoppingDistance = 5.0f;
         private int pathIndex;
         private bool hasStarted;
+        private bool hasDestination;
         
         public bool HasFinishedPath { get;  private set; }
         public event Action<int> PathTileChanged;
@@ -52,25 +53,37 @@ namespace Enemy
                 return;
             }
             
+            PathTileChanged?.Invoke(pathIndex);
+
+            if (EnemyBase.HasDefenseTarget)
+            {
+                agent.isStopped = true;
+                return;
+            }
+            
             pathIndex++;
             SetCurrentDestination();
         }
 
         private void SetCurrentDestination()
         {
+            hasDestination = false;
+            
             GridTile tile = path.Tiles[pathIndex];
+            bool isFinalTile = pathIndex == path.TileCount - 1;
             
             //Get tile center
-            Vector3 tileCenter = tile.GetComponentInChildren<Renderer>().bounds.center;
+            Vector3 tileCenter = tile.transform.position;
+            tileCenter.y = agent.destination.y;
 
-            if (!NavMesh.SamplePosition(tileCenter, out NavMeshHit hit, 3.0f, agent.areaMask))
-                return;
-            
-            bool isFinalTile = pathIndex == path.TileCount - 1;
+            float sampleDistance = isFinalTile ? 3f : 0.5f;
             agent.stoppingDistance = isFinalTile ? finalStoppingDistance : tileStoppingDistance;
-            
-            agent.SetDestination(hit.position);
-            PathTileChanged?.Invoke(pathIndex);
+
+            if (!NavMesh.SamplePosition(tileCenter, out NavMeshHit hit, sampleDistance, agent.areaMask) || !agent.SetDestination(hit.position))
+                return;
+
+            hasDestination = true;
+            agent.isStopped = false;
         }
 
         public override void OnExit()
@@ -80,7 +93,7 @@ namespace Enemy
 
         private bool HasReachedCurrentDestination()
         {
-            if (!agent.isOnNavMesh || agent.pathPending || agent.pathStatus != NavMeshPathStatus.PathComplete)
+            if (!hasDestination || !agent.isOnNavMesh || agent.pathPending || agent.pathStatus != NavMeshPathStatus.PathComplete)
                 return false;
             
             return agent.remainingDistance <= agent.stoppingDistance;

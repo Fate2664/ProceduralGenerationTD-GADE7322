@@ -76,7 +76,7 @@ namespace Enemy.RangerEnemy
             Transform spawnPoint = bulletSpawnPoints[spawnIndex];
 
             Projectile bullet = Instantiate(bulletPrefab, spawnPoint.position, spawnPoint.rotation);
-            bullet.InitializeProjectile(currentTarget, bulletSpeed, EnemyData.AttackDamage);
+            bullet.InitializeProjectile(currentTarget, bulletSpeed, CurrentAttackDamage);
             ReportProjectileSpawned(bullet);
         }
 

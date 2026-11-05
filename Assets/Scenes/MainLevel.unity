@@ -8339,7 +8339,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -171.4396, y: -11.796205, z: -171.4396, w: -11.796205}
+  m_margin: {x: -171.4396, y: -41.159405, z: -171.4396, w: -41.159405}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0
@@ -8378,7 +8378,7 @@ MonoBehaviour:
         Raw: 0
         Type: 0
       Y:
-        Raw: -29.363201
+        Raw: 0
         Type: 0
       Z:
         Raw: 0
@@ -9843,6 +9843,19 @@ MonoBehaviour:
   - {fileID: 2906440025805600797, guid: ce56917d6c5a8a440b4d9ab74ec53cef, type: 3}
   - {fileID: 2906440025805600797, guid: d7d9fe2b5b73f194999e3ee061c5e186, type: 3}
   obstacleSpawnChance: 0.15
+  patchesPerTerrain: 1
+  minPatchSize: 35
+  maxPatchSize: 55
+  terrainGap: 1
+  fertileProductionSpeedMultiplier: 1.5
+  desertEnemySpeedMultiplier: 1.25
+  rockyEnemyDamageMultiplier: 1.5
+  fertileSoilPrefab: {fileID: 3750793862136611875, guid: d175c656121de5a47bac5107d8eafe42, type: 3}
+  desertPrefab: {fileID: 7375568940387901139, guid: 80f17f1f1e93b3b4f99d215d2f2b837a, type: 3}
+  rockyGroundPrefab: {fileID: 7228765204751190295, guid: bcdfba181def08e47a785cd5904006af, type: 3}
+  rockyGroundPathPrefab: {fileID: 7511492776965119416, guid: 4177d041ef460444096049712f414135, type: 3}
+  desertPathPrefab: {fileID: 2062086598742567614, guid: 67e438c3d006b3149b842b3ee66cc165, type: 3}
+  fertileSoilPathPrefab: {fileID: 4826595900321761009, guid: d47e7445f2711c0458888e2b1d92631f, type: 3}
 --- !u!1 &1143966565
 GameObject:
   m_ObjectHideFlags: 0

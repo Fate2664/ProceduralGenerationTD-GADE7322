@@ -15,7 +15,7 @@ namespace Defenses.DefenseCharacters
     }
 
 
-    public class DefenseCharacterBase : UpgradeableDefense, IDamageable 
+    public class DefenseCharacterBase : DamageableDefense
     {
         #region Inspector Variables
 
@@ -199,7 +199,7 @@ namespace Defenses.DefenseCharacters
 
         #region TakingDamage
 
-        public void TakeDamage(int damage)
+        public override void TakeDamage(int damage)
         {
             if (currentHealth <= 0)
                 return;
@@ -215,6 +215,7 @@ namespace Defenses.DefenseCharacters
 
         private void Die()
         {
+            NotifyDefenseDied();
             Died?.Invoke(this);
             Destroy(gameObject);
         }

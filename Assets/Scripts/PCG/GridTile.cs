@@ -13,6 +13,9 @@ namespace PCG
     //The GridTile datatype represents a single tile in the generated grid
     public class GridTile : MonoBehaviour
     {
+        [SerializeField] private Renderer groundRenderer;
+
+        public TerrainType Terrain { get; private set; }
         public Vector2Int Coordinates { get; private set; } //Tile's coordinates
         public TileType Type { get; private set; }  //Tile's type
         public GameObject Occupant { get; private set; }    //Whether or not the tile is occupied
@@ -25,7 +28,26 @@ namespace PCG
         {
             Coordinates = coordinates;
             Type = TileType.Buildable;
+            Terrain = TerrainType.Grassland;
             Occupant = null;
+        }
+
+        public void SetTerrain(TerrainType terrain)
+        {
+            if (Terrain == terrain)
+                return;
+
+            Terrain = terrain;
+            OnTileStateChanged?.Invoke(this);
+        }
+
+        public void ApplyTerrainColor(Color color)
+        {
+            var properties = new MaterialPropertyBlock();
+            groundRenderer.GetPropertyBlock(properties);
+            properties.SetColor("_BaseColor", color);
+            properties.SetColor("_Color", color);
+            groundRenderer.SetPropertyBlock(properties);
         }
 
         public void SetType(TileType type)
