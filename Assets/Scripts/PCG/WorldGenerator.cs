@@ -32,11 +32,13 @@ namespace PCG
         [SerializeField] private int maxPatchSize = 55;
         [SerializeField] private int terrainGap = 1;
 
+        //Terrain effects
         [Header("Terrain Effects")] 
         [SerializeField] private float fertileProductionSpeedMultiplier = 1.5f;
         [SerializeField] private float desertEnemySpeedMultiplier = 1.25f;
         [SerializeField] private float rockyEnemyDamageMultiplier = 1.5f;
 
+        //Terrain specific prefabs
         [Header("Terrain Prefabs")] 
         [SerializeField] private GridTile fertileSoilPrefab;
         [SerializeField] private GridTile desertPrefab;
@@ -100,6 +102,7 @@ namespace PCG
 
         #region Terrain Generation
 
+        //This method uses the TerrainRegionGenerator to replace original tiles with terrain tiles
         private void GenerateTerrain(GameObject[,] gameObjectGrid)
         {
             GeneratedTerrainSeed = UnityEngine.Random.Range(0, int.MaxValue);
@@ -207,7 +210,9 @@ namespace PCG
             int prefabIndex = UnityEngine.Random.Range(0, prefabs.Count);
             return prefabs[prefabIndex];
         }
-
+        
+        #endregion
+        
         public bool TryGetTile(Vector3 worldPosition, out GridTile tile)
         {
             tile = null;
@@ -222,8 +227,6 @@ namespace PCG
             tile = Grid[column, row];
             return tile != null;
         }
-
-        #endregion
 
         //This method places the tower on the grid's center tile 
         private Transform PlaceTowerAtCenter(GameObject[,] grid)

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace PCG
 {
+    //All terrain types
     public enum TerrainType
     {
         Grassland,
@@ -13,6 +14,7 @@ namespace PCG
 
     public class TerrainRegionGenerator
     {
+        //Directions that the patch can grow
         private static readonly Vector2Int[] directions =
         {
             Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right
@@ -27,9 +29,11 @@ namespace PCG
             int terrainGap,
             System.Random random)
         {
+            //Set all tiles to grassland tiles
             foreach (var tile in grid)
                 tile.SetTerrain(TerrainType.Grassland);
 
+            //Min and max values that are inside the grid's bounds
             int minimum = Mathf.Clamp(minPatchSize, 1, grid.Length);
             int maximum = Mathf.Clamp(maxPatchSize, minimum, grid.Length);
 
@@ -40,15 +44,18 @@ namespace PCG
                 for (int terrainIndex = 0; terrainIndex < terrainTypes.Length; terrainIndex++)
                 {
                     TerrainType terrain = terrainTypes[(terrainOffset + terrainIndex) % terrainTypes.Length];
+                    //Start fertile soil on a buidable tile while the others on path tiles
                     TileType requiredType = terrain == TerrainType.FertileSoil ? TileType.Buildable : TileType.Path;
                     var candidates = new List<GridTile>();
-
+    
+                    //Collect valid starting tiles 
                     foreach (var tile in grid)
                     {
                         if (tile.Type == requiredType && CanUseTile(grid, tile.Coordinates, terrainGap))
                             candidates.Add(tile);
                     }
                     
+                    //Choose a random target size within the defined range
                     int targetSize = random.Next(minimum, maximum + 1);
                     bool placed = false;
                     int attempts = Mathf.Min(30, candidates.Count);
@@ -61,9 +68,11 @@ namespace PCG
                         
                         List<GridTile> patch = GrowPatch(grid, seed, targetSize, terrainGap, random);
                         
+                        //Continue to grow if the minimum is not reached
                         if (patch.Count < minimum)
                             continue;
-
+                        
+                        //Apply the terrain tile to the set terrain type
                         foreach (var tile in patch)
                             tile.SetTerrain(terrain);
                         
@@ -77,15 +86,17 @@ namespace PCG
 
         private static List<GridTile> GrowPatch(GridTile[,] grid, GridTile seed, int targetSize, int terrainGap, System.Random random)
         {
-            var patch =  new List<GridTile>();
-            var frontier = new List<Vector2Int>();
-            var visited = new HashSet<Vector2Int>();
-            var scores = new Dictionary<Vector2Int, float>();
+            var patch =  new List<GridTile>();  //Accepted tiles
+            var frontier = new List<Vector2Int>();  //Possible expansion tiles
+            var visited = new HashSet<Vector2Int>();    //All visited tiles
+            var scores = new Dictionary<Vector2Int, float>();   //Growth scores
 
             AddCandidate(seed.Coordinates);
 
+            //Expand until the target size is reached
             while (frontier.Count > 0 & patch.Count < targetSize)
             {
+                //Select the candidate with the lowest score
                 int bestIndex = 0;
                 float bestScore = scores[frontier[0]];
 
@@ -104,17 +115,20 @@ namespace PCG
                 frontier.RemoveAt(bestIndex);
                 
                 patch.Add(grid[coordnates.x, coordnates.y]);
-
+                
+                //Add valid neighbour tiles as candidates
                 foreach (var direction in directions)
                     AddCandidate(coordnates + direction);
             }
             return patch;
-
+            
             void AddCandidate(Vector2Int coordnates)
             {
+                //Skip positions already visited or unusable
                 if (!visited.Add(coordnates) || !CanUseTile(grid, coordnates, terrainGap))
                     return;
                 
+                //Combine distance from starting tile with random variation
                 Vector2Int offset = coordnates - seed.Coordinates;
                 float distanceSquared = offset.sqrMagnitude;
                 float variation = (float)random.NextDouble() * 2f;

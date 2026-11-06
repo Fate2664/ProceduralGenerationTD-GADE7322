@@ -52,6 +52,8 @@ namespace Defenses.DefenseCharacters
         private int upgradesPurchased;
         private bool upgradeInProgress;
         private GameObject upgradeEffectInstance;
+        
+        //Weather attack speed multiplier for rain and thunder storm weather
         private float WeatherAttackSpeedMultiplier => WeatherManager.Instance != null
             ? Mathf.Clamp(WeatherManager.Instance.DefenseAttackSpeedMultiplier, 0.1f, 1f)
             : 1f;
@@ -88,8 +90,6 @@ namespace Defenses.DefenseCharacters
         public override bool IsDead => currentHealth <= 0f;
         public event Action<DefenseCharacterBase> Died;
         public override event Action OnDefenseUpgraded;
-
-        public static List<DefenseCharacterBase> All = new List<DefenseCharacterBase>();
         private float baseDetectionRadius;
 
         #endregion
@@ -104,7 +104,6 @@ namespace Defenses.DefenseCharacters
             initialAttackInterval = timeBetweenAttacks;
 
             baseDetectionRadius = enemyDetector.DetectionRadius;
-            ApplyWeatherRange();
         }
 
         protected void At(IState from, IState to, IPredicate condition) =>
@@ -115,15 +114,14 @@ namespace Defenses.DefenseCharacters
         private void Update()
         {
             if (stateMachine.CurrentState == null) return;
-
-            float attackSpeedMultiplier = WeatherAttackSpeedMultiplier;
-            animator.SetFloat(AttackSpeedMultiplierId, initialAttackInterval / timeBetweenAttacks * attackSpeedMultiplier);
+            
+            animator.SetFloat(AttackSpeedMultiplierId, initialAttackInterval / timeBetweenAttacks * WeatherAttackSpeedMultiplier);
             
             enemyDetector.TickDetection(Time.deltaTime);
             UpdateFacing(Time.deltaTime);
 
             stateMachine.Update();
-            attackTimer.Tick(Time.deltaTime * attackSpeedMultiplier);
+            attackTimer.Tick(Time.deltaTime * WeatherAttackSpeedMultiplier);
         }
 
         private void FixedUpdate()
@@ -131,30 +129,6 @@ namespace Defenses.DefenseCharacters
             if (stateMachine.CurrentState == null) return;
 
             stateMachine.FixedUpdate();
-        }
-
-        private void OnEnable()
-        {
-            All.Add(this);
-            WeatherManager.OnWeatherChanged += HandleWeatherChanged;
-        }
-
-        private void OnDisable()
-        {
-            All.Remove(this);
-            WeatherManager.OnWeatherChanged -= HandleWeatherChanged;
-        }
-
-
-        private void HandleWeatherChanged(WeatherManager.WeatherType newWeather)
-        {
-            ApplyWeatherRange();
-        }
-
-        private void ApplyWeatherRange()
-        {
-            float mult = WeatherManager.Instance != null ? WeatherManager.Instance.currTowerRangeMult : 1f;
-            enemyDetector.SetDetectionRadius(baseDetectionRadius * mult);
         }
 
         public virtual void Initialize(Transform nearestPath = null)
@@ -245,6 +219,7 @@ namespace Defenses.DefenseCharacters
 
         #region Upgrading
 
+        //This method returns the stat value for the upgrade type
         public override float GetUpgradeValue(DefenseUpgradeType type)
         {
             switch (type)
@@ -261,7 +236,8 @@ namespace Defenses.DefenseCharacters
                     return -1f;
             }
         }
-
+        
+        
         public override bool TryUpgrade(CurrencyManager currency)
         {
             if (currency == null || IsDead || upgradeInProgress)
@@ -275,9 +251,11 @@ namespace Defenses.DefenseCharacters
 
             try
             {
+                //Spend the upgrade cost if they can afford it
                 if (!currency.TrySpend(nextUpgrade.Cost))
                     return false;
 
+                //Apply each stat upgrade for all the upgrade items in that upgrade tier
                 foreach (var upgrade in nextUpgrade.Upgrades)
                 {
                     ApplyUpgrade(upgrade.UpgradeType, upgrade.UpgradedValue);
@@ -313,7 +291,8 @@ namespace Defenses.DefenseCharacters
             upgradeEffectInstance = Instantiate(effectPrefab, upgradeEffectPoint.position, upgradeEffectPoint.rotation,
                 upgradeEffectPoint);
         }
-
+        
+        //This methods sets the selected stat to the value defined by the upgrade item
         protected virtual void ApplyUpgrade(DefenseUpgradeType type, float upgradeValue)
         {
             switch (type)
@@ -323,8 +302,7 @@ namespace Defenses.DefenseCharacters
                     break;
                 case DefenseUpgradeType.Range:
                     baseDetectionRadius = upgradeValue;
-                    ApplyWeatherRange();
-                    //enemyDetector.SetDetectionRadius(upgradeValue);
+                    enemyDetector.SetDetectionRadius(upgradeValue);
                     break;
                 case DefenseUpgradeType.AttackSpeed:
                     timeBetweenAttacks = 1f / upgradeValue;

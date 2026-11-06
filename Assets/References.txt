@@ -9,3 +9,5 @@ Palmov Island (2024) Low Poly Atmospheric Locations Pack. [online] Available at:
 Villacote, G. (2025) Violet Themed UI. [online] Available at: https://assetstore.unity.com/packages/2d/gui/violet-themed-ui-235559 [Accessed 4 September 2026].
 
 Wallcoeur (2025) VFX - Impact and Hit - Light Version. [online] Available at: https://assetstore.unity.com/packages/vfx/particles/vfx-impact-and-hit-light-version-335800 [Accessed 4 September 2026].
+
+Roman Papush, 2019, Ultimate Clouds with Shader Graph in Unity, Made Easy [Tutorial]. [YouTube video] Available at: <https://www.youtube.com/watch?v=Y7r5n5TsX_E> [ Accessed 6 November 2026].

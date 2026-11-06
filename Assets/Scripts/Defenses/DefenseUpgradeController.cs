@@ -18,6 +18,7 @@ namespace Defenses
         [SerializeField] private UIBlock2D defenseIcon;
         [SerializeField] private UIBlock2D upgradeButton;
         [SerializeField] private ParticleSystem selectedIndicator;
+        [SerializeField] private TextBlock costText;
         [SerializeField] private Vector3 selectedIndicatorOffset = new Vector3(0f, 0.5f, 0f);
 
         private UpgradeableDefense selectedCharacter;
@@ -93,6 +94,7 @@ namespace Defenses
             }
             defenseTitle.Text = data.DefenseDisplayName;
             defenseLevel.Text = $"Level {selectedCharacter.CurrentLevel}";
+            costText.Text = data.Cost.ToString();
             defenseIcon.SetImage(data.Icon);
             upgradesList.SetDataSource(data.Upgrades);
             upgradesList.Refresh();

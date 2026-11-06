@@ -7,6 +7,15 @@ using DG.Tweening;
 using PCG;
 using UnityEngine;
 
+//All weather types
+public enum WeatherType
+{
+    Sunny,
+    Rain,
+    Fog,
+    ThunderStorm
+}
+
 
 public class WeatherManager : MonoBehaviour
 {
@@ -14,10 +23,12 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] int MaxDuration = 40;
     [SerializeField] int MinDuration = 20;
 
+    //Negative effects the weather has on defence characters
     [Header("Weather Effects")]
-    [SerializeField, Range(0.1f, 1f)] private float wetDefenseDamageMultiplier = 0.9f;
-    [SerializeField, Range(0.1f, 1f)] private float fogDefenseAttackSpeedMultiplier = 0.85f;
+    [SerializeField, Range(0.1f, 1f)] private float wetDefenseDamageMultiplier = 0.9f;  //Wet weather reduces damage dealt
+    [SerializeField, Range(0.1f, 1f)] private float fogDefenseAttackSpeedMultiplier = 0.85f;    //Fog reduces attack speed
 
+    //Weather profiles for all weather types with thier enemy weights
     [Header("Weather Wave Profiles")] 
     [SerializeField] private WeatherWaveProfile[] waveProfiles =
     {
@@ -51,8 +62,11 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] private float flashDuration = 0.08f;
     [SerializeField] private Lightning lightningBoltPrefab;
 
+    //Enemy 
     [HideInInspector] public float currEnemySpeedMult = 1f;
     [HideInInspector] public float currEnemyDamageMult = 1f;
+    
+    //These are unused
     [HideInInspector] public float currTowerRangeMult = 1f;
     [HideInInspector] public float currTowerFireRateMult = 1f;
     
@@ -91,14 +105,6 @@ public class WeatherManager : MonoBehaviour
         public float fogDensity = 0f;
     }
 
-    public enum WeatherType
-    {
-        Sunny,
-        Rain,
-        Fog,
-        ThunderStorm
-    }
-
     private void Awake()
     {
         Instance = this;
@@ -124,15 +130,7 @@ public class WeatherManager : MonoBehaviour
 
         StartCoroutine(WeatherLoop());
     }
-
-    private IEnumerator Flash()
-    {
-        sun.intensity = flashIntensity;
-        yield return new WaitForSeconds(flashDuration);
-        sun.intensity = targetLook != null ? targetLook.lightIntensity : 1f;
-    }
-
-
+    
     private void Update()
     {
         if (targetLook == null) return;
@@ -150,6 +148,7 @@ public class WeatherManager : MonoBehaviour
         UpdateFogExclusionBounds();
     }
     
+    //Change the visuals based on the current weather
     private void SetTargetLook()
     {
         foreach (var look in looks)
@@ -162,21 +161,28 @@ public class WeatherManager : MonoBehaviour
         }
     }
 
+    //This is the weather loop method that is played throughout the game
     private IEnumerator WeatherLoop()
     {
         while (weatherActive)
         {
+            //First randomize the duraction of the weather
             RandomiseDuration();
+            //Update the defense character stats based on the weather type
             ChangeStats();
+            //Update the visual look based on the weather type
             SetTargetLook();
             OnWeatherChanged?.Invoke(currentWeather);
-
+            
+            //Wait for the weather duration to end
             yield return new WaitForSeconds(duration);
             
+            //Select new weather
             WeatherSelector();
         }
     }
     
+    //This method applies the debuffs to the defense characters when it is not sunny
     public void ChangeStats()
     {
         //Reset stats and visual effects
@@ -222,6 +228,7 @@ public class WeatherManager : MonoBehaviour
         return null;
     }
 
+    //This method selects what weather will occur based on the current wave and a random choice
     public void WeatherSelector()
     {
         eligibleWeather.Clear();
@@ -229,6 +236,7 @@ public class WeatherManager : MonoBehaviour
 
         foreach (var profile in waveProfiles)
         {
+            //If the current wave is before the first wave that this weather type can occur
             if (currentWave < profile.FirstWave)
                 continue;
             
@@ -236,10 +244,12 @@ public class WeatherManager : MonoBehaviour
                 eligibleWeather.Add(profile.Weather);
         }
         
+        //Randomly select weather from eligble options
         int selectedIndex = UnityEngine.Random.Range(0, eligibleWeather.Count);
         currentWeather = eligibleWeather[selectedIndex];
     }
 
+    //Randomize the duration of the weather
     public void RandomiseDuration()
     {
         int randomDuration = UnityEngine.Random.Range(MinDuration, MaxDuration + 1);
@@ -288,6 +298,13 @@ public class WeatherManager : MonoBehaviour
         bolt.Strike(strikePosition);
         target.TakeDamage(lightningDamage);
         StartCoroutine(Flash());
+    }
+    
+    private IEnumerator Flash()
+    {
+        sun.intensity = flashIntensity;
+        yield return new WaitForSeconds(flashDuration);
+        sun.intensity = targetLook != null ? targetLook.lightIntensity : 1f;
     }
 
     private void StartLightning()

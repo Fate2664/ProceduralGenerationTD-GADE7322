@@ -58,7 +58,7 @@ namespace Enemy
             WeatherManager.OnWeatherChanged -= HandleWeatherChanged;
         }
 
-        private void HandleWeatherChanged(WeatherManager.WeatherType newWeather)
+        private void HandleWeatherChanged(WeatherType newWeather)
         {
             ApplyWeather();
         }
