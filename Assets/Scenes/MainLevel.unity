@@ -1206,7 +1206,7 @@ MonoBehaviour:
       Mode: 1
     SoftenEdges: 1
     FillEnabled: 1
-  texture: {fileID: 0}
+  texture: {fileID: 2800000, guid: 31f65f3037f26a241b5632de177bb0f7, type: 3}
   sprite: {fileID: 0}
 --- !u!114 &155331804
 MonoBehaviour:
@@ -2952,7 +2952,7 @@ MonoBehaviour:
       Mode: 1
     SoftenEdges: 1
     FillEnabled: 1
-  texture: {fileID: 0}
+  texture: {fileID: 2800000, guid: 874405487c248bd40ac7fa7b8e1a1156, type: 3}
   sprite: {fileID: 0}
 --- !u!114 &334279262
 MonoBehaviour:
@@ -6985,7 +6985,7 @@ MonoBehaviour:
       Mode: 1
     SoftenEdges: 1
     FillEnabled: 1
-  texture: {fileID: 0}
+  texture: {fileID: 2800000, guid: c482e6bb8dd751d4bb0be64755c849e1, type: 3}
   sprite: {fileID: 0}
 --- !u!114 &572575172
 MonoBehaviour:
@@ -11685,7 +11685,7 @@ MonoBehaviour:
       Mode: 1
     SoftenEdges: 1
     FillEnabled: 1
-  texture: {fileID: 0}
+  texture: {fileID: 2800000, guid: 325987973f55f884699eee0fe11ba050, type: 3}
   sprite: {fileID: 0}
 --- !u!114 &880736384
 MonoBehaviour:
@@ -16302,7 +16302,7 @@ MonoBehaviour:
       Mode: 1
     SoftenEdges: 1
     FillEnabled: 1
-  texture: {fileID: 0}
+  texture: {fileID: 2800000, guid: eb200bbc7d2c7a24594a47f2eefab5ec, type: 3}
   sprite: {fileID: 0}
 --- !u!114 &1260502797
 MonoBehaviour:
@@ -18004,7 +18004,7 @@ MonoBehaviour:
       Mode: 1
     SoftenEdges: 1
     FillEnabled: 1
-  texture: {fileID: 0}
+  texture: {fileID: 2800000, guid: 665a2a5a90652224cba64ed12cc51b45, type: 3}
   sprite: {fileID: 0}
 --- !u!114 &1370087402
 MonoBehaviour:
@@ -18813,7 +18813,7 @@ MonoBehaviour:
       Mode: 1
     SoftenEdges: 1
     FillEnabled: 1
-  texture: {fileID: 0}
+  texture: {fileID: 2800000, guid: c4cee51e6bc30904a9f0f05c79e8c2c7, type: 3}
   sprite: {fileID: 0}
 --- !u!114 &1447363105
 MonoBehaviour:
@@ -24540,7 +24540,7 @@ MonoBehaviour:
       Mode: 1
     SoftenEdges: 1
     FillEnabled: 1
-  texture: {fileID: 0}
+  texture: {fileID: 2800000, guid: 37fbce102754ef841ae8b44ea3708268, type: 3}
   sprite: {fileID: 0}
 --- !u!114 &1843414058
 MonoBehaviour:
