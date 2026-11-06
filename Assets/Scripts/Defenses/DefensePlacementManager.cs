@@ -5,6 +5,7 @@ using Nova;
 using PCG;
 using Systems;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Defenses
 {
@@ -60,6 +61,18 @@ namespace Defenses
 
         private void Update()
         {
+          
+            bool escapePressed = Keyboard.current != null &&
+                                 Keyboard.current.escapeKey.wasPressedThisFrame;
+
+            bool rightClickPressed = Mouse.current != null &&
+                                     Mouse.current.rightButton.wasPressedThisFrame;
+
+            if (IsPlacingDefense && (escapePressed || rightClickPressed))
+            {
+                CancelPlacement();
+            }
+
             foreach (var option in defensesOptions)
             {
                 if (!placementCooldowns.TryGetValue(option, out CountDownTimer timer))
@@ -74,6 +87,13 @@ namespace Defenses
                     button.SetCooldownYPercentage(GetCooldownPercentage(option));
                 }
             }
+        }
+
+        private void CancelPlacement()
+        {
+            DestroyDragPreview();
+            selectedDefense = null;
+            placementGrid.HideGrid();
         }
 
         private void HandleDefenseReleased(Gesture.OnRelease evt, DefenseButtonVisuals target, int index)
