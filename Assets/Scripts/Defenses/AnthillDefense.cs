@@ -49,6 +49,7 @@ public class AnthillDefense : DamageableDefense
     private Quaternion restingCoinRotation;
     private GridTile placementTile;
     private WorldGenerator worldGenerator;
+    private GameObject upgradeEffectInstance;
 
     private float ProductionSpeedMultiplier => placementTile != null &&
         placementTile.Terrain == TerrainType.FertileSoil && worldGenerator != null
@@ -210,6 +211,7 @@ public class AnthillDefense : DamageableDefense
             }
 
             upgradesPurchased++;
+            UpdateUpgradeEffect();
         }
         finally
         {
@@ -218,6 +220,25 @@ public class AnthillDefense : DamageableDefense
 
         OnDefenseUpgraded?.Invoke();
         return true;
+    }
+    
+    private void UpdateUpgradeEffect()
+    {
+        if (upgradesPurchased == 0)
+            return;
+
+        GameObject effectPrefab = upgradesPurchased == 1
+            ? upgradeEffect1Prefab
+            : upgradeEffect2Prefab;
+
+        if (upgradeEffectInstance != null)
+        {
+            upgradeEffectInstance.SetActive(false);
+            Destroy(upgradeEffectInstance);
+        }
+
+        upgradeEffectInstance = Instantiate(effectPrefab, upgradeEffectPoint.position, upgradeEffectPoint.rotation,
+            upgradeEffectPoint);
     }
 
     private void OnDisable()

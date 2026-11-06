@@ -10,7 +10,7 @@ namespace Enemy
         [SerializeField] private Material rockyOutlineMaterial;
         [SerializeField] private Material desertOutlineMaterial;
         
-        private static readonly int OutlineEnabledId =  Shader.PropertyToID("_DefenseOutlineEnabled");
+        private static readonly int OutlineEnabledId =  Shader.PropertyToID("_OutlineEnabled");
         private static readonly int OutlineColorId =  Shader.PropertyToID("_OutlineColor");
         private static readonly int OutlineWidthId =  Shader.PropertyToID("_OutlineWidth");
 

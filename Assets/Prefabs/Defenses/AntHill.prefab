@@ -208,8 +208,8 @@ MonoBehaviour:
   fallDuration: 0.35
   coinVisual: {fileID: 7026392441983121286}
   spinDegreesPerSecond: 180
-  upgradeData: {fileID: 0}
-  secondUpgradeData: {fileID: 0}
+  upgradeData: {fileID: 11400000, guid: fa7267972de15b845937a9a301032e14, type: 2}
+  secondUpgradeData: {fileID: 11400000, guid: 29b8966f41009094ca3fb60a140390d7, type: 2}
   upgradeEffect1Prefab: {fileID: 2363131651324413607, guid: ee8a300c26781c244bc8be5f76e19205, type: 3}
   upgradeEffect2Prefab: {fileID: 2363131651324413607, guid: c2239cb96eb3efd4380e09dddfb24861, type: 3}
   upgradeEffectPoint: {fileID: 497836821903182350}

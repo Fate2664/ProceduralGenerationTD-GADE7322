@@ -24,7 +24,6 @@ namespace PCG
         [SerializeField] private GameObject tilePrefab;
         [SerializeField] private GameObject pathPrefab;
         [SerializeField] private GameObject towerPrefab;
-        [SerializeField] private List<GameObject> obstaclePrefabs;
         [SerializeField] private float obstacleSpawnChance = 0.2f;
 
         [Header("Terrain Patches")] 
@@ -45,6 +44,10 @@ namespace PCG
         [SerializeField] private GridTile rockyGroundPathPrefab;
         [SerializeField] private GridTile desertPathPrefab;
         [SerializeField] private GridTile fertileSoilPathPrefab;
+        [SerializeField] private List<GridTile> fertileSoilObstaclePrefabs;
+        [SerializeField] private List<GridTile> desertObstaclePrefabs;
+        [SerializeField] private List<GridTile> rockyGroundObstaclePrefabs;
+        [SerializeField] private List<GameObject> grasslandObstaclePrefabs;
 
         #endregion
 
@@ -111,8 +114,7 @@ namespace PCG
                 {
                     GridTile originalTile = Grid[column, row];
 
-                    if (originalTile.Terrain == TerrainType.Grassland || originalTile.Type == TileType.Obstacle ||
-                        originalTile.Occupant != null)
+                    if (originalTile.Terrain == TerrainType.Grassland || originalTile.Occupant != null)
                         continue;
 
                     GridTile prefab = GetTerrainPrefab(originalTile.Terrain, originalTile.Type);
@@ -122,6 +124,15 @@ namespace PCG
                     replacement.Initialize(originalTile.Coordinates);
                     replacement.SetType(originalTile.Type);
                     replacement.SetTerrain(originalTile.Terrain);
+
+                    if (originalTile.Type == TileType.Obstacle)
+                    {
+                        int obstacleIndex = obstacleTiles.IndexOf(originalTile);
+                        if (obstacleIndex > 0)
+                            obstacleTiles[obstacleIndex] = replacement;
+
+                        replacement.name = "ObstacleTile(Clone)";
+                    }
 
                     //Change layer mask if needed:
                     int tileLayer = originalTile.Type == TileType.Path
@@ -171,6 +182,9 @@ namespace PCG
                 };
             }
             
+            if (tileType == TileType.Obstacle)
+                return GetTerrainObstaclePrefab(terrain);
+            
             return terrain switch
             {
                 TerrainType.FertileSoil => fertileSoilPrefab,
@@ -178,6 +192,20 @@ namespace PCG
                 TerrainType.RockyGround => rockyGroundPrefab,
                 _ => null
             };
+        }
+
+        private GridTile GetTerrainObstaclePrefab(TerrainType terrain)
+        {
+            List<GridTile> prefabs = terrain switch
+            {
+                TerrainType.FertileSoil => fertileSoilObstaclePrefabs,
+                TerrainType.Desert => desertObstaclePrefabs,
+                TerrainType.RockyGround => rockyGroundObstaclePrefabs,
+                _ => null
+            };
+
+            int prefabIndex = UnityEngine.Random.Range(0, prefabs.Count);
+            return prefabs[prefabIndex];
         }
 
         public bool TryGetTile(Vector3 worldPosition, out GridTile tile)
@@ -242,8 +270,8 @@ namespace PCG
                     //select obstacle
                     if (spawnObstacle)
                     {
-                        int prefabIndex = UnityEngine.Random.Range(0, obstaclePrefabs.Count);
-                        selectedPrefab = obstaclePrefabs[prefabIndex];
+                        int prefabIndex = UnityEngine.Random.Range(0, grasslandObstaclePrefabs.Count);
+                        selectedPrefab = grasslandObstaclePrefabs[prefabIndex];
                     }
 
                     //Random rotation

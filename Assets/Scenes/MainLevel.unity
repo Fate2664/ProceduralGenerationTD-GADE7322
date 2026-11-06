@@ -9837,12 +9837,6 @@ MonoBehaviour:
   tilePrefab: {fileID: 6203717931449110253, guid: 6feb363e8dd6e2d41adb87a494a605da, type: 3}
   pathPrefab: {fileID: 7387455332244287312, guid: c2cbdd57a9e438c47bea7292c0a8edb5, type: 3}
   towerPrefab: {fileID: 8986752084434777836, guid: 88648003a8190f548a0fd1f299542dd3, type: 3}
-  obstaclePrefabs:
-  - {fileID: 2906440025805600797, guid: b5ca9896dc00c0f4a9a471bede5009de, type: 3}
-  - {fileID: 2906440025805600797, guid: f95886112eea2b241aa7253e9ae6d856, type: 3}
-  - {fileID: 2906440025805600797, guid: 8546df3067cf2ea49a9fcd96b82ccf32, type: 3}
-  - {fileID: 2906440025805600797, guid: ce56917d6c5a8a440b4d9ab74ec53cef, type: 3}
-  - {fileID: 2906440025805600797, guid: d7d9fe2b5b73f194999e3ee061c5e186, type: 3}
   obstacleSpawnChance: 0.15
   patchesPerTerrain: 1
   minPatchSize: 35
@@ -9857,6 +9851,20 @@ MonoBehaviour:
   rockyGroundPathPrefab: {fileID: 7511492776965119416, guid: 4177d041ef460444096049712f414135, type: 3}
   desertPathPrefab: {fileID: 2062086598742567614, guid: 67e438c3d006b3149b842b3ee66cc165, type: 3}
   fertileSoilPathPrefab: {fileID: 4826595900321761009, guid: d47e7445f2711c0458888e2b1d92631f, type: 3}
+  fertileSoilObstaclePrefabs:
+  - {fileID: 3750793862136611875, guid: 67827d30ac1d57c4d875fab7302972ea, type: 3}
+  - {fileID: 3750793862136611875, guid: aa78b6ff5603af546b3091e20928f55e, type: 3}
+  desertObstaclePrefabs:
+  - {fileID: 5626228510696610472, guid: dd57e950079374743b775388f2d8aa2a, type: 3}
+  - {fileID: 5626228510696610472, guid: 3d679d4ca86c044498103816e2457e3d, type: 3}
+  - {fileID: 5626228510696610472, guid: 1f91387edeb4c524c94d19173ddad355, type: 3}
+  rockyGroundObstaclePrefabs:
+  - {fileID: 5626228510696610472, guid: c65043a80d35d4e4eabfcf6130dc5187, type: 3}
+  - {fileID: 5626228510696610472, guid: ce56917d6c5a8a440b4d9ab74ec53cef, type: 3}
+  grasslandObstaclePrefabs:
+  - {fileID: 2906440025805600797, guid: d7d9fe2b5b73f194999e3ee061c5e186, type: 3}
+  - {fileID: 2906440025805600797, guid: b5ca9896dc00c0f4a9a471bede5009de, type: 3}
+  - {fileID: 2906440025805600797, guid: f95886112eea2b241aa7253e9ae6d856, type: 3}
 --- !u!1 &1143966565
 GameObject:
   m_ObjectHideFlags: 0
@@ -13776,10 +13784,10 @@ MonoBehaviour:
   defensesOptionList: {fileID: 1599429099}
   placementGrid: {fileID: 1764515005}
   defensesOptions:
+  - {fileID: 11400000, guid: 7ce5235e4772364408ddc184e38c1437, type: 2}
   - {fileID: 11400000, guid: 69b5784d1d18ad24d980447c2c611c45, type: 2}
   - {fileID: 11400000, guid: f4958a5960fa98f46a4fe9b339f358a6, type: 2}
   - {fileID: 11400000, guid: b1a697fb6dad202408add8fc24eb1fb6, type: 2}
-  - {fileID: 11400000, guid: 7ce5235e4772364408ddc184e38c1437, type: 2}
   currency: {fileID: 1149953631}
 --- !u!114 &1764515005
 MonoBehaviour:

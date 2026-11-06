@@ -278,8 +278,8 @@ MonoBehaviour:
   - {fileID: 5709406491612488959}
   - {fileID: 8709372741833627240}
   - {fileID: 8439687260281806513}
-  rockyOutlineMaterial: {fileID: 2100000, guid: 8b851287b6a9b4048a2091007e7e75ee, type: 2}
-  desertOutlineMaterial: {fileID: 2100000, guid: 93bc14a18fcf1b445b1fa5798175159f, type: 2}
+  rockyOutlineMaterial: {fileID: 2100000, guid: a840c02642bad97489ec7a42d23b5ceb, type: 2}
+  desertOutlineMaterial: {fileID: 2100000, guid: 18c849edacd195848b6adda43cb5e6b7, type: 2}
 --- !u!1 &8038935788310925141
 GameObject:
   m_ObjectHideFlags: 0
