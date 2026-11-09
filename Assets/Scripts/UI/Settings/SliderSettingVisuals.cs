@@ -1,0 +1,54 @@
+using DG.Tweening;
+using Nova;
+using UnityEngine;
+
+public class SliderSettingVisuals : ItemVisuals
+{
+    public UIBlock2D MainBackground = null;
+    public UIBlock2D SliderBackground = null;
+    public TextBlock SettingLabel = null;
+    public UIBlock2D FillBar = null;
+    public TextBlock ValueLabel = null;
+    public float MinVisualOffset = 2.63f;
+    public static float HoverScale = 1.05f;
+    public Color HoverColor = Color.white;
+    public Color DefaultColor = Color.black;
+
+    public bool isSelected
+    {
+        get => MainBackground.BodyEnabled;
+        set
+        {
+            MainBackground.BodyEnabled = value;
+            SettingLabel.Color = value ? DefaultColor : HoverColor;
+            ValueLabel.Color = value ? DefaultColor : HoverColor;
+            // SliderBackground.Color = value ? HexToColor("765033") : HexToColor("E2A87B");
+            // FillBar.Color = value ? HexToColor("E2A87B") : HexToColor("765033");
+        }
+    }
+    
+    private static Color HexToColor(string hex)
+    {
+        ColorUtility.TryParseHtmlString("#" + hex, out Color color);
+        return color;
+    }
+    
+    public static void HandleHover(Gesture.OnHover evt, SliderSettingVisuals target)
+    {
+        if (SettingsMenu.Instance.popup.IsOpen) return;
+
+        target.MainBackground.DOKill();
+        target.MainBackground.transform.DOScale(target.SettingLabel.transform.localScale * HoverScale, 0.15f).SetEase(Ease.OutBack);
+        target.isSelected = true;
+    }
+
+    public static void HandleUnHover(Gesture.OnUnhover evt, SliderSettingVisuals target)
+    {
+        if (SettingsMenu.Instance.popup.IsOpen)  return;
+        
+        target.MainBackground.DOKill();
+        target.MainBackground.transform.DOScale(Vector3.one, 0.15f).SetEase(Ease.OutQuad);
+        target.isSelected = false;
+    }
+
+}

@@ -80,6 +80,12 @@ namespace Menu
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
+        public void LoadMainMenu()
+        {
+            SceneManager.LoadScene("MainMenu");
+            Time.timeScale = 1f;
+        }
+
         public void Continue()
         {
             HidePauseMenu();

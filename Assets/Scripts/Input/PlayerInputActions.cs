@@ -183,15 +183,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             ""id"": ""704abd73-5c4f-446b-aebe-c200d8992ffa"",
             ""actions"": [
                 {
-                    ""name"": ""Navigation"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""96106f92-d144-4ee7-8447-786477f86cab"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Apply"",
                     ""type"": ""Button"",
                     ""id"": ""de1597bb-a07c-4935-84a4-937097010bee"",
@@ -199,64 +190,54 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Exit"",
+                    ""type"": ""Button"",
+                    ""id"": ""7d1fdfb6-b6c6-4d30-a7a9-195dd62f70f1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Vertical Navigation"",
+                    ""type"": ""Value"",
+                    ""id"": ""2f9f60b3-3bc0-41dc-97f5-5af8446c5b08"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Horizontal Navigation"",
+                    ""type"": ""Value"",
+                    ""id"": ""ea1669f1-615c-4a77-b2e5-4e9b6a1b4f66"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Restore Defaults"",
+                    ""type"": ""Button"",
+                    ""id"": ""7664c88a-1d3e-4ec5-a67b-2662aa8a740b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Tab Navigation"",
+                    ""type"": ""Value"",
+                    ""id"": ""ed73891d-b9cb-402a-912e-a58cc522b36c"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": ""Keyboard"",
-                    ""id"": ""21b0e7dd-5f63-495f-8fe5-8bee9b1f5676"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Navigation"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""6ecd28f4-ed22-46b6-a449-cf8b3edb2a44"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Navigation"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""0bb7c5c7-a340-4dfb-84d0-ddff7dd2932a"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Navigation"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""47cf9407-b04a-4823-ac59-cb07d53d3023"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Navigation"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""b6132843-861a-44f6-8872-b573e850183f"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Navigation"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
                 {
                     ""name"": """",
                     ""id"": ""f93d405c-38ce-4833-bd63-df0a4ad9cb58"",
@@ -267,6 +248,127 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Apply"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cbe3c635-ecaa-41fa-901c-e295e2d4171a"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Exit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""W/S Axis"",
+                    ""id"": ""b81c1383-f650-4ece-ab0b-7a34d83db68b"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Vertical Navigation"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""8e46dad7-959a-4544-b3b6-ca0e9daf31d0"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Vertical Navigation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""d3c73adf-8663-4522-a0a8-77fbbc45ea06"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Vertical Navigation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""A/D Axis"",
+                    ""id"": ""0335a54c-2f93-4076-a9e2-286e83fcdcbd"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Horizontal Navigation"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""327394b5-3b32-4ec6-9e90-6964105968e1"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Horizontal Navigation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""9d4fe227-175f-48fe-a3c6-c9c671d03512"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Horizontal Navigation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""71090259-0b34-455e-8760-373b7554791d"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Restore Defaults"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""E/Q Axis"",
+                    ""id"": ""28967e5b-c999-4b8d-8110-9171c4267826"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Tab Navigation"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""6118b8f2-94dd-428e-bfa5-c075cc223755"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Tab Navigation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""7fc5d3a9-e9ee-4fb3-887f-7d419087ad94"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Tab Navigation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -280,8 +382,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Gameplay_Zoom = m_Gameplay.FindAction("Zoom", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
-        m_UI_Navigation = m_UI.FindAction("Navigation", throwIfNotFound: true);
         m_UI_Apply = m_UI.FindAction("Apply", throwIfNotFound: true);
+        m_UI_Exit = m_UI.FindAction("Exit", throwIfNotFound: true);
+        m_UI_VerticalNavigation = m_UI.FindAction("Vertical Navigation", throwIfNotFound: true);
+        m_UI_HorizontalNavigation = m_UI.FindAction("Horizontal Navigation", throwIfNotFound: true);
+        m_UI_RestoreDefaults = m_UI.FindAction("Restore Defaults", throwIfNotFound: true);
+        m_UI_TabNavigation = m_UI.FindAction("Tab Navigation", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -481,8 +587,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     // UI
     private readonly InputActionMap m_UI;
     private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
-    private readonly InputAction m_UI_Navigation;
     private readonly InputAction m_UI_Apply;
+    private readonly InputAction m_UI_Exit;
+    private readonly InputAction m_UI_VerticalNavigation;
+    private readonly InputAction m_UI_HorizontalNavigation;
+    private readonly InputAction m_UI_RestoreDefaults;
+    private readonly InputAction m_UI_TabNavigation;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -495,13 +605,29 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// </summary>
         public UIActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "UI/Navigation".
-        /// </summary>
-        public InputAction @Navigation => m_Wrapper.m_UI_Navigation;
-        /// <summary>
         /// Provides access to the underlying input action "UI/Apply".
         /// </summary>
         public InputAction @Apply => m_Wrapper.m_UI_Apply;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/Exit".
+        /// </summary>
+        public InputAction @Exit => m_Wrapper.m_UI_Exit;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/VerticalNavigation".
+        /// </summary>
+        public InputAction @VerticalNavigation => m_Wrapper.m_UI_VerticalNavigation;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/HorizontalNavigation".
+        /// </summary>
+        public InputAction @HorizontalNavigation => m_Wrapper.m_UI_HorizontalNavigation;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/RestoreDefaults".
+        /// </summary>
+        public InputAction @RestoreDefaults => m_Wrapper.m_UI_RestoreDefaults;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/TabNavigation".
+        /// </summary>
+        public InputAction @TabNavigation => m_Wrapper.m_UI_TabNavigation;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -528,12 +654,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
-            @Navigation.started += instance.OnNavigation;
-            @Navigation.performed += instance.OnNavigation;
-            @Navigation.canceled += instance.OnNavigation;
             @Apply.started += instance.OnApply;
             @Apply.performed += instance.OnApply;
             @Apply.canceled += instance.OnApply;
+            @Exit.started += instance.OnExit;
+            @Exit.performed += instance.OnExit;
+            @Exit.canceled += instance.OnExit;
+            @VerticalNavigation.started += instance.OnVerticalNavigation;
+            @VerticalNavigation.performed += instance.OnVerticalNavigation;
+            @VerticalNavigation.canceled += instance.OnVerticalNavigation;
+            @HorizontalNavigation.started += instance.OnHorizontalNavigation;
+            @HorizontalNavigation.performed += instance.OnHorizontalNavigation;
+            @HorizontalNavigation.canceled += instance.OnHorizontalNavigation;
+            @RestoreDefaults.started += instance.OnRestoreDefaults;
+            @RestoreDefaults.performed += instance.OnRestoreDefaults;
+            @RestoreDefaults.canceled += instance.OnRestoreDefaults;
+            @TabNavigation.started += instance.OnTabNavigation;
+            @TabNavigation.performed += instance.OnTabNavigation;
+            @TabNavigation.canceled += instance.OnTabNavigation;
         }
 
         /// <summary>
@@ -545,12 +683,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UIActions" />
         private void UnregisterCallbacks(IUIActions instance)
         {
-            @Navigation.started -= instance.OnNavigation;
-            @Navigation.performed -= instance.OnNavigation;
-            @Navigation.canceled -= instance.OnNavigation;
             @Apply.started -= instance.OnApply;
             @Apply.performed -= instance.OnApply;
             @Apply.canceled -= instance.OnApply;
+            @Exit.started -= instance.OnExit;
+            @Exit.performed -= instance.OnExit;
+            @Exit.canceled -= instance.OnExit;
+            @VerticalNavigation.started -= instance.OnVerticalNavigation;
+            @VerticalNavigation.performed -= instance.OnVerticalNavigation;
+            @VerticalNavigation.canceled -= instance.OnVerticalNavigation;
+            @HorizontalNavigation.started -= instance.OnHorizontalNavigation;
+            @HorizontalNavigation.performed -= instance.OnHorizontalNavigation;
+            @HorizontalNavigation.canceled -= instance.OnHorizontalNavigation;
+            @RestoreDefaults.started -= instance.OnRestoreDefaults;
+            @RestoreDefaults.performed -= instance.OnRestoreDefaults;
+            @RestoreDefaults.canceled -= instance.OnRestoreDefaults;
+            @TabNavigation.started -= instance.OnTabNavigation;
+            @TabNavigation.performed -= instance.OnTabNavigation;
+            @TabNavigation.canceled -= instance.OnTabNavigation;
         }
 
         /// <summary>
@@ -621,18 +771,46 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     public interface IUIActions
     {
         /// <summary>
-        /// Method invoked when associated input action "Navigation" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnNavigation(InputAction.CallbackContext context);
-        /// <summary>
         /// Method invoked when associated input action "Apply" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnApply(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Exit" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnExit(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Vertical Navigation" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnVerticalNavigation(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Horizontal Navigation" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnHorizontalNavigation(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Restore Defaults" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRestoreDefaults(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Tab Navigation" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTabNavigation(InputAction.CallbackContext context);
     }
 }

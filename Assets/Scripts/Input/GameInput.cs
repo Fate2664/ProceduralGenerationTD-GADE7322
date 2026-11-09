@@ -17,6 +17,14 @@ namespace Input
 
         public bool PausePressed => InputActions.Gameplay.Pause.IsPressed();
         
+        //UI Actions
+        public event UnityAction<bool> Exit  =  delegate { };
+        public event UnityAction<bool> RestoreDefaults  =  delegate { };
+        public event UnityAction<bool> Apply  =  delegate { };
+        public event UnityAction<float> VerticalNav  =  delegate { };
+        public event UnityAction<float> HorizontalNav  =  delegate { };
+        public event UnityAction<float> TabNav = delegate { };
+        
         #endregion
     
         #region Startup & Update Methods
@@ -60,15 +68,36 @@ namespace Input
 
         #region UI Actions
 
-        public void OnNavigation(InputAction.CallbackContext context)
+        void PlayerInputActions.IUIActions.OnExit(InputAction.CallbackContext context)
         {
-            return;
+            Exit.Invoke(context.phase == InputActionPhase.Performed);
         }
 
-        public void OnApply(InputAction.CallbackContext context)
+        public void OnVerticalNavigation(InputAction.CallbackContext context)
         {
-            return;
+            VerticalNav.Invoke(context.ReadValue<float>());
         }
+
+        public void OnHorizontalNavigation(InputAction.CallbackContext context)
+        {
+            HorizontalNav.Invoke(context.ReadValue<float>());
+        }
+
+        void PlayerInputActions.IUIActions.OnRestoreDefaults(InputAction.CallbackContext context)
+        {
+            RestoreDefaults.Invoke(context.phase == InputActionPhase.Performed);
+        }
+
+        void PlayerInputActions.IUIActions.OnApply(InputAction.CallbackContext context)
+        {
+            Apply.Invoke(context.phase == InputActionPhase.Performed);
+        }
+
+        public void OnTabNavigation(InputAction.CallbackContext context)
+        {
+            TabNav.Invoke(context.ReadValue<float>());
+        }
+        
         #endregion
     }
 }

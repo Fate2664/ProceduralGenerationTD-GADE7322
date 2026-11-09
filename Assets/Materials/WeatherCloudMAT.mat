@@ -154,7 +154,7 @@ Material:
     - _CastShadows: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _CloudCoverage: 1
+    - _CloudCoverage: 0
     - _CloudExclusionEnabled: 0
     - _CloudExclusionFeather: 5
     - _CloudFormationScale: 0.02
